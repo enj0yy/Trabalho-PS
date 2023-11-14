@@ -1,9 +1,9 @@
 # Trabalho Final Programação de Sistemas
 
-💻 Computador Hipotético (SIC/XE) 💻
+💻 **Computador Hipotético (SIC/XE)** 💻
 
-👥 Integrantes 👥
+👥 **Integrantes** 👥
 
 - Graziele Fagundes Martins
 
-...
+- ...
