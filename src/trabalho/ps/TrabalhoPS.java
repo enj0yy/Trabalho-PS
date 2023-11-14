@@ -9,12 +9,10 @@ package trabalho.ps;
  * @author grazi
  */
 public class TrabalhoPS {
-
-    /**
-     * @param args the command line arguments
-     */
+    static Executor executor;
+    
     public static void main(String[] args) {
-        // TODO code application logic here
+        executor = new Executor();
     }
     
 }
