@@ -6,4 +6,6 @@ Este repositório contém o projeto final desenvolvido como parte da disciplina 
 
 - Graziele Fagundes Martins
 
+- João Vitor Farias
+
 - ...
