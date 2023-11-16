@@ -10,4 +10,6 @@ Este repositório contém o projeto final desenvolvido como parte da disciplina 
 
 - Otávio Salomão Rocha
 
+- Igor Gomes Dutra
+
 - ...
