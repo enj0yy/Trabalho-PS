@@ -8,4 +8,6 @@ Este repositório contém o projeto final desenvolvido como parte da disciplina 
 
 - João Vitor Farias
 
+- Otávio Salomão Rocha
+
 - ...
