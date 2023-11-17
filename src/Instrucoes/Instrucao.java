@@ -1,4 +1,4 @@
-package trabalho.ps.Instrucoes;
+package Instrucoes;
 
 public abstract class Instrucao {
     private final String nome;

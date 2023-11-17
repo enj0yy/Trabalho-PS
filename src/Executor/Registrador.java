@@ -1,4 +1,4 @@
-package trabalho.ps.Executor;
+package Executor;
 
 public class Registrador {
     private String nome;

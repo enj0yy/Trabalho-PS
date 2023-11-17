@@ -1,4 +1,4 @@
-package trabalho.ps.Executor;
+package Executor;
 
 import java.util.ArrayList;
 import java.util.Collections;
