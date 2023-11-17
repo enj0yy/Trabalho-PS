@@ -9,10 +9,10 @@ package trabalho.ps;
  * @author grazi
  */
 public class TrabalhoPS {
-    static Executor executor;
+    static ExecutorInterface executor;
     
     public static void main(String[] args) {
-        executor = new Executor();
+        executor = new ExecutorInterface();
     }
     
 }

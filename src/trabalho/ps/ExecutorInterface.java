@@ -10,8 +10,8 @@ import javax.swing.JFrame;
  *
  * @author grazi
  */
-public class Executor extends JFrame {
-    public Executor() { 
+public class ExecutorInterface extends JFrame {
+    public ExecutorInterface() { 
         super("Executor");
         setSize(500, 200);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
