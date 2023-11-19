@@ -16,4 +16,6 @@ Este repositório contém o projeto final desenvolvido como parte da disciplina 
 
 - Marcos Lima Alves
 
+- Edmilson Marques Batista
+
 - ...
