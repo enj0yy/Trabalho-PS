@@ -14,4 +14,6 @@ Este repositório contém o projeto final desenvolvido como parte da disciplina 
 
 - Miguel Rodrigues Botelho
 
+- Marcos Lima Alves
+
 - ...
