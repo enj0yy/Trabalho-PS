@@ -19,7 +19,6 @@ public class Registradores {
         regs.put("SW", new Registrador("SW")); // Palavra de Status - Contém várias informações, incluindo código condicional (CC)
 
         registradores = regs;
-
     }
 
     public Registrador getRegistrador(String nome) {
