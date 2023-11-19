@@ -15,7 +15,14 @@ public class ADD extends Instrucao {
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC())); // pegando o valor de memória 
+        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC())); // pegando o endereço de memória (parametro 1)
+        registradores.incrementarPC(); // apos ler o parametro, incrementar o PC
+        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem)); // valor armazenado na posição de memoria lida anteriormente
+
+        int valorAcumulator = registradores.getRegistradorPorNome("A").getValor(); // valor que está no acumulador
+        valorAcumulator += valorMem;
+
+        registradores.getRegistradorPorNome("A").setValor(valorAcumulator); // Acumulador recebe Acumulador + Valor na memória
     }
     
 }

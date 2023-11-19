@@ -21,6 +21,10 @@ public class Registrador {
         return nome;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public int getValor() {
         return valor;
     }
