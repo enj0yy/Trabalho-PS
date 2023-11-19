@@ -34,6 +34,7 @@ public class Executor {
                 pos++;
             }
         }
+        br.close();
     }
     
     public void executarPrograma()
