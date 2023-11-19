@@ -1,22 +1,24 @@
 package Instrucoes;
 
+import Executor.Memoria;
+import Executor.Registradores;
+
 public abstract class Instrucao {
     private final String nome;
-    private final byte opcode;
-    //private final int tamanho;
+    private final String opcode;
 
-    Instrucao(String nome, byte opcode) {
+    Instrucao(String nome, String opcode) {
         this.nome = nome;
         this.opcode = opcode;
     }
 
-    public abstract void executar(); //TODO: definir quais parametros são necessarios para execução
+    public abstract void executar(Memoria memoria, Registradores registradores);
 
     public String getNome() {
         return nome;
     }
 
-    public byte getOpcode() {
+    public String getOpcode() {
         return opcode;
     }
 }

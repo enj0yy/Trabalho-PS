@@ -1,17 +1,16 @@
 package Executor;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+import Instrucoes.Instrucoes;
 
 public class Executor {
     private Memoria memoria;
     private Registradores registradores;
+    private Instrucoes intrucoes;
 
     public Executor() {
         this.memoria = new Memoria();
         this.registradores = new Registradores();
+        this.intrucoes = new Instrucoes();
     }
     
     public void setPrograma(String caminho)
@@ -23,13 +22,16 @@ public class Executor {
     
     public void executarPrograma()
     {
-        int pc = this.registradores.getRegistrador("PC").getValor();
-        
-        while (!"000".equals(memoria.getPosicaoMemoria(pc)))
+        int pc = this.registradores.getRegistrador(8).getValor();
+        String conteudoMemoria = memoria.getPosicaoMemoria(pc);
+                
+        while (!"000".equals(conteudoMemoria))
         {
-            //executa instrucao
+            intrucoes.getIntrucao(conteudoMemoria).executar(memoria, registradores);
+            
             this.registradores.incrementarPC();
-            pc = this.registradores.getRegistrador("PC").getValor();
+            pc = this.registradores.getRegistrador(8).getValor();
+            conteudoMemoria = memoria.getPosicaoMemoria(pc);
         }
     }
     

@@ -4,32 +4,37 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Registradores {
-    private final Map<String, Registrador> registradores;
+    private final Map<Integer, Registrador> registradores;
 
     Registradores() {
-        Map<String, Registrador> regs = new HashMap<>();
+        Map<Integer, Registrador> regs = new HashMap<>();
 
-        regs.put("A", new Registrador("A")); // Acumulador - Armazena os dados (carregados e resultantes) das operações da Unid. de Lógica e Aritmética
-        regs.put("X", new Registrador("X")); // Registrador de Índice - Usado para endereçamento.
-        regs.put("L", new Registrador("L")); // Registrador de Ligação - A instrução Jump to Subrotine (JSUB) armazena o endereço de retorno nesse registrador.
-        regs.put("B", new Registrador("B")); // Registrador Base - Usado para endereçamento.
-        regs.put("S", new Registrador("S")); // Registrador de Uso Geral
-        regs.put("T", new Registrador("T")); // Registrador de Uso Geral
-        regs.put("PC", new Registrador("PC")); //Program Counter - Mantém o endereço da próxima instrução a ser executada
-        regs.put("SW", new Registrador("SW")); // Palavra de Status - Contém várias informações, incluindo código condicional (CC)
+        regs.put(0, new Registrador("A", 0)); // Acumulador - Armazena os dados (carregados e resultantes) das operações da Unid. de Lógica e Aritmética
+        regs.put(1, new Registrador("X",1)); // Registrador de Índice - Usado para endereçamento.
+        regs.put(2, new Registrador("L",2)); // Registrador de Ligação - A instrução Jump to Subrotine (JSUB) armazena o endereço de retorno nesse registrador.
+        regs.put(3, new Registrador("B",3)); // Registrador Base - Usado para endereçamento.
+        regs.put(4, new Registrador("S",4)); // Registrador de Uso Geral
+        regs.put(5, new Registrador("T",5)); // Registrador de Uso Geral
+        regs.put(8, new Registrador("PC",8)); //Program Counter - Mantém o endereço da próxima instrução a ser executada
+        
+        regs.put(9, new Registrador("SW",9)); 
+        // Palavra de Status - Contém várias informações, incluindo código condicional (CC)
+        // -1 -> <
+        // 0 ->  =
+        // 1 ->  >
 
         registradores = regs;
     }
 
-    public Registrador getRegistrador(String nome) {
-        return registradores.get(nome);
+    public Registrador getRegistrador(int id) {
+        return registradores.get(id);
     }
 
     public void incrementarPC() {
-        registradores.get("PC").incrementarValor(1);
+        registradores.get(8).incrementarValor(1);
     }
 
     public int getValorPC() {
-        return registradores.get("PC").getValor();
+        return registradores.get(8).getValor();
     }
 }

@@ -2,15 +2,18 @@ package Executor;
 
 public class Registrador {
     private String nome;
-    private int valor; // int pode armazenar hexadecimal, por exemplo int i = 0x10
+    private int id;
+    private int valor;
 
-    Registrador(String nome, int valor) {
+    Registrador(String nome, int id, int valor) {
         this.nome = nome;
+        this.id = id;
         this.valor = valor;
     }
 
-    Registrador(String nome) { // se não é fornecido valor, default é 0
+    Registrador(String nome, int id) { // se não é fornecido valor, default é 0
         this.nome = nome;
+        this.id = id;
         this.valor = 0;
     }
 
