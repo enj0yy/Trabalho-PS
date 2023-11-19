@@ -12,4 +12,6 @@ Este repositório contém o projeto final desenvolvido como parte da disciplina 
 
 - Igor Gomes Dutra
 
+- Miguel Rodrigues Botelho
+
 - ...
