@@ -1,6 +1,11 @@
 package Executor;
 
 import Instrucoes.Instrucoes;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Executor {
     private Memoria memoria;
@@ -13,11 +18,22 @@ public class Executor {
         this.intrucoes = new Instrucoes();
     }
     
-    public void setPrograma(String caminho)
+    public void setPrograma(String caminho) throws FileNotFoundException, IOException
     {
         limparMemoria();
         // pega txt 
+        File file = new File(caminho);
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String str;
+        int pos = 0;
         // le e joga na memoria
+        while ((str = br.readLine()) != null){
+            String[] splited = str.split("\\s+");
+            for (int i = 0; i < splited.length; i++){
+                memoria.setPosicaoMemoria(pos, splited[i]);
+                pos++;
+            }
+        }
     }
     
     public void executarPrograma()
