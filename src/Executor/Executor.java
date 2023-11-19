@@ -40,15 +40,12 @@ public class Executor {
     public void executarPrograma()
     {
         int pc = this.registradores.getRegistrador(8).getValor();
-        String conteudoMemoria = memoria.getPosicaoMemoria(pc);
+        String opcode = memoria.getPosicaoMemoria(pc);
                 
-        while (!"000".equals(conteudoMemoria))
+        while (!"000".equals(opcode))
         {
-            intrucoes.getIntrucao(conteudoMemoria).executar(memoria, registradores);
-            
-            this.registradores.incrementarPC();
-            pc = this.registradores.getRegistrador(8).getValor();
-            conteudoMemoria = memoria.getPosicaoMemoria(pc);
+            registradores.incrementarPC(); // incrementa PC
+            intrucoes.getInstrucao(opcode).executar(memoria, registradores); // executa a instrução com o opcode lido
         }
     }
     

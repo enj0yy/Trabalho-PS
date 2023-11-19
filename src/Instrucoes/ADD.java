@@ -15,7 +15,7 @@ public class ADD extends Instrucao {
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-       Registradores.getOpcode(0)
+        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC())); // pegando o valor de memória 
     }
     
 }

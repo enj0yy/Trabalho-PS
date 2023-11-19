@@ -19,7 +19,7 @@ public class Instrucoes {
         intrucoes = inst;
     }
 
-    public Instrucao getIntrucao(String opcode) {
+    public Instrucao getInstrucao(String opcode) {
         return intrucoes.get(opcode);
     }
 }
