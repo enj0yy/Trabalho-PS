@@ -11,7 +11,7 @@ public class CLEAR extends Instrucao {
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int idRegistradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC())); // pegando o id do registrador (parametro 1)
+        int idRegistradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16); // pegando o id do registrador (parametro 1)
         registradores.incrementarPC(); // apos ler o parametro, incrementar o PC
 
         registradores.getRegistrador(idRegistradorA).setValor(0); // reg A <- 0

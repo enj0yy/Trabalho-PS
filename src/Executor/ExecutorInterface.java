@@ -1,10 +1,11 @@
 package Executor;
+import java.io.IOException;
 import javax.swing.JFrame;
 
 public class ExecutorInterface extends JFrame {
     private Executor executor;
     
-    public ExecutorInterface() { 
+    public ExecutorInterface() throws IOException { 
         super("Executor");
         executor = new Executor();
         

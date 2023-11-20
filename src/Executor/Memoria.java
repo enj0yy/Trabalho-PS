@@ -7,7 +7,7 @@ public class Memoria {
     private ArrayList<String> memoria;
 
     Memoria() {
-        memoria = new ArrayList<String>(Collections.nCopies(350, "000")); // faz 350 celulas de memória com o valor "000", representando um hexadecimal de 3 digitos, ou seja 24 bits
+        memoria = new ArrayList<String>(Collections.nCopies(350, "00")); // faz 350 celulas de memória
     }
 
     public String getPosicaoMemoria(int posicao) {
@@ -18,4 +18,9 @@ public class Memoria {
         memoria.set(posicao, valor);
     }
 
+    public void limparMemoria()
+    {
+        for (int i = 0; i < memoria.size(); i++)
+            this.memoria.set(i, "00");
+    }
 }

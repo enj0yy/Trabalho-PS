@@ -20,13 +20,12 @@ public class Executor {
     
     public void setPrograma(String caminho) throws FileNotFoundException, IOException
     {
-        limparMemoria();
-        // pega txt 
+        memoria.limparMemoria();
+        
         File file = new File(caminho);
         BufferedReader br = new BufferedReader(new FileReader(file));
         String str;
         int pos = 0;
-        // le e joga na memoria
         while ((str = br.readLine()) != null){
             String[] splited = str.split("\\s+");
             for (int i = 0; i < splited.length; i++){
@@ -39,18 +38,17 @@ public class Executor {
     
     public void executarPrograma()
     {
-        int pc = this.registradores.getRegistrador(8).getValor();
+        int pc = this.registradores.getRegistradorPorNome("PC").getValor();
         String opcode = memoria.getPosicaoMemoria(pc);
-                
-        while (!"000".equals(opcode))
+               
+        while (!"00".equals(opcode))
         {
             registradores.incrementarPC(); // incrementa PC
             intrucoes.getInstrucao(opcode).executar(memoria, registradores); // executa a instrução com o opcode lido
-        }
+            
+            pc = this.registradores.getRegistradorPorNome("PC").getValor();
+            opcode = memoria.getPosicaoMemoria(pc);  
+        } 
     }
     
-    public void limparMemoria()
-    {
-        // setar memoria pra 000
-    }
 }

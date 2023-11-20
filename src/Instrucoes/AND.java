@@ -11,9 +11,9 @@ public class AND extends Instrucao {
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC())); // pegando o endereço de memória (parametro 1)
+        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16); // pegando o endereço de memória (parametro 1)
         registradores.incrementarPC(); // apos ler o parametro, incrementar o PC
-        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem)); // valor armazenado na posição de memoria lida anteriormente
+        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem),16); // valor armazenado na posição de memoria lida anteriormente
 
         int valorAcumulator = registradores.getRegistradorPorNome("A").getValor(); // valor que está no acumulador
         valorAcumulator = valorAcumulator & valorMem;
