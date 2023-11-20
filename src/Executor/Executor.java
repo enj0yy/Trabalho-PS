@@ -23,17 +23,20 @@ public class Executor {
         memoria.limparMemoria();
         
         File file = new File(caminho);
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String str;
-        int pos = 0;
-        while ((str = br.readLine()) != null){
-            String[] splited = str.split("\\s+");
-            for (int i = 0; i < splited.length; i++){
-                memoria.setPosicaoMemoria(pos, splited[i]);
-                pos++;
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String str;
+            int pos = 0;
+            while ((str = br.readLine()) != null){
+                String[] splited = str.split("\\s+");
+                for (String splited1 : splited) {
+                    memoria.setPosicaoMemoria(pos, splited1);
+                    pos++;
+                }
             }
+        } catch(Exception e)
+        {
+            System.out.println("Erro ao ler o arquivo.");
         }
-        br.close();
     }
     
     public void executarPrograma()
