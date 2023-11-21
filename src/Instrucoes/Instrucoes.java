@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Instrucoes;
 
 import java.util.HashMap;
@@ -22,14 +18,16 @@ public class Instrucoes {
         instrucoes.put("A0", new COMPR());
         instrucoes.put("24", new DIV());
         instrucoes.put("9C", new DIV());
-        // instrucoes.put("3C", new J());
-        // instrucoes.put("30", new JEQ());
-        // instrucoes.put("34", new JGT());
-        // instrucoes.put("38", new JLT());
-        // instrucoes.put("48", new JSUB());
-        // instrucoes.put("0", new LDA());
-        // instrucoes.put("68", new LDB());
-        // instrucoes.put("50", new LDCH());
+        
+        instrucoes.put("3C", new J());
+        instrucoes.put("30", new JEQ());
+        instrucoes.put("34", new JGT());
+        instrucoes.put("38", new JLT());
+        instrucoes.put("48", new JSUB());
+        instrucoes.put("0", new LDA());
+        instrucoes.put("68", new LDB());
+        instrucoes.put("50", new LDCH());
+        
         // instrucoes.put("8", new LDL());
         // instrucoes.put("6C", new LDS());
         // instrucoes.put("74", new LDT());
@@ -38,6 +36,7 @@ public class Instrucoes {
         // instrucoes.put("98", new MULR());
         // instrucoes.put("44", new OR());
         // instrucoes.put("AC", new RMO());
+        
         // instrucoes.put("4C", new RSUB());
         // instrucoes.put("A4", new SHIFTL());
         // instrucoes.put("A8", new SHIFTR());
@@ -45,6 +44,7 @@ public class Instrucoes {
         // instrucoes.put("78", new STB());
         // instrucoes.put("54", new STCH());
         // instrucoes.put("14", new STL());
+        
         // instrucoes.put("7C", new STS());
         // instrucoes.put("84", new STT());
         // instrucoes.put("10", new STX());

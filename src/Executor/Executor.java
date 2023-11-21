@@ -46,12 +46,12 @@ public class Executor {
                
         while (!"00".equals(opcode))
         {
-            registradores.incrementarPC(); // incrementa PC
-            intrucoes.getInstrucao(opcode).executar(memoria, registradores); // executa a instrução com o opcode lido
+            registradores.incrementarPC();
+            intrucoes.getInstrucao(opcode).executar(memoria, registradores);
             
             pc = this.registradores.getRegistradorPorNome("PC").getValor();
             opcode = memoria.getPosicaoMemoria(pc);  
-        } 
+        }   
     }
     
 }
