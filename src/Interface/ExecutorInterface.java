@@ -11,7 +11,6 @@ import Executor.*;
  * Tem o step -> instrução por instrução (PC+1 e executa)
  * read tem q parar a execução do programa
  * desabilitar o step e o run quando o programa terminar
- * tem q criar um função pra atualizar a memória e os registradores
  * output ser um textfield tbm
  */
 
@@ -45,21 +44,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
         // REGISTER TABLE AND LABEL 
         registerTable.setBackground(new java.awt.Color(204, 204, 204));
-        registerTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"PC", ""},
-                {"A", ""},
-                {"X", ""},
-                {"L", ""},
-                {"B", ""},
-                {"S", ""},
-                {"T", ""},
-                {"SW", ""}
-            },
-            new String [] {
-                "Name", "Value"
-            }
-        ));
+        attRegistradores();
         registerTable.setAlignmentY(1.0F);
         registerTable.setEnabled(false);
         registerTable.setGridColor(new java.awt.Color(0, 0, 0));
@@ -188,6 +173,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         pack();
     }
 
+    // ACTION LISTENERS
     private void inputFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputFieldActionPerformed
         // TODO: tem que fazer pra pegar o texto e mandar pra memoria -- ser entre 1-255
         String enteredText = inputField.getText();
@@ -212,6 +198,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
         // TODO: terminar o step
         loadButton.setEnabled(false);
+        attRegistradores();
     }
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt, JList<String> memoryList) {
@@ -222,13 +209,17 @@ public class ExecutorInterface extends javax.swing.JFrame {
             addressLoaded = true;
             executor.setPrograma(selectedFile.getAbsolutePath());
             attMemoria(memoryList);
+            attRegistradores();
         }
         } catch (Exception e) {
             System.out.println("Erro ao ler o arquivo.");
         }
         
     }
-/*
+    // END
+
+
+    // AUXILIARY FUNCTIONS
     private void attRegistradores() {
         registerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -245,7 +236,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
                 "Name", "Value"
             }
         ));
-    } */
+    } 
 
     private void attMemoria(JList<String> memoryList) {
         memoryList.setModel(new javax.swing.AbstractListModel<String>() {
@@ -254,6 +245,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
             public String getElementAt(int i) { return strings[i]; }
         });
     }
+    // END
 
     public static void main(String args[]) {
         try {

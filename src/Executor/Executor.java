@@ -59,4 +59,7 @@ public class Executor {
         return memoria.getMemoria();
     }
 
+    public Registrador getRegistrador(String nome) {
+        return registradores.getRegistradorPorNome(nome);
+    }
 }
