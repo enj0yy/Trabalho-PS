@@ -18,4 +18,4 @@ Este repositório contém o projeto final desenvolvido como parte da disciplina 
 
 - Edmilson Marques Batista
 
-- ...
+- Leonardo Melo
