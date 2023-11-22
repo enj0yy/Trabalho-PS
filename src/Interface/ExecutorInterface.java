@@ -228,7 +228,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         }
         
     }
-
+/*
     private void attRegistradores() {
         registerTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -245,7 +245,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
                 "Name", "Value"
             }
         ));
-    }
+    } */
 
     private void attMemoria(JList<String> memoryList) {
         memoryList.setModel(new javax.swing.AbstractListModel<String>() {
