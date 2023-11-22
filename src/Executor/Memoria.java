@@ -23,4 +23,9 @@ public class Memoria {
         for (int i = 0; i < memoria.size(); i++)
             this.memoria.set(i, "00");
     }
+
+    public ArrayList<String> getMemoria() {
+        return memoria;
+    }
+    
 }

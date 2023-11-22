@@ -1,7 +1,7 @@
 package TrabalhoPS;
 
 
-import Executor.ExecutorInterface;
+import Interface.ExecutorInterface;
 import java.io.IOException;
 
 public class TrabalhoPS {
