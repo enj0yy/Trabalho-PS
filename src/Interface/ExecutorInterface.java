@@ -2,6 +2,9 @@ package Interface;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+
+import javax.swing.JList;
+
 import Executor.*;
 
 /* TODO:
@@ -76,11 +79,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         // END
 
         // MEMORY LIST AND LABEL
-        memoryList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = executor.getMemoria().toArray(new String[0]);
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
+        attMemoria(memoryList);
         memoryList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         memoryList.setVisibleRowCount(20);
         jScrollPane1.setViewportView(memoryList);
@@ -105,7 +104,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         loadButton.setText("Load Addresses");
         loadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadButtonActionPerformed(evt);
+                loadButtonActionPerformed(evt, memoryList);
             }
         });
 
@@ -215,18 +214,45 @@ public class ExecutorInterface extends javax.swing.JFrame {
         loadButton.setEnabled(false);
     }
 
-    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void loadButtonActionPerformed(java.awt.event.ActionEvent evt, JList<String> memoryList) {
         try {
             if( fileChooser.showSaveDialog(rootPane) == javax.swing.JFileChooser.APPROVE_OPTION ) {
             File selectedFile = fileChooser.getSelectedFile();
             System.out.println(selectedFile.getAbsolutePath());
             addressLoaded = true;
             executor.setPrograma(selectedFile.getAbsolutePath());
+            attMemoria(memoryList);
         }
         } catch (Exception e) {
             System.out.println("Erro ao ler o arquivo.");
         }
         
+    }
+
+    private void attRegistradores() {
+        registerTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"PC", executor.getRegistrador("PC").getValor()},
+                {"A", executor.getRegistrador("A").getValor()},
+                {"X", executor.getRegistrador("X").getValor()},
+                {"L", executor.getRegistrador("L").getValor()},
+                {"B", executor.getRegistrador("B").getValor()},
+                {"S", executor.getRegistrador("S").getValor()},
+                {"T", executor.getRegistrador("T").getValor()},
+                {"SW", executor.getRegistrador("SW").getValor()}
+            },
+            new String [] {
+                "Name", "Value"
+            }
+        ));
+    }
+
+    private void attMemoria(JList<String> memoryList) {
+        memoryList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = executor.getMemoria().toArray(new String[0]);
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
     }
 
     public static void main(String args[]) {
