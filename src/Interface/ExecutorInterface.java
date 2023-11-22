@@ -1,17 +1,15 @@
 package Interface;
 
+import java.awt.event.ActionEvent;
 import java.io.File;
 import Executor.*;
 
-/*
- * executarPrograma -> runButton
+/* TODO:
  * Tem o step -> instrução por instrução (PC+1 e executa)
  * read tem q parar a execução do programa
  * desabilitar o step e o run quando o programa terminar
- * desabilitar o load quando o programa estiver rodando
  * tem q criar um função pra atualizar a memória e os registradores
  * output ser um textfield tbm
- * runButton vai desabilitar os outros botões
  */
 
 //executor.executarPrograma();
@@ -20,6 +18,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
     public ExecutorInterface() {
         executor = new Executor();
+        addressLoaded = false;
         initComponents();
     }
 
@@ -104,7 +103,6 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
         // BUTTONS
         loadButton.setText("Load Addresses");
-        loadButton.setBorder(new javax.swing.border.MatteBorder(null));
         loadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadButtonActionPerformed(evt);
@@ -113,6 +111,11 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
         runButton.setText("Run");
         runButton.setEnabled(false);
+        runButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runButtonActionPerformed(evt);
+            }
+        });
 
         stepButton.setText("Step");
         stepButton.setEnabled(false);
@@ -192,16 +195,24 @@ public class ExecutorInterface extends javax.swing.JFrame {
         try {
             int value = Integer.parseInt(enteredText);
             System.out.println(value);
-            runButton.setEnabled(true);
-            stepButton.setEnabled(true);
-            
+            if ( addressLoaded ) {
+                runButton.setEnabled(true);
+                stepButton.setEnabled(true);
+            }
         } catch (NumberFormatException e) {
             System.out.println("Não é um inteiro válido");
         }
     }
 
+    private void runButtonActionPerformed(ActionEvent evt) {
+        stepButton.setEnabled(false);
+        loadButton.setEnabled(false);
+        executor.executarPrograma();
+    }
+
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
-        // TODO: step aqui
+        // TODO: terminar o step
+        loadButton.setEnabled(false);
     }
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -209,6 +220,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
             if( fileChooser.showSaveDialog(rootPane) == javax.swing.JFileChooser.APPROVE_OPTION ) {
             File selectedFile = fileChooser.getSelectedFile();
             System.out.println(selectedFile.getAbsolutePath());
+            addressLoaded = true;
             executor.setPrograma(selectedFile.getAbsolutePath());
         }
         } catch (Exception e) {
@@ -244,6 +256,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
     }
 
     private Executor executor;
+    private boolean addressLoaded;
     private javax.swing.JTextField inputField;
     private javax.swing.JButton loadButton;
     private javax.swing.JButton stepButton;
