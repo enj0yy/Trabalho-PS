@@ -11,10 +11,7 @@ import Executor.*;
  * Tem o step -> instrução por instrução (PC+1 e executa)
  * read tem q parar a execução do programa
  * desabilitar o step e o run quando o programa terminar
- * output ser um textfield tbm
  */
-
-//executor.executarPrograma();
 
 public class ExecutorInterface extends javax.swing.JFrame {
 
@@ -39,8 +36,6 @@ public class ExecutorInterface extends javax.swing.JFrame {
         inputField = new javax.swing.JTextField();
         fileChooser = new javax.swing.JFileChooser();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
 
         // REGISTER TABLE AND LABEL 
         registerTable.setBackground(new java.awt.Color(204, 204, 204));
@@ -170,7 +165,13 @@ public class ExecutorInterface extends javax.swing.JFrame {
                                     .addComponent(stepButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                 .addGap(66, 66, 66))
         );
+
         pack();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setVisible(true);
+        setSize(getPreferredSize());
+        setResizable(false);
     }
 
     // ACTION LISTENERS
@@ -214,7 +215,6 @@ public class ExecutorInterface extends javax.swing.JFrame {
         } catch (Exception e) {
             System.out.println("Erro ao ler o arquivo.");
         }
-        
     }
     // END
 
