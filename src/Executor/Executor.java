@@ -54,6 +54,19 @@ public class Executor {
             opcode = memoria.getPosicaoMemoria(pc);  
         }   
     }
+
+    public boolean executarPasso()
+    {
+        int pc = this.registradores.getRegistradorPorNome("PC").getValor();
+        String opcode = memoria.getPosicaoMemoria(pc);
+        
+        if ("00".equals(opcode))
+            return false;
+
+        registradores.incrementarPC();
+        intrucoes.getInstrucao(opcode).executar(memoria, registradores);
+        return true;
+    }
     
     public ArrayList<String> getMemoria() {
         return memoria.getMemoria();

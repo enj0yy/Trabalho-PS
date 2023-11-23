@@ -8,9 +8,7 @@ import javax.swing.JList;
 import Executor.*;
 
 /* TODO:
- * Tem o step -> instrução por instrução (PC+1 e executa)
  * read tem q parar a execução do programa
- * desabilitar o step e o run quando o programa terminar
  */
 
 public class ExecutorInterface extends javax.swing.JFrame {
@@ -115,6 +113,8 @@ public class ExecutorInterface extends javax.swing.JFrame {
         });
         // END
 
+
+        // LAYOUT
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -189,7 +189,9 @@ public class ExecutorInterface extends javax.swing.JFrame {
         setVisible(true);
         setSize(getPreferredSize());
         setResizable(false);
+        // END
     }
+
 
     // ACTION LISTENERS
     private void inputFieldActionPerformed(java.awt.event.ActionEvent evt) {
@@ -212,12 +214,21 @@ public class ExecutorInterface extends javax.swing.JFrame {
     private void runButtonActionPerformed(ActionEvent evt) {
         stepButton.setEnabled(false);
         loadButton.setEnabled(false);
+
         executor.executarPrograma();
+
+        stepButton.setEnabled(false);
+        runButton.setEnabled(false);
+        loadButton.setEnabled(true);
     }
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO: terminar o step
         loadButton.setEnabled(false);
+        if ( !executor.executarPasso() ) {
+            stepButton.setEnabled(false);
+            runButton.setEnabled(false);
+            loadButton.setEnabled(true);
+        }
         attRegistradores();
     }
 
@@ -266,6 +277,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
     }
     // END
 
+
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -292,13 +304,20 @@ public class ExecutorInterface extends javax.swing.JFrame {
         });
     }
 
+    public void setOutputValue(int value) {
+        outputValue = value;
+        outputField.setText(Integer.toString(outputValue));
+    }
+
     public int getInputValue() {
         return inputValue;
     }
 
+    // VARIABLES
     private Executor executor;
     private boolean addressLoaded;
     private int inputValue;
+    private int outputValue;
     private javax.swing.JTextField inputField;
     private javax.swing.JTextField outputField;
     private javax.swing.JButton loadButton;
