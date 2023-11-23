@@ -7,10 +7,6 @@ import javax.swing.JList;
 
 import Executor.*;
 
-/* TODO:
- * read tem q parar a execução do programa
- */
-
 public class ExecutorInterface extends javax.swing.JFrame {
 
     public ExecutorInterface() {
@@ -33,7 +29,6 @@ public class ExecutorInterface extends javax.swing.JFrame {
         stepButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
         javax.swing.JList<String> memoryList = new javax.swing.JList<>();
-        inputField = new javax.swing.JTextField();
         fileChooser = new javax.swing.JFileChooser();
 
 
@@ -211,7 +206,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         try {
             int value = Integer.parseInt(enteredText);
             if ( value >= 0 && value <= 255 ) {
-                    inputValue = value;
+                    //inputValue = value;
             }
         } catch (NumberFormatException e) {
             System.out.println("Não é um inteiro válido");
@@ -225,6 +220,10 @@ public class ExecutorInterface extends javax.swing.JFrame {
         executor.executarPrograma();
         attRegistradores();
         attMemoria(memoryList);
+        if( executor.getOutput() != -1 ) {
+            outputField.setText(Integer.toString(executor.getOutput()));
+            executor.setOutput(-1);   
+        }
 
         stepButton.setEnabled(false);
         runButton.setEnabled(false);
@@ -238,11 +237,18 @@ public class ExecutorInterface extends javax.swing.JFrame {
             runButton.setEnabled(false);
             loadButton.setEnabled(true);
         }
+
+        if( executor.getOutput() != -1 ) {
+            outputField.setText(Integer.toString(executor.getOutput()));
+            executor.setOutput(-1);
+        }
         attRegistradores();
         attMemoria(memoryList);
     }
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt, JList<String> memoryList) {
+        executor.setOutput(-1);
+        outputField.setText("");
         try {
             if( fileChooser.showSaveDialog(rootPane) == javax.swing.JFileChooser.APPROVE_OPTION ) {
                 File selectedFile = fileChooser.getSelectedFile();
@@ -315,19 +321,8 @@ public class ExecutorInterface extends javax.swing.JFrame {
         });
     }
 
-    public void setOutputValue(int value) {
-        outputValue = value;
-        outputField.setText(Integer.toString(outputValue));
-    }
-
-    public int getInputValue() {
-        return inputValue;
-    }
-
     // VARIABLES
     private Executor executor;
-    private int inputValue;
-    private int outputValue;
     private javax.swing.JTextField inputField;
     private javax.swing.JTextField outputField;
     private javax.swing.JButton loadButton;

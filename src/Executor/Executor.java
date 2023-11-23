@@ -12,11 +12,13 @@ public class Executor {
     private Memoria memoria;
     private Registradores registradores;
     private Instrucoes intrucoes;
+    private int output;
 
     public Executor() {
         this.memoria = new Memoria();
         this.registradores = new Registradores();
         this.intrucoes = new Instrucoes();
+        this.output = -1;
     }
     
     public void setPrograma(String caminho) throws FileNotFoundException, IOException
@@ -60,7 +62,12 @@ public class Executor {
         while (!"00".equals(opcode))
         {
             registradores.incrementarPC();
-            intrucoes.getInstrucao(opcode).executar(memoria, registradores);
+            if ("DC".equals(opcode)) {
+                setOutput(registradores.getRegistradorPorNome("A").getValor());
+                registradores.incrementarPC();
+            } else {
+                intrucoes.getInstrucao(opcode).executar(memoria, registradores);
+            }
             
             pc = this.registradores.getRegistradorPorNome("PC").getValor();
             opcode = memoria.getPosicaoMemoria(pc);  
@@ -73,7 +80,12 @@ public class Executor {
         String opcode = memoria.getPosicaoMemoria(pc);
 
         registradores.incrementarPC();
-        intrucoes.getInstrucao(opcode).executar(memoria, registradores);
+        if ("DC".equals(opcode)) {
+            setOutput(registradores.getRegistradorPorNome("A").getValor());
+            registradores.incrementarPC();
+        } else {
+            intrucoes.getInstrucao(opcode).executar(memoria, registradores);
+        }
 
         pc = this.registradores.getRegistradorPorNome("PC").getValor();
         opcode = memoria.getPosicaoMemoria(pc);
@@ -94,5 +106,13 @@ public class Executor {
 
     public Registrador getRegistrador(String nome) {
         return registradores.getRegistradorPorNome(nome);
+    }
+
+    public void setOutput(int output) {
+        this.output = output;
+    }
+
+    public int getOutput() {
+        return output;
     }
 }
