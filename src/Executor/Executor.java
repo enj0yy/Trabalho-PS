@@ -71,12 +71,16 @@ public class Executor {
     {
         int pc = this.registradores.getRegistradorPorNome("PC").getValor();
         String opcode = memoria.getPosicaoMemoria(pc);
+
+        registradores.incrementarPC();
+        intrucoes.getInstrucao(opcode).executar(memoria, registradores);
+
+        pc = this.registradores.getRegistradorPorNome("PC").getValor();
+        opcode = memoria.getPosicaoMemoria(pc);
         
         if ("00".equals(opcode))
             return false;
 
-        registradores.incrementarPC();
-        intrucoes.getInstrucao(opcode).executar(memoria, registradores);
         return true;
     }
     

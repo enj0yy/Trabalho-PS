@@ -100,7 +100,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         runButton.setEnabled(false);
         runButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                runButtonActionPerformed(evt);
+                runButtonActionPerformed(evt, memoryList);
             }
         });
 
@@ -108,7 +108,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         stepButton.setEnabled(false);
         stepButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                stepButtonActionPerformed(evt);
+                stepButtonActionPerformed(evt, memoryList);
             }
         });
         // END
@@ -195,34 +195,31 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
     // ACTION LISTENERS
     private void inputFieldActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO: tem que fazer pra pegar o texto e mandar pra memoria
         String enteredText = inputField.getText();
         try {
             int value = Integer.parseInt(enteredText);
             if ( value >= 0 && value <= 255 ) {
-                if ( addressLoaded ) {
-                    runButton.setEnabled(true);
-                    stepButton.setEnabled(true);
                     inputValue = value;
-                }
             }
         } catch (NumberFormatException e) {
             System.out.println("Não é um inteiro válido");
         }
     }
 
-    private void runButtonActionPerformed(ActionEvent evt) {
+    private void runButtonActionPerformed(ActionEvent evt, JList<String> memoryList) {
         stepButton.setEnabled(false);
         loadButton.setEnabled(false);
 
         executor.executarPrograma();
+        attRegistradores();
+        attMemoria(memoryList);
 
         stepButton.setEnabled(false);
         runButton.setEnabled(false);
         loadButton.setEnabled(true);
     }
 
-    private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    private void stepButtonActionPerformed(java.awt.event.ActionEvent evt, JList<String> memoryList) {
         loadButton.setEnabled(false);
         if ( !executor.executarPasso() ) {
             stepButton.setEnabled(false);
@@ -230,18 +227,21 @@ public class ExecutorInterface extends javax.swing.JFrame {
             loadButton.setEnabled(true);
         }
         attRegistradores();
+        attMemoria(memoryList);
     }
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt, JList<String> memoryList) {
         try {
             if( fileChooser.showSaveDialog(rootPane) == javax.swing.JFileChooser.APPROVE_OPTION ) {
-            File selectedFile = fileChooser.getSelectedFile();
-            System.out.println(selectedFile.getAbsolutePath());
-            addressLoaded = true;
-            executor.setPrograma(selectedFile.getAbsolutePath());
-            attMemoria(memoryList);
-            attRegistradores();
-        }
+                File selectedFile = fileChooser.getSelectedFile();
+                System.out.println(selectedFile.getAbsolutePath());
+                addressLoaded = true;
+                executor.setPrograma(selectedFile.getAbsolutePath());
+                attMemoria(memoryList);
+                attRegistradores();
+                runButton.setEnabled(true);
+                stepButton.setEnabled(true);
+            }
         } catch (Exception e) {
             System.out.println("Erro ao ler o arquivo.");
         }
