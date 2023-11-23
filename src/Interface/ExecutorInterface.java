@@ -38,7 +38,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
 
         // REGISTER TABLE AND LABEL 
-        registerTable.setBackground(new java.awt.Color(204, 204, 204));
+        registerTable.setBackground(new java.awt.Color(176, 179, 184));
         attRegistradores();
         registerTable.setAlignmentY(1.0F);
         registerTable.setEnabled(false);
@@ -54,23 +54,27 @@ public class ExecutorInterface extends javax.swing.JFrame {
             registerTable.getColumnModel().getColumn(0).setMaxWidth(50);
         }
 
-        registerLabel.setFont(new java.awt.Font("Times New Roman", 0, 20)); // NOI18N
+        registerLabel.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
         registerLabel.setText("Registers");
+        registerLabel.setForeground(new java.awt.Color(228, 230, 235));
         // END
 
         // MEMORY LIST AND LABEL
         attMemoria(memoryList);
+        memoryList.setBackground(new java.awt.Color(176, 179, 184));
         memoryList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         memoryList.setVisibleRowCount(20);
         jScrollPane1.setViewportView(memoryList);
 
-        memoryLabel.setFont(new java.awt.Font("Times New Roman", 0, 20)); // NOI18N
+        memoryLabel.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
         memoryLabel.setText("Memory");
+        memoryLabel.setForeground(new java.awt.Color(228, 230, 235));
         // END
 
         // INPUT AND OUTPUT
-        inputLabel.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        inputLabel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         inputLabel.setText("Input:");
+        inputLabel.setForeground(new java.awt.Color(228, 230, 235));
         
         inputField.setText("");
         inputField.addActionListener(new java.awt.event.ActionListener() {
@@ -82,13 +86,16 @@ public class ExecutorInterface extends javax.swing.JFrame {
         outputField.setText("");
         outputField.setEditable(false);
 
-        outputLabel.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        outputLabel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         outputLabel.setText("Output:");
+        outputLabel.setForeground(new java.awt.Color(228, 230, 235));
         // END
 
 
         // BUTTONS
         loadButton.setText("Load Addresses");
+        loadButton.setBackground(new java.awt.Color(58, 59, 60));
+        loadButton.setForeground(new java.awt.Color(228, 230, 235));
         loadButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loadButtonActionPerformed(evt, memoryList);
@@ -97,6 +104,8 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
         runButton.setText("Run");
         runButton.setEnabled(false);
+        runButton.setBackground(new java.awt.Color(58, 59, 60));
+        runButton.setForeground(new java.awt.Color(228, 230, 235));
         runButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 runButtonActionPerformed(evt, memoryList);
@@ -105,6 +114,8 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
         stepButton.setText("Step");
         stepButton.setEnabled(false);
+        stepButton.setBackground(new java.awt.Color(58, 59, 60));
+        stepButton.setForeground(new java.awt.Color(228, 230, 235));
         stepButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 stepButtonActionPerformed(evt, memoryList);
@@ -148,7 +159,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
                 .addGap(71, 71, 71)
                 .addComponent(memoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(registerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(registerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(90, 90, 90))
         );
         layout.setVerticalGroup(
@@ -186,6 +197,8 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
+        setLocationRelativeTo(null);
+        getContentPane().setBackground(new java.awt.Color(24, 25, 26));
         setSize(getPreferredSize());
         setResizable(false);
         // END
