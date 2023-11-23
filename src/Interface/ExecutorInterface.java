@@ -192,15 +192,17 @@ public class ExecutorInterface extends javax.swing.JFrame {
     }
 
     // ACTION LISTENERS
-    private void inputFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputFieldActionPerformed
-        // TODO: tem que fazer pra pegar o texto e mandar pra memoria -- ser entre 1-255
+    private void inputFieldActionPerformed(java.awt.event.ActionEvent evt) {
+        // TODO: tem que fazer pra pegar o texto e mandar pra memoria
         String enteredText = inputField.getText();
         try {
             int value = Integer.parseInt(enteredText);
-            System.out.println(value);
-            if ( addressLoaded ) {
-                runButton.setEnabled(true);
-                stepButton.setEnabled(true);
+            if ( value >= 0 && value <= 255 ) {
+                if ( addressLoaded ) {
+                    runButton.setEnabled(true);
+                    stepButton.setEnabled(true);
+                    inputValue = value;
+                }
             }
         } catch (NumberFormatException e) {
             System.out.println("Não é um inteiro válido");
@@ -213,7 +215,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         executor.executarPrograma();
     }
 
-    private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stepButtonActionPerformed
+    private void stepButtonActionPerformed(java.awt.event.ActionEvent evt) {
         // TODO: terminar o step
         loadButton.setEnabled(false);
         attRegistradores();
@@ -290,8 +292,13 @@ public class ExecutorInterface extends javax.swing.JFrame {
         });
     }
 
+    public int getInputValue() {
+        return inputValue;
+    }
+
     private Executor executor;
     private boolean addressLoaded;
+    private int inputValue;
     private javax.swing.JTextField inputField;
     private javax.swing.JTextField outputField;
     private javax.swing.JButton loadButton;
