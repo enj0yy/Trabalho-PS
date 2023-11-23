@@ -21,7 +21,9 @@ public class Executor {
     
     public void setPrograma(String caminho) throws FileNotFoundException, IOException
     {
+        
         memoria.limparMemoria();
+        limparRegistradores();
         
         File file = new File(caminho);
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -38,6 +40,16 @@ public class Executor {
         {
             System.out.println("Erro ao ler o arquivo.");
         }
+    }
+    
+    public void limparRegistradores(){
+        registradores.getRegistradorPorNome("A").setValor(0);
+        registradores.getRegistradorPorNome("X").setValor(0);
+        registradores.getRegistradorPorNome("L").setValor(0);
+        registradores.getRegistradorPorNome("B").setValor(0);
+        registradores.getRegistradorPorNome("S").setValor(0);
+        registradores.getRegistradorPorNome("T").setValor(0);
+        registradores.getRegistradorPorNome("PC").setValor(0);
     }
     
     public void executarPrograma()
@@ -70,6 +82,10 @@ public class Executor {
     
     public ArrayList<String> getMemoria() {
         return memoria.getMemoria();
+    }
+    
+    public void setMemoria(int pos, String valor) {
+        memoria.setPosicaoMemoria(pos, valor);
     }
 
     public Registrador getRegistrador(String nome) {
