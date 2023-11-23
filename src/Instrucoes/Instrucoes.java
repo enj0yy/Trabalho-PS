@@ -37,13 +37,13 @@ public class Instrucoes {
         instrucoes.put("44", new OR());
         instrucoes.put("AC", new RMO());
         
-        // instrucoes.put("4C", new RSUB());
-        // instrucoes.put("A4", new SHIFTL());
-        // instrucoes.put("A8", new SHIFTR());
-        // instrucoes.put("0C", new STA());
-        // instrucoes.put("78", new STB());
-        // instrucoes.put("54", new STCH());
-        // instrucoes.put("14", new STL());
+        instrucoes.put("4C", new RSUB());
+        instrucoes.put("A4", new SHIFTL());
+        instrucoes.put("A8", new SHIFTR());
+        instrucoes.put("0C", new STA());
+        instrucoes.put("78", new STB());
+        instrucoes.put("54", new STCH());
+        instrucoes.put("14", new STL());
         
         instrucoes.put("7C", new STS());
         instrucoes.put("84", new STT());

@@ -1,16 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Instrucoes;
 
 import Executor.Memoria;
 import Executor.Registradores;
 
-/**
- *
- * @author Graziele
- */
 public class JGT extends Instrucao {
     public JGT() {
         super("JGT", "34");
