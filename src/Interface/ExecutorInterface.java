@@ -15,7 +15,6 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
     public ExecutorInterface() {
         executor = new Executor();
-        addressLoaded = false;
         initComponents();
     }
 
@@ -235,7 +234,6 @@ public class ExecutorInterface extends javax.swing.JFrame {
             if( fileChooser.showSaveDialog(rootPane) == javax.swing.JFileChooser.APPROVE_OPTION ) {
                 File selectedFile = fileChooser.getSelectedFile();
                 System.out.println(selectedFile.getAbsolutePath());
-                addressLoaded = true;
                 executor.setPrograma(selectedFile.getAbsolutePath());
                 attMemoria(memoryList);
                 attRegistradores();
@@ -315,7 +313,6 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
     // VARIABLES
     private Executor executor;
-    private boolean addressLoaded;
     private int inputValue;
     private int outputValue;
     private javax.swing.JTextField inputField;
