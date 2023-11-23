@@ -13,11 +13,14 @@ public class SUBR extends Instrucao {
     public void executar(Memoria memoria, Registradores registradores) {
         int registradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
         registradores.incrementarPC();
+        
         int registradorB = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
-        registradores.incrementarPC();
+        
         int valorRegistradorA = registradores.getRegistrador(registradorA).getValor();
         int valorRegistradorB = registradores.getRegistrador(registradorB).getValor();
         
         registradores.getRegistrador(registradorB).setValor(valorRegistradorB - valorRegistradorA);
+        
+        registradores.incrementarPC();
     }
 }

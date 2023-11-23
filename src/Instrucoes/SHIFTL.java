@@ -13,7 +13,6 @@ public class SHIFTL  extends Instrucao {
             int idRegistradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
             registradores.incrementarPC();
             int quantidadeDeslocamento = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
-            registradores.incrementarPC();
 
             // Obtém o valor do registrador a ser deslocado à esquerda
             int valorRegistrador = registradores.getRegistrador(idRegistradorA).getValor();

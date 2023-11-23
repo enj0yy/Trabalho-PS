@@ -15,7 +15,6 @@ public class TIX extends Instrucao {
         registradores.getRegistradorPorNome("X").setValor(valorRegistradorX);
         
         int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        registradores.incrementarPC(); // apos ler o parametro, incrementar o PC
         int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem),16);
 
         valorRegistradorX = registradores.getRegistradorPorNome("X").getValor();
@@ -27,5 +26,7 @@ public class TIX extends Instrucao {
         } else {
             registradores.getRegistradorPorNome("SW").setValor(1);
         }
+        
+        registradores.incrementarPC();
     }  
 }

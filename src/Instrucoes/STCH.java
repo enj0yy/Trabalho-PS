@@ -12,7 +12,6 @@ public class STCH extends Instrucao {
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
         int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
-        registradores.incrementarPC();
 
         // Obtém o valor do registrador A
         int valorRegistradorA = registradores.getRegistradorPorNome("A").getValor();

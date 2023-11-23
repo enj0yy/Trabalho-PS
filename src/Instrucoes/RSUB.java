@@ -11,8 +11,6 @@ public class RSUB extends Instrucao {
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        registradores.incrementarPC();
-
         int valorL = registradores.getRegistradorPorNome("L").getValor(); // Obtém o valor do registrador L
 
         // Atualiza o contador de programa (PC) com o valor do registrador L

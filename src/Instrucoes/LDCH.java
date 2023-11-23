@@ -10,8 +10,7 @@ public class LDCH extends Instrucao {
     }
 
     @Override
-    public void executar(Memoria memoria, Registradores registradores) {
-        
+    public void executar(Memoria memoria, Registradores registradores) {     
         int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
         int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem),16);
         int byteMenosSigMemoria = valorMem & 0xFF;        

@@ -12,11 +12,13 @@ public class STA extends Instrucao {
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
-        registradores.incrementarPC();
+        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16); 
+        
         int valorA = registradores.getRegistradorPorNome("A").getValor();
         String valorAHex = Integer.toHexString(valorA);
 
         memoria.setPosicaoMemoria(enderecoMem, valorAHex);
+        
+        registradores.incrementarPC();
     }
 }

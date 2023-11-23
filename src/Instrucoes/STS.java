@@ -12,10 +12,12 @@ public class STS extends Instrucao {
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
         int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
-        registradores.incrementarPC();
+        
         int valorS = registradores.getRegistradorPorNome("S").getValor();
         String valorSHex = Integer.toHexString(valorS);
         
         memoria.setPosicaoMemoria(enderecoMem, valorSHex);
+        
+        registradores.incrementarPC();
     }  
 }

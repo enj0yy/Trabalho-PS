@@ -15,7 +15,6 @@ public class TIXR extends Instrucao {
         registradores.getRegistradorPorNome("X").setValor(valorRegistradorX);
         
         int registradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
-        registradores.incrementarPC();
         int valorRegistradorA = registradores.getRegistrador(registradorA).getValor();
             
         if(valorRegistradorX == valorRegistradorA) {
@@ -25,5 +24,7 @@ public class TIXR extends Instrucao {
         } else {
             registradores.getRegistradorPorNome("SW").setValor(-1);
         }
+        
+        registradores.incrementarPC();
     }  
 }
