@@ -1,6 +1,7 @@
-import Executor.Registradores;
+package Instrucoes;
 
 import Executor.Memoria;
+import Executor.Registradores;
 
 public class RMO extends Instrucao {
 

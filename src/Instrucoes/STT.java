@@ -1,19 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Instrucoes;
 
 import Executor.Memoria;
 import Executor.Registradores;
 
-/**
- *
- * @author mlima
- */
 public class STT extends Instrucao {
 
-    public STT(String nome, String opcode) {
+    public STT() {
         super("STT", "84");
     }
 

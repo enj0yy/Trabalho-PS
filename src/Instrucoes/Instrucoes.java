@@ -28,14 +28,14 @@ public class Instrucoes {
         instrucoes.put("68", new LDB());
         instrucoes.put("50", new LDCH());
         
-        // instrucoes.put("8", new LDL());
-        // instrucoes.put("6C", new LDS());
-        // instrucoes.put("74", new LDT());
-        // instrucoes.put("04", new LDX());
-        // instrucoes.put("20", new MUL());
-        // instrucoes.put("98", new MULR());
-        // instrucoes.put("44", new OR());
-        // instrucoes.put("AC", new RMO());
+        instrucoes.put("8", new LDL());
+        instrucoes.put("6C", new LDS());
+        instrucoes.put("74", new LDT());
+        instrucoes.put("04", new LDX());
+        instrucoes.put("20", new MUL());
+        instrucoes.put("98", new MULR());
+        instrucoes.put("44", new OR());
+        instrucoes.put("AC", new RMO());
         
         // instrucoes.put("4C", new RSUB());
         // instrucoes.put("A4", new SHIFTL());
@@ -45,13 +45,13 @@ public class Instrucoes {
         // instrucoes.put("54", new STCH());
         // instrucoes.put("14", new STL());
         
-        // instrucoes.put("7C", new STS());
-        // instrucoes.put("84", new STT());
-        // instrucoes.put("10", new STX());
-        // instrucoes.put("1C", new SUB());
-        // instrucoes.put("94", new SUBR());
-        // instrucoes.put("2C", new TIX());
-        // instrucoes.put("B8", new TIXR());
+        instrucoes.put("7C", new STS());
+        instrucoes.put("84", new STT());
+        instrucoes.put("10", new STX());
+        instrucoes.put("1C", new SUB());
+        instrucoes.put("94", new SUBR());
+        instrucoes.put("2C", new TIX());
+        instrucoes.put("B8", new TIXR());
     }
 
     public Instrucao getInstrucao(String opcode) {
