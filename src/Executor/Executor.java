@@ -13,6 +13,7 @@ public class Executor {
     private Registradores registradores;
     private Instrucoes intrucoes;
     private int output;
+    private boolean stop;
 
     public Executor() {
         this.memoria = new Memoria();
@@ -61,6 +62,14 @@ public class Executor {
                
         while (!"00".equals(opcode))
         {
+            if (opcode.equals("00")){
+                return;
+            }
+            if (opcode.equals("D8")){
+                registradores.incrementarPC();
+                stop = true;
+                return;
+            }
             registradores.incrementarPC();
             if ("DC".equals(opcode)) {
                 setOutput(registradores.getRegistradorPorNome("A").getValor());
@@ -78,6 +87,16 @@ public class Executor {
     {
         int pc = this.registradores.getRegistradorPorNome("PC").getValor();
         String opcode = memoria.getPosicaoMemoria(pc);
+        stop = false;
+        
+        if (opcode.equals("00")){
+            return false;
+        }
+        if (opcode.equals("D8")){
+            registradores.incrementarPC();
+            stop = true;
+            return true;
+        }
 
         registradores.incrementarPC();
         if ("DC".equals(opcode)) {
@@ -114,5 +133,9 @@ public class Executor {
 
     public int getOutput() {
         return output;
+    }
+    
+    public boolean getStop(){
+        return stop;
     }
 }

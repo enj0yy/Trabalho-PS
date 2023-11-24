@@ -72,6 +72,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         inputLabel.setForeground(new java.awt.Color(228, 230, 235));
         
         inputField.setText("");
+        inputField.setEnabled(false);
         inputField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inputFieldActionPerformed(evt);
@@ -206,7 +207,13 @@ public class ExecutorInterface extends javax.swing.JFrame {
         try {
             int value = Integer.parseInt(enteredText);
             if ( value >= 0 && value <= 255 ) {
-                    //inputValue = value;
+                    executor.getRegistrador("A").setValor(value);
+                    executor.getRegistrador("PC").setValor(executor.getRegistrador("PC").getValor()+1);
+                    attRegistradores();
+                    stepButton.setEnabled(true);
+                    runButton.setEnabled(true);
+                    loadButton.setEnabled(true);
+                    inputField.setEnabled(false);
             }
         } catch (NumberFormatException e) {
             System.out.println("Não é um inteiro válido");
@@ -218,12 +225,21 @@ public class ExecutorInterface extends javax.swing.JFrame {
         loadButton.setEnabled(false);
 
         executor.executarPrograma();
+        
+        if (executor.getStop()){
+            stepButton.setEnabled(false);
+            runButton.setEnabled(false);
+            loadButton.setEnabled(true);
+            inputField.setEnabled(true);
+        }
         attRegistradores();
         attMemoria(memoryList);
         if( executor.getOutput() != -1 ) {
             outputField.setText(Integer.toString(executor.getOutput()));
             executor.setOutput(-1);   
         }
+        
+        
 
         stepButton.setEnabled(false);
         runButton.setEnabled(false);
@@ -241,6 +257,12 @@ public class ExecutorInterface extends javax.swing.JFrame {
         if( executor.getOutput() != -1 ) {
             outputField.setText(Integer.toString(executor.getOutput()));
             executor.setOutput(-1);
+        }
+        if (executor.getStop()){
+            stepButton.setEnabled(false);
+            runButton.setEnabled(false);
+            loadButton.setEnabled(true);
+            inputField.setEnabled(true);
         }
         attRegistradores();
         attMemoria(memoryList);
