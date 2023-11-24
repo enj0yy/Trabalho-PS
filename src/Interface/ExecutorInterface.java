@@ -226,6 +226,8 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
         executor.executarPrograma();
         
+        inputField.setText("");
+        
         if (executor.getStop()){
             stepButton.setEnabled(false);
             runButton.setEnabled(false);
@@ -244,10 +246,12 @@ public class ExecutorInterface extends javax.swing.JFrame {
         stepButton.setEnabled(false);
         runButton.setEnabled(false);
         loadButton.setEnabled(true);
+
     }
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt, JList<String> memoryList) {
         loadButton.setEnabled(false);
+        inputField.setText("");
         if ( !executor.executarPasso() ) {
             stepButton.setEnabled(false);
             runButton.setEnabled(false);
@@ -280,6 +284,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
                 attRegistradores();
                 runButton.setEnabled(true);
                 stepButton.setEnabled(true);
+                inputField.setText("");
             }
         } catch (Exception e) {
             System.out.println("Erro ao ler o arquivo.");

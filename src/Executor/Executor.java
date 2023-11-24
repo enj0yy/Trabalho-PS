@@ -59,6 +59,7 @@ public class Executor {
     {
         int pc = this.registradores.getRegistradorPorNome("PC").getValor();
         String opcode = memoria.getPosicaoMemoria(pc);
+        stop = false;
                
         while (!"00".equals(opcode))
         {
