@@ -60,4 +60,14 @@ public class Registradores {
     public int getValorPC() {
         return registradores.get(8).getValor();
     }
+    
+    public void limparRegistradores(){
+        getRegistradorPorNome("A").setValor(0);
+        getRegistradorPorNome("X").setValor(0);
+        getRegistradorPorNome("L").setValor(0);
+        getRegistradorPorNome("B").setValor(0);
+        getRegistradorPorNome("S").setValor(0);
+        getRegistradorPorNome("T").setValor(0);
+        getRegistradorPorNome("PC").setValor(0);
+    }
 }

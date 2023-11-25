@@ -6,187 +6,239 @@ import java.io.File;
 import javax.swing.JList;
 
 import Executor.*;
+import java.awt.Color;
+import javax.swing.BorderFactory;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 public class ExecutorInterface extends javax.swing.JFrame {
-
+    private Executor executor;
+    private javax.swing.JPanel backgroundPane;
+    private javax.swing.JLabel sicLabel;
+    private javax.swing.JTextField inputField;
+    private javax.swing.JTextField outputField;
+    private javax.swing.JButton loadButton;
+    private javax.swing.JButton stepButton;
+    private javax.swing.JButton runButton;
+    private javax.swing.JLabel executeLabel;
+    private javax.swing.JLabel inputLabel;
+    private javax.swing.JLabel outputLabel;
+    private javax.swing.JLabel registersLabel;
+    private javax.swing.JLabel memoryLabel;
+    private javax.swing.JScrollPane memoryPane;
+    private javax.swing.JScrollPane registersPane;
+    private javax.swing.JTable registerTable;
+    private javax.swing.JFileChooser fileChooser;
+    private javax.swing.JList<String> memoryList;
+    
     public ExecutorInterface() {
-        executor = new Executor();
+        super("Executor SIC/XE");
         initComponents();
     }
 
     private void initComponents() {
-
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        executor = new Executor();
+        backgroundPane = new javax.swing.JPanel();
+        sicLabel = new javax.swing.JLabel();
+        
+        registersPane = new javax.swing.JScrollPane();
+        memoryPane = new javax.swing.JScrollPane();
+        
         registerTable = new javax.swing.JTable();
-        registerLabel = new javax.swing.JLabel();
+        registersLabel = new javax.swing.JLabel();
+        
+        executeLabel = new javax.swing.JLabel();
+        executeLabel.setText("teste");
+        
         inputField = new javax.swing.JTextField();
         outputField = new javax.swing.JTextField();
         inputLabel = new javax.swing.JLabel();
         outputLabel = new javax.swing.JLabel();
+        
+        memoryList = new javax.swing.JList<>();
         memoryLabel = new javax.swing.JLabel();
+        
         loadButton = new javax.swing.JButton();
         stepButton = new javax.swing.JButton();
         runButton = new javax.swing.JButton();
-        javax.swing.JList<String> memoryList = new javax.swing.JList<>();
+        
         fileChooser = new javax.swing.JFileChooser();
 
-
-        // REGISTER TABLE AND LABEL 
-        registerTable.setBackground(new java.awt.Color(176, 179, 184));
+        //Background
+        backgroundPane.setBackground(new java.awt.Color(24, 25, 26));
+        sicLabel.setForeground(new java.awt.Color(255, 217, 102));
+        sicLabel.setFont(new java.awt.Font("Arial", 1, 24)); 
+        sicLabel.setText("SIC/XE");
+        
+        // Registradores
         attRegistradores();
+        
+        registerTable.setForeground(Color.white);
         registerTable.setAlignmentY(1.0F);
         registerTable.setEnabled(false);
-        registerTable.setGridColor(new java.awt.Color(0, 0, 0));
         registerTable.setRowHeight(30);
-        registerTable.setSelectionBackground(new java.awt.Color(204, 204, 255));
         registerTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         registerTable.setShowGrid(true);
-        jScrollPane2.setViewportView(registerTable);
+        registerTable.setShowVerticalLines(false);
+        registerTable.setGridColor(new java.awt.Color(58, 59, 60));
+        registerTable.setFillsViewportHeight(true);
+        registerTable.setBackground(new java.awt.Color(36, 37, 38));
+        
+        DefaultTableCellRenderer MyHeaderRender = new DefaultTableCellRenderer();
+        MyHeaderRender.setBackground(Color.white);
+        MyHeaderRender.setForeground(new java.awt.Color(24,25,26));
+        registerTable.getTableHeader().getColumnModel().getColumn(0).setHeaderRenderer(MyHeaderRender);
+        registerTable.getTableHeader().getColumnModel().getColumn(1).setHeaderRenderer(MyHeaderRender);        
+        
+        registersPane.setViewportView(registerTable);
+        registersPane.setBorder(BorderFactory.createLineBorder(Color.white));
+        
         if (registerTable.getColumnModel().getColumnCount() > 0) {
             registerTable.getColumnModel().getColumn(0).setMinWidth(50);
             registerTable.getColumnModel().getColumn(0).setPreferredWidth(50);
             registerTable.getColumnModel().getColumn(0).setMaxWidth(50);
         }
 
-        registerLabel.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
-        registerLabel.setText("Registers");
-        registerLabel.setForeground(new java.awt.Color(228, 230, 235));
-        // END
+        registersLabel.setFont(new java.awt.Font("Arial", 0, 20)); 
+        registersLabel.setText("Registradores");
+        registersLabel.setForeground(new java.awt.Color(228, 230, 235));
+        
 
-        // MEMORY LIST AND LABEL
+        // Memória
         attMemoria(memoryList);
-        memoryList.setBackground(new java.awt.Color(176, 179, 184));
+        memoryList.setBackground(new java.awt.Color(36, 37, 38));
+        memoryList.setForeground(Color.white);
         memoryList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        memoryList.setVisibleRowCount(20);
-        jScrollPane1.setViewportView(memoryList);
-
-        memoryLabel.setFont(new java.awt.Font("Arial", 0, 20)); // NOI18N
-        memoryLabel.setText("Memory");
+        memoryList.setSelectionBackground(Color.white);
+        memoryList.setSelectionForeground(new java.awt.Color(24,25,26));
+        memoryList.setFixedCellHeight(25);    
+        memoryPane.setViewportView(memoryList);
+        memoryPane.setBorder(BorderFactory.createLineBorder(Color.white, WIDTH));
+        
+        memoryLabel.setFont(new java.awt.Font("Arial", 0, 20)); 
+        memoryLabel.setText("Memória");
         memoryLabel.setForeground(new java.awt.Color(228, 230, 235));
-        // END
+         
 
-        // INPUT AND OUTPUT
-        inputLabel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        // Input e Output
+        inputLabel.setFont(new java.awt.Font("Arial", 0, 14)); 
         inputLabel.setText("Input:");
         inputLabel.setForeground(new java.awt.Color(228, 230, 235));
-        
         inputField.setText("");
         inputField.setEnabled(false);
-        inputField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inputFieldActionPerformed(evt);
-            }
+        inputField.setBackground(Color.white);
+        inputField.setForeground(Color.black);
+        inputField.addActionListener((java.awt.event.ActionEvent evt) -> {
+            inputFieldActionPerformed(evt);
         });
-
-        outputField.setText("");
-        outputField.setEditable(false);
-
+        
         outputLabel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         outputLabel.setText("Output:");
         outputLabel.setForeground(new java.awt.Color(228, 230, 235));
-        // END
+        outputField.setText("");
+        outputField.setEditable(false);
 
-
-        // BUTTONS
-        loadButton.setText("Load Addresses");
+        // Botoes
+        loadButton.setText("Carregar Programa");
         loadButton.setBackground(new java.awt.Color(58, 59, 60));
         loadButton.setForeground(new java.awt.Color(228, 230, 235));
-        loadButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loadButtonActionPerformed(evt, memoryList);
-            }
+        loadButton.addActionListener((java.awt.event.ActionEvent evt) -> {
+            loadButtonActionPerformed(evt, memoryList);
         });
 
         runButton.setText("Run");
         runButton.setEnabled(false);
         runButton.setBackground(new java.awt.Color(58, 59, 60));
         runButton.setForeground(new java.awt.Color(228, 230, 235));
-        runButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                runButtonActionPerformed(evt, memoryList);
-            }
+        runButton.addActionListener((java.awt.event.ActionEvent evt) -> {
+            runButtonActionPerformed(evt, memoryList);
         });
 
         stepButton.setText("Step");
         stepButton.setEnabled(false);
         stepButton.setBackground(new java.awt.Color(58, 59, 60));
         stepButton.setForeground(new java.awt.Color(228, 230, 235));
-        stepButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                stepButtonActionPerformed(evt, memoryList);
-            }
-        });
-        // END
+        stepButton.addActionListener((java.awt.event.ActionEvent evt) -> {
+            stepButtonActionPerformed(evt, memoryList);
+        });      
 
+        // Layout
+        javax.swing.GroupLayout backgroundPaneLayout = new javax.swing.GroupLayout(backgroundPane);
+        backgroundPane.setLayout(backgroundPaneLayout);
+        backgroundPaneLayout.setHorizontalGroup(
+            backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(backgroundPaneLayout.createSequentialGroup()
+                .addGap(44, 44, 44)
+                .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(backgroundPaneLayout.createSequentialGroup()
+                        .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(memoryPane, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(memoryLabel))
+                        .addGap(58, 58, 58)
+                        .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(registersPane, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(registersLabel))
+                        .addGap(68, 68, 68)
+                        .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(backgroundPaneLayout.createSequentialGroup()
+                                .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(outputLabel)
+                                    .addComponent(inputLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(outputField, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(inputField, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(stepButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(runButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(loadButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(sicLabel))
+                .addContainerGap(44, Short.MAX_VALUE))
+        );
+        backgroundPaneLayout.setVerticalGroup(
+            backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(backgroundPaneLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(sicLabel)
+                .addGap(28, 28, 28)
+                .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, backgroundPaneLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(stepButton, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(runButton, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(backgroundPaneLayout.createSequentialGroup()
+                        .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(backgroundPaneLayout.createSequentialGroup()
+                                .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(memoryLabel)
+                                    .addComponent(registersLabel)
+                                    .addComponent(inputLabel))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(memoryPane)
+                                    .addComponent(registersPane, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(backgroundPaneLayout.createSequentialGroup()
+                                .addComponent(inputField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(backgroundPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(outputField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(outputLabel))))
+                        .addGap(0, 1, Short.MAX_VALUE)))
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
 
-        // LAYOUT
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(inputLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(outputLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(inputField, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
-                            .addComponent(outputField))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(54, 54, 54)
-                        .addComponent(runButton, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
-                        .addComponent(stepButton, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(67, 67, 67)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
-                        .addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(73, 73, 73))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(71, 71, 71)
-                .addComponent(memoryLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(registerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(90, 90, 90))
+            .addComponent(backgroundPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(registerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(loadButton, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(stepButton, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(runButton, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(memoryLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(inputField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(inputLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(outputLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(outputField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(40, 40, 40)))))
-                .addGap(66, 66, 66))
+            .addComponent(backgroundPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -195,25 +247,26 @@ public class ExecutorInterface extends javax.swing.JFrame {
         setVisible(true);
         setLocationRelativeTo(null);
         getContentPane().setBackground(new java.awt.Color(24, 25, 26));
-        setSize(getPreferredSize());
-        setResizable(false);
-        // END
+        setSize(800,550);
+        setResizable(false); 
     }
 
 
-    // ACTION LISTENERS
+    // Action Listeners
     private void inputFieldActionPerformed(java.awt.event.ActionEvent evt) {
         String enteredText = inputField.getText();
         try {
             int value = Integer.parseInt(enteredText);
             if ( value >= 0 && value <= 255 ) {
-                    executor.getRegistrador("A").setValor(value);
-                    executor.getRegistrador("PC").setValor(executor.getRegistrador("PC").getValor()+1);
+                    executor.getRegistradores().getRegistradorPorNome("A").setValor(value);
+                    executor.getRegistradores().getRegistradorPorNome("PC").setValor(executor.getRegistradores().getRegistradorPorNome("PC").getValor()+1);
                     attRegistradores();
                     stepButton.setEnabled(true);
                     runButton.setEnabled(true);
                     loadButton.setEnabled(true);
                     inputField.setEnabled(false);
+                    inputField.setBackground(Color.white);
+                    inputField.setForeground(Color.black);
             }
         } catch (NumberFormatException e) {
             System.out.println("Não é um inteiro válido");
@@ -233,6 +286,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
             runButton.setEnabled(false);
             loadButton.setEnabled(true);
             inputField.setEnabled(true);
+            inputField.setBackground(new java.awt.Color(255, 217, 102));  
         }
         attRegistradores();
         attMemoria(memoryList);
@@ -241,12 +295,10 @@ public class ExecutorInterface extends javax.swing.JFrame {
             executor.setOutput(-1);   
         }
         
-        
-
         stepButton.setEnabled(false);
         runButton.setEnabled(false);
         loadButton.setEnabled(true);
-
+        memoryList.setSelectedIndex(executor.getRegistradores().getValorPC());
     }
 
     private void stepButtonActionPerformed(java.awt.event.ActionEvent evt, JList<String> memoryList) {
@@ -267,100 +319,65 @@ public class ExecutorInterface extends javax.swing.JFrame {
             runButton.setEnabled(false);
             loadButton.setEnabled(true);
             inputField.setEnabled(true);
+            inputField.setBackground(new java.awt.Color(255, 217, 102));  
         }
         attRegistradores();
         attMemoria(memoryList);
+        memoryList.setSelectedIndex(executor.getRegistradores().getValorPC());
     }
 
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt, JList<String> memoryList) {
         executor.setOutput(-1);
         outputField.setText("");
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        fileChooser.setCurrentDirectory(workingDirectory);
         try {
             if( fileChooser.showSaveDialog(rootPane) == javax.swing.JFileChooser.APPROVE_OPTION ) {
                 File selectedFile = fileChooser.getSelectedFile();
                 System.out.println(selectedFile.getAbsolutePath());
                 executor.setPrograma(selectedFile.getAbsolutePath());
-                attMemoria(memoryList);
-                attRegistradores();
                 runButton.setEnabled(true);
                 stepButton.setEnabled(true);
                 inputField.setText("");
+                memoryList.setSelectedIndex(executor.getRegistradores().getValorPC());
+                attMemoria(memoryList);
+                attRegistradores();
             }
         } catch (Exception e) {
             System.out.println("Erro ao ler o arquivo.");
         }
     }
-    // END
+    
 
-
-    // AUXILIARY FUNCTIONS
-    private void attRegistradores() {
-        registerTable.setModel(new javax.swing.table.DefaultTableModel(
+    // Auxiliary Functions
+    private void attRegistradores() {   
+        registerTable.setModel(new DefaultTableModel(
             new Object [][] {
-                {"PC", executor.getRegistrador("PC").getValor()},
-                {"A", executor.getRegistrador("A").getValor()},
-                {"X", executor.getRegistrador("X").getValor()},
-                {"L", executor.getRegistrador("L").getValor()},
-                {"B", executor.getRegistrador("B").getValor()},
-                {"S", executor.getRegistrador("S").getValor()},
-                {"T", executor.getRegistrador("T").getValor()},
-                {"SW", executor.getRegistrador("SW").getValor()}
+                {"PC", executor.getRegistradores().getRegistradorPorNome("PC").getValor()},
+                {"A", executor.getRegistradores().getRegistradorPorNome("A").getValor()},
+                {"X", executor.getRegistradores().getRegistradorPorNome("X").getValor()},
+                {"L", executor.getRegistradores().getRegistradorPorNome("L").getValor()},
+                {"B", executor.getRegistradores().getRegistradorPorNome("B").getValor()},
+                {"S", executor.getRegistradores().getRegistradorPorNome("S").getValor()},
+                {"T", executor.getRegistradores().getRegistradorPorNome("T").getValor()},
+                {"SW", executor.getRegistradores().getRegistradorPorNome("SW").getValor()}
             },
             new String [] {
-                "Name", "Value"
+                "Nome", "Valor"
             }
         ));
     } 
 
     private void attMemoria(JList<String> memoryList) {
         memoryList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = executor.getMemoria().toArray(new String[0]);
+            String[] strings = executor.getMemoria().getMemoria().toArray(new String[0]);
+            
+            @Override
             public int getSize() { return strings.length; }
+            
+            @Override
             public String getElementAt(int i) { return strings[i]; }
         });
     }
-    // END
-
-
-    public static void main(String args[]) {
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ExecutorInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ExecutorInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ExecutorInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ExecutorInterface.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ExecutorInterface().setVisible(true);
-            }
-        });
-    }
-
-    // VARIABLES
-    private Executor executor;
-    private javax.swing.JTextField inputField;
-    private javax.swing.JTextField outputField;
-    private javax.swing.JButton loadButton;
-    private javax.swing.JButton stepButton;
-    private javax.swing.JButton runButton;
-    private javax.swing.JLabel inputLabel;
-    private javax.swing.JLabel outputLabel;
-    private javax.swing.JLabel registerLabel;
-    private javax.swing.JLabel memoryLabel;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable registerTable;
-    private javax.swing.JFileChooser fileChooser;
+     
 }
