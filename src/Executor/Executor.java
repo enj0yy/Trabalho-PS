@@ -59,13 +59,13 @@ public class Executor {
             if (opcode.equals("00")){
                 return;
             }
-            if (opcode.equals("D8")){
+            if (opcode.equals("D8")){ // Read
                 registradores.incrementarPC();
                 stop = true;
                 return;
             }
             registradores.incrementarPC();
-            if ("DC".equals(opcode)) {
+            if ("DC".equals(opcode)) { // Write
                 setOutput(registradores.getRegistradorPorNome("A").getValor());
                 registradores.incrementarPC();
             } else {
