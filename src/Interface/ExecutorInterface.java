@@ -268,6 +268,8 @@ public class ExecutorInterface extends javax.swing.JFrame {
                     inputField.setEnabled(false);
                     inputField.setBackground(Color.white);
                     inputField.setForeground(Color.black);
+            } else {
+                JOptionPane.showMessageDialog(null, "Não é um inteiro válido!", "Error", JOptionPane.WARNING_MESSAGE);
             }
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(null, "Não é um inteiro válido!", "Error", JOptionPane.WARNING_MESSAGE);
