@@ -17,7 +17,7 @@ public class Instrucoes {
         instrucoes.put("28", new COMP());
         instrucoes.put("A0", new COMPR());
         instrucoes.put("24", new DIV());
-        instrucoes.put("9C", new DIV());
+        instrucoes.put("9C", new DIVR());
         
         instrucoes.put("3C", new J());
         instrucoes.put("30", new JEQ());
