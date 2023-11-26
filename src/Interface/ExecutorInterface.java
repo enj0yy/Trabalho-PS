@@ -332,6 +332,10 @@ public class ExecutorInterface extends javax.swing.JFrame {
     private void loadButtonActionPerformed(java.awt.event.ActionEvent evt, JList<String> memoryList) {
         executor.setOutput(-1);
         outputField.setText("");
+        inputField.setEnabled(false);
+        inputField.setBackground(Color.white);
+        inputField.setForeground(Color.black);
+        
         File workingDirectory = new File(System.getProperty("user.dir"));
         fileChooser.setCurrentDirectory(workingDirectory);
         try {
