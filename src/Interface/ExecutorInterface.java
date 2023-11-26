@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 import Executor.*;
 import java.awt.Color;
@@ -269,7 +270,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
                     inputField.setForeground(Color.black);
             }
         } catch (NumberFormatException e) {
-            System.out.println("Não é um inteiro válido");
+            JOptionPane.showMessageDialog(null, "Não é um inteiro válido!", "Error", JOptionPane.WARNING_MESSAGE);
         }
     }
 
