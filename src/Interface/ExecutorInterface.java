@@ -335,7 +335,6 @@ public class ExecutorInterface extends javax.swing.JFrame {
         try {
             if( fileChooser.showSaveDialog(rootPane) == javax.swing.JFileChooser.APPROVE_OPTION ) {
                 File selectedFile = fileChooser.getSelectedFile();
-                System.out.println(selectedFile.getAbsolutePath());
                 executor.setPrograma(selectedFile.getAbsolutePath());
                 runButton.setEnabled(true);
                 stepButton.setEnabled(true);
