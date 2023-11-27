@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Executor {
     private Memoria memoria;
@@ -53,7 +52,7 @@ public class Executor {
         int pc = this.registradores.getRegistradorPorNome("PC").getValor();
         String opcode = memoria.getPosicaoMemoria(pc);
         stop = false;
-               
+
         while (!"00".equals(opcode))
         {
             if (opcode.equals("00")){
