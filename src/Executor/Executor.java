@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Executor {
     private Memoria memoria;
@@ -60,14 +59,12 @@ public class Executor {
                 return;
             }
             if (opcode.equals("D8")){
-                registradores.incrementarPC();
                 stop = true;
                 return;
             }
             registradores.incrementarPC();
             if ("DC".equals(opcode)) {
                 setOutput(registradores.getRegistradorPorNome("A").getValor());
-                registradores.incrementarPC();
             } else {
                 instrucoes.getInstrucao(opcode).executar(memoria, registradores);
             }
@@ -88,7 +85,6 @@ public class Executor {
         }
         
         if (opcode.equals("D8")){
-            registradores.incrementarPC();
             stop = true;
             return true;
         }
@@ -96,7 +92,6 @@ public class Executor {
         registradores.incrementarPC();
         if ("DC".equals(opcode)) {
             setOutput(registradores.getRegistradorPorNome("A").getValor());
-            registradores.incrementarPC();
         } else {
             instrucoes.getInstrucao(opcode).executar(memoria, registradores);
         }

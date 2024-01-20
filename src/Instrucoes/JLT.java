@@ -15,6 +15,9 @@ public class JLT extends Instrucao {
             int enderecoJump = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
             registradores.getRegistradorPorNome("PC").setValor(enderecoJump);
         }
-        registradores.incrementarPC();
+        else
+        {
+            registradores.incrementarPC();
+        }
     }
 }

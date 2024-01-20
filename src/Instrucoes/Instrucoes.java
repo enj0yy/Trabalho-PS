@@ -57,4 +57,13 @@ public class Instrucoes {
     public Instrucao getInstrucao(String opcode) {
         return instrucoes.get(opcode);
     }
+
+    public Instrucao getInstrucaoPorNome(String nome)
+    {
+        for (Instrucao instrucao : instrucoes.values()) {
+            if (instrucao.getNome().equals(nome))
+                return instrucao;
+        }
+        return null;
+    }
 }

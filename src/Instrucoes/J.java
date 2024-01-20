@@ -13,8 +13,6 @@ public class J extends Instrucao {
     public void executar(Memoria memoria, Registradores registradores) {
         int enderecoJump = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
         registradores.getRegistradorPorNome("PC").setValor(enderecoJump);
-        
-        registradores.incrementarPC();
     }
     
 }
