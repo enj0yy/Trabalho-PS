@@ -52,18 +52,20 @@ public class Executor {
         int pc = this.registradores.getRegistradorPorNome("PC").getValor();
         String opcode = memoria.getPosicaoMemoria(pc);
         stop = false;
-               
+
         while (!"00".equals(opcode))
         {
             if (opcode.equals("00")){
                 return;
             }
-            if (opcode.equals("D8")){
+
+            if (opcode.equals("D8")){ 
                 stop = true;
                 return;
             }
+            
             registradores.incrementarPC();
-            if ("DC".equals(opcode)) {
+            if ("DC".equals(opcode)) { // Write
                 setOutput(registradores.getRegistradorPorNome("A").getValor());
             } else {
                 instrucoes.getInstrucao(opcode).executar(memoria, registradores);
