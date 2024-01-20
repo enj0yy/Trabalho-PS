@@ -10,7 +10,7 @@ public class TrabalhoPS {
     
     public static void main(String[] args) throws IOException {
         Montador montador = new Montador();
-        montador.montarPrograma(System.getProperty("user.dir")+ "\\inputMontador.txt");
+        montador.montarPrograma(System.getProperty("user.dir")+ "\\txtFiles\\inputMontador.txt");
 
         executor = new ExecutorInterface();
     }
