@@ -13,13 +13,44 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+/* 
+MONTADOR:
+    Livro Página 44.
+
+TO-DO: 
+    Adicionar pseudo-instrucoes START e END (pag 44 do livro)
+    Descobrir o que o modificador ",X" faz (pag 44 do livro)
+    Pular linhas que começam com . (comentario)
+    Tratar registradores por nome ex: ADDR S,X (substitui S por 4 e X por 1)
+    Tratar valores imediatos ex: LDS #3 (Coloca o valor 3 no registrador S)
+    Deixar código mais clean
+    Fazer interface gráfica
+*/ 
+
 public class Montador {
     private String errorMessage = "";
-    private Instrucoes instrucoes = new Instrucoes();
-    private Map<String, Integer> SYMTAB = new HashMap<>();
 
-    List<String> input = new ArrayList<String>();
-    List<String> output = new ArrayList<String>();
+    private Instrucoes OPTAB;               // Tabela de instrucoes
+    private Map<String, String> POPTAB;     // Tabela de pseudo-instrucoes
+    private Map<String, Integer> SYMTAB;    // Tabela de simbolos
+
+    private List<String> input = new ArrayList<String>();
+    private List<String> output = new ArrayList<String>();
+
+    public Montador()
+    {
+        OPTAB = new Instrucoes();
+
+        POPTAB = new HashMap<String, String>();
+        POPTAB.put("RD", "D8");
+        POPTAB.put("WD", "DC");
+        POPTAB.put("WORD", null);
+        POPTAB.put("BYTE", null);
+        POPTAB.put("RESW", "0");
+        POPTAB.put("RESB",  "0");
+
+        SYMTAB = new HashMap<String, Integer>();
+    }
 
     public void montarPrograma(String caminho)
     {
@@ -27,15 +58,7 @@ public class Montador {
         passoUm();
         passoDois();
         gerarTXTOutput();
-        StringBuilder mensagem = new StringBuilder();
-        mensagem.append("Arquivo de entrada: " + System.getProperty("user.dir")+ "\\txtFiles\\inputMontador.txt").append("\n");
-        mensagem.append("Arquivo de saida: " + System.getProperty("user.dir")+ "\\txtFiles\\outputMontador.txt").append("\n\n");
-        if (errorMessage.isEmpty())
-            mensagem.append("Programa montado com sucesso.");
-        else
-            mensagem.append("Programa montado com erros. Erro(s): \n" + errorMessage);
-            
-        JOptionPane.showMessageDialog(null, mensagem, "Montador", JOptionPane.INFORMATION_MESSAGE);
+        mostrarMensagem();
     }
     
     public void setPrograma(String caminho)
@@ -69,7 +92,7 @@ public class Montador {
             if(label != null)
                 SYMTAB.put(label, LocationCounter);    
 
-            if (instrucoes.getInstrucaoPorNome(opcode) != null) // Instrucao
+            if (OPTAB.getInstrucaoPorNome(opcode) != null) // Instrucao
             {
                 LocationCounter++;
 
@@ -117,9 +140,9 @@ public class Montador {
             String opcode = getOpcode(linha);
             List<String> operands = getOperands(linha);
 
-            if (instrucoes.getInstrucaoPorNome(opcode) != null) // Instrucao
+            if (OPTAB.getInstrucaoPorNome(opcode) != null) // Instrucao
             {
-                output.add(instrucoes.getInstrucaoPorNome(opcode).getOpcode());
+                output.add(OPTAB.getInstrucaoPorNome(opcode).getOpcode());
 
                 for (String operand : operands)
                 {
@@ -157,7 +180,7 @@ public class Montador {
                     case "RESB":
                         for (String operand : operands)
                             for (Integer i = 0; i < Integer.parseInt(operand); i++)
-                                output.add("XX");   
+                                output.add("0");   
                         break;
 
                     default:
@@ -180,15 +203,27 @@ public class Montador {
         }
     }
 
+    private void mostrarMensagem()
+    {
+        StringBuilder mensagem = new StringBuilder();
+        mensagem.append("Arquivo de entrada: " + System.getProperty("user.dir")+ "\\txtFiles\\inputMontador.txt").append("\n");
+        mensagem.append("Arquivo de saida: " + System.getProperty("user.dir")+ "\\txtFiles\\outputMontador.txt").append("\n\n");
+        if (errorMessage.isEmpty())
+            mensagem.append("Programa montado com sucesso.");
+        else
+            mensagem.append("Programa montado com erros. Erro(s): \n" + errorMessage);
+            JOptionPane.showMessageDialog(null, mensagem, "Montador", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private String getLabel(String linha)
     {
         String[] splited = linha.split("\\s+");
         try 
         {
-            if (instrucoes.getInstrucaoPorNome(splited[0]) == null) // Possui Label
-                return splited[0];
-            else // Nao possui Label
+            if ( ( OPTAB.getInstrucaoPorNome(splited[0]) != null ) || ( POPTAB.get(splited[0]) != null ) )  // Nao Possui Label
                 return null;
+            else // Possui Label
+                return splited[0];
         } catch ( Exception e) {
             return null;
         }
@@ -199,10 +234,11 @@ public class Montador {
         String[] splited = linha.split("\\s+");
         try
         {
-            if (instrucoes.getInstrucaoPorNome(splited[0]) == null) // Possui Label
-                return splited[1];
-            else // Nao possui Label
+            if ( ( OPTAB.getInstrucaoPorNome(splited[0]) != null ) || ( POPTAB.get(splited[0]) != null ) )  // Nao Possui Label
                 return splited[0];
+            else // Possui Label
+                return splited[1];
+                
         } catch ( Exception e ) {
             return null;
         }
@@ -216,14 +252,18 @@ public class Montador {
 
         try
         {
-            if (instrucoes.getInstrucaoPorNome(splited[0]) == null) // Possui Label
+            if ( ( OPTAB.getInstrucaoPorNome(splited[0]) != null ) || ( POPTAB.get(splited[0]) != null ) )  // Nao Possui Label
             {
-                for (int i = 2; i < splited.length; i++)
+                // Split operandos por virgula (ex: ADDR 1,2)
+                splited = splited[1].split(",");
+                for (int i = 0; i < splited.length; i++)
                     operands.add(splited[i]);
             }
             else // Nao possui Label
             {
-                for (int i = 1; i < splited.length; i++)
+                // Split operandos por virgula (ex: ADICIONAR ADDR 1,2)
+                splited = splited[2].split(",");
+                for (int i = 0; i < splited.length; i++)
                     operands.add(splited[i]);
             }
             return operands;
