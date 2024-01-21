@@ -13,6 +13,9 @@ import java.util.Map;
 
 import javax.swing.JOptionPane;
 
+import Executor.Registrador;
+import Executor.Registradores;
+
 /* 
 MONTADOR:
     Livro Página 44.
@@ -20,7 +23,6 @@ MONTADOR:
 TO-DO: 
     Adicionar pseudo-instrucoes START e END (pag 44 do livro)
     Descobrir o que o modificador ",X" faz (pag 44 do livro)
-    Tratar registradores por nome ex: ADDR S,X (substitui S por 4 e X por 1)
     Tratar valores imediatos ex: LDS #3 (Coloca o valor 3 no registrador S)
     Deixar código mais clean
     Fazer interface gráfica
@@ -265,6 +267,16 @@ public class Montador {
                 for (int i = 0; i < splited.length; i++)
                     operands.add(splited[i]);
             }
+
+            for(int i=0;i<operands.size();i++) {
+                String operand = operands.get(i);
+                if(operand.length() > 1) { // se for maior do que 1 character, é um nome e deve ser convertido para chave
+                    operands.set(i, Integer.toString(Registradores.getChaveRegistradorPorNome(operand)));
+                } else if(Character.compare(operand.charAt(0), '9') > 0) { // compara valores ascii, se for menor ou igual a 0, é algum número, se for maior, é uma letra
+                    operands.set(i, Integer.toString(Registradores.getChaveRegistradorPorNome(operand)));
+                }
+            }
+
             return operands;
         } catch ( Exception e ) {
             return null;

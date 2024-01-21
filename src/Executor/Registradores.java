@@ -48,9 +48,30 @@ public class Registradores {
                 return registradores.get(8);
             case "SW":
                 return registradores.get(9);
-            
         }
         return null;
+    }
+
+    public static int getChaveRegistradorPorNome(String nome) {
+        switch(nome) {
+            case "A":
+                return 0;
+            case "X":
+                return 1;
+            case "L":
+                return 2;
+            case "B":
+                return 3;
+            case "S":
+                return 4;
+            case "T":
+                return 5;
+            case "PC":
+                return 8;
+            case "SW":
+                return 9;
+        }
+        return -1;
     }
 
     public void incrementarPC() {
