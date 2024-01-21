@@ -20,7 +20,6 @@ MONTADOR:
 TO-DO: 
     Adicionar pseudo-instrucoes START e END (pag 44 do livro)
     Descobrir o que o modificador ",X" faz (pag 44 do livro)
-    Pular linhas que começam com . (comentario)
     Tratar registradores por nome ex: ADDR S,X (substitui S por 4 e X por 1)
     Tratar valores imediatos ex: LDS #3 (Coloca o valor 3 no registrador S)
     Deixar código mais clean
@@ -82,7 +81,7 @@ public class Montador {
         
         for(String linha : input)
         {
-            if (linha.isEmpty())
+            if (linha.isEmpty() || Character.compare(linha.charAt(0), '.') == 0) // pula linhas que começam com . (comentários)
                 continue;
 
             String label = getLabel(linha);
@@ -134,7 +133,7 @@ public class Montador {
     {       
         for(String linha : input)
         {
-            if (linha.isEmpty())
+            if (linha.isEmpty() || Character.compare(linha.charAt(0), '.') == 0)// pula linhas que começam com . (comentários)
                 continue;
 
             String opcode = getOpcode(linha);
