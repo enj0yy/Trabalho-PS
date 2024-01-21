@@ -191,7 +191,7 @@ public class Montador {
 
     private void gerarTXTOutput()
     {
-        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "\\txtFiles\\outputMontador.txt")) 
+        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontador.txt")) 
         {
             for (String str : output) {
                 fileWriter.write(str + System.lineSeparator());
@@ -256,23 +256,22 @@ public class Montador {
                 // Split operandos por virgula (ex: ADDR 1,2)
                 splited = splited[1].split(",");
                 for (int i = 0; i < splited.length; i++)
-                    operands.add(splited[i]);
+                    if(Registradores.getChaveRegistradorPorNome(splited[i]) != -1) {
+                        operands.add(Integer.toString(Registradores.getChaveRegistradorPorNome(splited[i])));
+                    } else {
+                        operands.add(splited[i]);
+                    }
             }
             else // Nao possui Label
             {
                 // Split operandos por virgula (ex: ADICIONAR ADDR 1,2)
                 splited = splited[2].split(",");
                 for (int i = 0; i < splited.length; i++)
-                    operands.add(splited[i]);
-            }
-
-            for(int i=0;i<operands.size();i++) {
-                String operand = operands.get(i);
-                if(operand.length() > 1) { // se for maior do que 1 character, é um nome e deve ser convertido para chave
-                    operands.set(i, Integer.toString(Registradores.getChaveRegistradorPorNome(operand)));
-                } else if(Character.compare(operand.charAt(0), '9') > 0) { // compara valores ascii, se for menor ou igual a 0, é algum número, se for maior, é uma letra
-                    operands.set(i, Integer.toString(Registradores.getChaveRegistradorPorNome(operand)));
-                }
+                    if(Registradores.getChaveRegistradorPorNome(splited[i]) != -1) {
+                        operands.add(Integer.toString(Registradores.getChaveRegistradorPorNome(splited[i])));
+                    } else {
+                        operands.add(splited[i]);
+                    }
             }
 
             return operands;
