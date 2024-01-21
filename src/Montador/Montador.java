@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
-
-import Executor.Registrador;
 import Executor.Registradores;
 
 /* 
