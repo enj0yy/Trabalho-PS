@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.swing.JOptionPane;
 import Executor.Registradores;
 
@@ -19,10 +18,9 @@ MONTADOR:
     Livro Página 44.
 
 TO-DO: 
-    Adicionar pseudo-instrucoes START e END (pag 44 do livro)
-    Descobrir o que o modificador ",X" faz (pag 44 do livro)
-    Tratar valores imediatos ex: LDS #3 (Coloca o valor 3 no registrador S)
-    Deixar código mais clean
+    Tratar armazenamento de byte 
+        ex: BYTE C'EOF' vai de string(EOF) para HEX(454F46)
+            BYTE X'10' vai de decimal(10) para HEX(A), esse já está funcionando
     Fazer interface gráfica
 */ 
 
@@ -41,10 +39,12 @@ public class Montador {
         OPTAB = new Instrucoes();
 
         POPTAB = new HashMap<String, String>();
+        POPTAB.put("START", "0");
+        POPTAB.put("END", "0");
         POPTAB.put("RD", "D8");
         POPTAB.put("WD", "DC");
-        POPTAB.put("WORD", null);
-        POPTAB.put("BYTE", null);
+        POPTAB.put("WORD", "0");
+        POPTAB.put("BYTE", "0");
         POPTAB.put("RESW", "0");
         POPTAB.put("RESB",  "0");
 
@@ -54,13 +54,13 @@ public class Montador {
     public void montarPrograma(String caminho)
     {
         setPrograma(caminho);
-        passoUm();
+        passoUm();    
         passoDois();
         gerarTXTOutput();
         mostrarMensagem();
     }
     
-    public void setPrograma(String caminho)
+    private void setPrograma(String caminho)
     {
         File file = new File(caminho);  
         
@@ -77,17 +77,33 @@ public class Montador {
 
     private void passoUm()
     {
-        int LocationCounter = 0;         
+        int LocationCounter = 0;
+
+        String primeiraLinha = input.get(0);
+
+        String label = getLabel(primeiraLinha);
+        String opcode = getOpcode(primeiraLinha);
+        List<String> operands = getOperands(primeiraLinha);
+
+        if (opcode.equals("START")) 
+            LocationCounter = Integer.parseInt(operands.get(0));
+        else
+            LocationCounter = 0;    
         
-        for(String linha : input)
+        for (int i = 1; i < input.size(); i++) 
         {
-            if (linha.isEmpty() || Character.compare(linha.charAt(0), '.') == 0) // pula linhas que começam com . (comentários)
+            String linha = input.get(i);
+
+            if (linha.isEmpty() || Character.compare(linha.charAt(0), '.') == 0)
                 continue;
 
-            String label = getLabel(linha);
-            String opcode = getOpcode(linha);
-            List<String> operands = getOperands(linha);
+            label = getLabel(linha);
+            opcode = getOpcode(linha);
+            operands = getOperands(linha);
 
+            if (opcode.equals("END")) 
+                break;
+            
             if(label != null)
                 SYMTAB.put(label, LocationCounter);    
 
@@ -97,14 +113,14 @@ public class Montador {
 
                 for (String operand : operands)
                 {
-                    if (!isNumeric(operand))
+                    if (isSymbol(operand))
                         if (SYMTAB.get(operand) == null)
                             SYMTAB.put(operand, null);
 
                     LocationCounter++;
                 }
             }
-            else // Pseudo-instrucao
+            else if (POPTAB.get(opcode) != null) // Pseudo-instrucao
             {
                 switch (opcode) 
                 {
@@ -122,10 +138,11 @@ public class Montador {
                         break;
 
                     default:
-                        errorMessage = errorMessage + "\nERRO - Instrucao invalida: " + linha;
                         break;
                 }
             }
+            else 
+                errorMessage = errorMessage + "\nERRO - Instrucao invalida: " + linha;
         }  
     }
 
@@ -133,11 +150,17 @@ public class Montador {
     {       
         for(String linha : input)
         {
-            if (linha.isEmpty() || Character.compare(linha.charAt(0), '.') == 0)// pula linhas que começam com . (comentários)
+            if (linha.isEmpty() || Character.compare(linha.charAt(0), '.') == 0) // Pula linhas que começam com . (comentários)
                 continue;
 
             String opcode = getOpcode(linha);
             List<String> operands = getOperands(linha);
+
+            if (opcode.equals("START")) 
+                continue;
+
+            if (opcode.equals("END")) 
+                break;
 
             if (OPTAB.getInstrucaoPorNome(opcode) != null) // Instrucao
             {
@@ -145,19 +168,19 @@ public class Montador {
 
                 for (String operand : operands)
                 {
-                    if (isNumeric(operand))
-                        output.add(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());
-                    else
+                    if (isSymbol(operand))
                         if (SYMTAB.get(operand) == null)
                         {
                             output.add(Integer.toHexString(0).toUpperCase());
-                            errorMessage = errorMessage + "\nERRO - Label nao definida: " + linha;
+                            errorMessage = errorMessage + "\nERRO - Simbolo nao definido: " + linha;
                         }
                         else
-                            output.add(Integer.toHexString(SYMTAB.get(operand)).toUpperCase());           
-                }
+                            output.add(Integer.toHexString(SYMTAB.get(operand)).toUpperCase());     
+                    else
+                        output.add(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());      
+                }   
             }
-            else // Pseudo-instrucao
+            else if (POPTAB.get(opcode) != null) // Pseudo-instrucao
             {
                 switch (opcode) 
                 {
@@ -198,7 +221,7 @@ public class Montador {
             }
             fileWriter.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
         }
     }
 
@@ -219,10 +242,11 @@ public class Montador {
         String[] splited = linha.split("\\s+");
         try 
         {
-            if ( ( OPTAB.getInstrucaoPorNome(splited[0]) != null ) || ( POPTAB.get(splited[0]) != null ) )  // Nao Possui Label
+            if ( (OPTAB.getInstrucaoPorNome(splited[0]) != null) || (POPTAB.get(splited[0]) != null) )  // Nao Possui Label
                 return null;
             else // Possui Label
                 return splited[0];
+
         } catch ( Exception e) {
             return null;
         }
@@ -233,7 +257,7 @@ public class Montador {
         String[] splited = linha.split("\\s+");
         try
         {
-            if ( ( OPTAB.getInstrucaoPorNome(splited[0]) != null ) || ( POPTAB.get(splited[0]) != null ) )  // Nao Possui Label
+            if ( (OPTAB.getInstrucaoPorNome(splited[0]) != null) || (POPTAB.get(splited[0]) != null) )  // Nao Possui Label
                 return splited[0];
             else // Possui Label
                 return splited[1];
@@ -251,27 +275,27 @@ public class Montador {
 
         try
         {
-            if ( ( OPTAB.getInstrucaoPorNome(splited[0]) != null ) || ( POPTAB.get(splited[0]) != null ) )  // Nao Possui Label
+            if ( (OPTAB.getInstrucaoPorNome(splited[0]) != null) || (POPTAB.get(splited[0]) != null) )  // Nao Possui Label
             {
-                // Split operandos por virgula (ex: ADDR 1,2)
+                // Split operandos por virgula (ex: ADDR S,T)
                 splited = splited[1].split(",");
+
                 for (int i = 0; i < splited.length; i++)
-                    if(Registradores.getChaveRegistradorPorNome(splited[i]) != -1) {
+                    if (Registradores.getChaveRegistradorPorNome(splited[i]) != -1) // Registrador
                         operands.add(Integer.toString(Registradores.getChaveRegistradorPorNome(splited[i])));
-                    } else {
-                        operands.add(splited[i]);
-                    }
+                    else // Simbolo ou Constante
+                        operands.add(splited[i]);  
             }
-            else // Nao possui Label
+            else // Possui Label
             {
-                // Split operandos por virgula (ex: ADICIONAR ADDR 1,2)
+                // Split operandos por virgula (ex: ADICIONAR ADDR S,T)
                 splited = splited[2].split(",");
+                
                 for (int i = 0; i < splited.length; i++)
-                    if(Registradores.getChaveRegistradorPorNome(splited[i]) != -1) {
+                    if(Registradores.getChaveRegistradorPorNome(splited[i]) != -1) // Registrador
                         operands.add(Integer.toString(Registradores.getChaveRegistradorPorNome(splited[i])));
-                    } else {
+                    else // Simbolo ou Constante
                         operands.add(splited[i]);
-                    }
             }
 
             return operands;
@@ -280,15 +304,13 @@ public class Montador {
         }
     }
 
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
+    private static boolean isSymbol(String strNum)
+    {
         try {
             double d = Double.parseDouble(strNum);
         } catch (NumberFormatException nfe) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }
