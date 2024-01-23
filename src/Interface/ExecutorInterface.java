@@ -3,11 +3,12 @@ package Interface;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
-import javax.swing.JList;
-import javax.swing.JOptionPane;
+import java.awt.Color;
 
 import Executor.*;
-import java.awt.Color;
+
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.BorderFactory;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -66,8 +67,8 @@ public class ExecutorInterface extends javax.swing.JFrame {
         fileChooser = new javax.swing.JFileChooser();
 
         //Background
-        backgroundPane.setBackground(new java.awt.Color(24, 25, 26));
-        sicLabel.setForeground(new java.awt.Color(255, 217, 102));
+        backgroundPane.setBackground(ColorPalette.BG.getColor());
+        sicLabel.setForeground(ColorPalette.TITLE.getColor());
         sicLabel.setFont(new java.awt.Font("Arial", 1, 24)); 
         sicLabel.setText("SIC/XE");
         
@@ -81,13 +82,13 @@ public class ExecutorInterface extends javax.swing.JFrame {
         registerTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         registerTable.setShowGrid(true);
         registerTable.setShowVerticalLines(false);
-        registerTable.setGridColor(new java.awt.Color(58, 59, 60));
+        registerTable.setGridColor(ColorPalette.GRID.getColor());
         registerTable.setFillsViewportHeight(true);
-        registerTable.setBackground(new java.awt.Color(36, 37, 38));
+        registerTable.setBackground(ColorPalette.BG_GRID.getColor());
         
         DefaultTableCellRenderer MyHeaderRender = new DefaultTableCellRenderer();
         MyHeaderRender.setBackground(Color.white);
-        MyHeaderRender.setForeground(new java.awt.Color(24,25,26));
+        MyHeaderRender.setForeground(ColorPalette.BG.getColor());
         registerTable.getTableHeader().getColumnModel().getColumn(0).setHeaderRenderer(MyHeaderRender);
         registerTable.getTableHeader().getColumnModel().getColumn(1).setHeaderRenderer(MyHeaderRender);        
         
@@ -102,29 +103,29 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
         registersLabel.setFont(new java.awt.Font("Arial", 0, 20)); 
         registersLabel.setText("Registradores");
-        registersLabel.setForeground(new java.awt.Color(228, 230, 235));
+        registersLabel.setForeground(ColorPalette.TEXT.getColor());
         
 
         // Memória
         attMemoria(memoryList);
-        memoryList.setBackground(new java.awt.Color(36, 37, 38));
+        memoryList.setBackground(ColorPalette.BG_GRID.getColor());
         memoryList.setForeground(Color.white);
         memoryList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         memoryList.setSelectionBackground(Color.white);
-        memoryList.setSelectionForeground(new java.awt.Color(24,25,26));
+        memoryList.setSelectionForeground(ColorPalette.BG.getColor());
         memoryList.setFixedCellHeight(25);    
         memoryPane.setViewportView(memoryList);
         memoryPane.setBorder(BorderFactory.createLineBorder(Color.white, WIDTH));
         
         memoryLabel.setFont(new java.awt.Font("Arial", 0, 20)); 
         memoryLabel.setText("Memória");
-        memoryLabel.setForeground(new java.awt.Color(228, 230, 235));
+        memoryLabel.setForeground(ColorPalette.TEXT.getColor());
          
 
         // Input e Output
         inputLabel.setFont(new java.awt.Font("Arial", 0, 14)); 
         inputLabel.setText("Input:");
-        inputLabel.setForeground(new java.awt.Color(228, 230, 235));
+        inputLabel.setForeground(ColorPalette.TEXT.getColor());
         inputField.setText("");
         inputField.setEnabled(false);
         inputField.setBackground(Color.white);
@@ -135,30 +136,30 @@ public class ExecutorInterface extends javax.swing.JFrame {
         
         outputLabel.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         outputLabel.setText("Output:");
-        outputLabel.setForeground(new java.awt.Color(228, 230, 235));
+        outputLabel.setForeground(ColorPalette.TEXT.getColor());
         outputField.setText("");
         outputField.setEditable(false);
 
         // Botoes
         loadButton.setText("Carregar Programa");
-        loadButton.setBackground(new java.awt.Color(58, 59, 60));
-        loadButton.setForeground(new java.awt.Color(228, 230, 235));
+        loadButton.setBackground(ColorPalette.GRID.getColor());
+        loadButton.setForeground(ColorPalette.TEXT.getColor());
         loadButton.addActionListener((java.awt.event.ActionEvent evt) -> {
             loadButtonActionPerformed(evt, memoryList);
         });
 
         runButton.setText("Run");
         runButton.setEnabled(false);
-        runButton.setBackground(new java.awt.Color(58, 59, 60));
-        runButton.setForeground(new java.awt.Color(228, 230, 235));
+        runButton.setBackground(ColorPalette.GRID.getColor());
+        runButton.setForeground(ColorPalette.TEXT.getColor());
         runButton.addActionListener((java.awt.event.ActionEvent evt) -> {
             runButtonActionPerformed(evt, memoryList);
         });
 
         stepButton.setText("Step");
         stepButton.setEnabled(false);
-        stepButton.setBackground(new java.awt.Color(58, 59, 60));
-        stepButton.setForeground(new java.awt.Color(228, 230, 235));
+        stepButton.setBackground(ColorPalette.GRID.getColor());
+        stepButton.setForeground(ColorPalette.TEXT.getColor());
         stepButton.addActionListener((java.awt.event.ActionEvent evt) -> {
             stepButtonActionPerformed(evt, memoryList);
         });      
@@ -246,7 +247,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         setLocationRelativeTo(null);
-        getContentPane().setBackground(new java.awt.Color(24, 25, 26));
+        getContentPane().setBackground(ColorPalette.BG.getColor());
         setSize(800,550);
         setResizable(false); 
     }
@@ -288,7 +289,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
             runButton.setEnabled(false);
             loadButton.setEnabled(true);
             inputField.setEnabled(true);
-            inputField.setBackground(new java.awt.Color(255, 217, 102));  
+            inputField.setBackground(ColorPalette.TITLE.getColor());  
         }
         attRegistradores();
         attMemoria(memoryList);
@@ -321,7 +322,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
             runButton.setEnabled(false);
             loadButton.setEnabled(true);
             inputField.setEnabled(true);
-            inputField.setBackground(new java.awt.Color(255, 217, 102));  
+            inputField.setBackground(ColorPalette.TITLE.getColor());  
         }
         attRegistradores();
         attMemoria(memoryList);
