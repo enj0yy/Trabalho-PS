@@ -1,7 +1,7 @@
 package TrabalhoPS;
 
 
-import Interface.ExecutorInterface;
+import Interface.*;
 import Montador.Montador;
 import java.io.IOException;
 
