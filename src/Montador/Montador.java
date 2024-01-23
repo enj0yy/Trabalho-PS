@@ -51,29 +51,24 @@ public class Montador {
         SYMTAB = new HashMap<String, Integer>();
     }
 
-    public void montarPrograma(String caminho)
+    public String montarPrograma(String codigoAssembly)
     {
-        setPrograma(caminho);
+        setPrograma(codigoAssembly);
         passoUm();    
         passoDois();
-        gerarTXTOutput();
+        String output = gerarTXTOutput();
         mostrarMensagem();
+        return output;
     }
-    
-    private void setPrograma(String caminho)
+
+    private void setPrograma(String codigoAssembly)
     {
-        File file = new File(caminho);  
-        
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String str;
-            while ((str = br.readLine()) != null){
-                input.add(str);
-            }
-        } catch(Exception e)
-        {
-            errorMessage = errorMessage + "\nErro ao ler o arquivo de entrada.";
+        String[] linhas = codigoAssembly.split("\\r?\\n");
+        for (String linha : linhas){
+            input.add(linha);
         }
     }
+
 
     private void passoUm()
     {
@@ -85,10 +80,11 @@ public class Montador {
         String opcode = getOpcode(primeiraLinha);
         List<String> operands = getOperands(primeiraLinha);
 
-        if (opcode.equals("START")) 
+        if (opcode != null && opcode.equals("START")) 
             LocationCounter = Integer.parseInt(operands.get(0));
         else
             LocationCounter = 0;    
+  
         
         for (int i = 1; i < input.size(); i++) 
         {
@@ -101,7 +97,7 @@ public class Montador {
             opcode = getOpcode(linha);
             operands = getOperands(linha);
 
-            if (opcode.equals("END")) 
+            if (opcode != null && opcode.equals("END")) 
                 break;
             
             if(label != null)
@@ -156,10 +152,10 @@ public class Montador {
             String opcode = getOpcode(linha);
             List<String> operands = getOperands(linha);
 
-            if (opcode.equals("START")) 
+            if (opcode != null && opcode.equals("START")) 
                 continue;
 
-            if (opcode.equals("END")) 
+            if (opcode != null && opcode.equals("END")) 
                 break;
 
             if (OPTAB.getInstrucaoPorNome(opcode) != null) // Instrucao
@@ -212,28 +208,24 @@ public class Montador {
         }
     }
 
-    private void gerarTXTOutput()
-    {
-        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontador.txt")) 
-        {
-            for (String str : output) {
-                fileWriter.write(str + System.lineSeparator());
-            }
-            fileWriter.close();
-        } catch (IOException e) {
-            errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
-        }
+ private String gerarTXTOutput() {
+    StringBuilder outputString = new StringBuilder();
+    for (String str : output) {
+        outputString.append(str).append(System.lineSeparator());
     }
+    return outputString.toString();
+}
+
 
     private void mostrarMensagem()
     {
         StringBuilder mensagem = new StringBuilder();
-        mensagem.append("Arquivo de entrada: " + System.getProperty("user.dir")+ "\\txtFiles\\inputMontador.txt").append("\n");
-        mensagem.append("Arquivo de saida: " + System.getProperty("user.dir")+ "\\txtFiles\\outputMontador.txt").append("\n\n");
+        mensagem.append("Arquivo de entrada: ").append(System.getProperty("user.dir")).append("\\txtFiles\\inputMontador.txt").append("\n");
+        mensagem.append("Arquivo de saida: ").append(System.getProperty("user.dir")).append("\\txtFiles\\outputMontador.txt").append("\n\n");
         if (errorMessage.isEmpty())
             mensagem.append("Programa montado com sucesso.");
         else
-            mensagem.append("Programa montado com erros. Erro(s): \n" + errorMessage);
+            mensagem.append("Programa montado com erros. Erro(s): \n").append(errorMessage);
             JOptionPane.showMessageDialog(null, mensagem, "Montador", JOptionPane.INFORMATION_MESSAGE);
     }
 
