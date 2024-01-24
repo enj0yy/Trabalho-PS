@@ -4,6 +4,8 @@ import Montador.Montador;
 
 import javax.swing.*;
 
+import Executor.Executor;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -97,7 +99,7 @@ public class MontadorInterface extends JFrame {
         centerPanel.add(montarButton);
         centerPanel.add(selectFileButton);
         centerPanel.setPreferredSize(new Dimension(300, 600)); 
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(110, 25, 30, 25));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(30, 25, 30, 25));
         centerPanel.setBackground(ColorPalette.BG.getColor());
 
         // Right Panel
@@ -120,16 +122,44 @@ public class MontadorInterface extends JFrame {
         rightPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 30, 45));  
         rightPanel.setBackground(ColorPalette.BG.getColor());
 
-        // Main Panel
-        getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(headerPanel, BorderLayout.NORTH);
+        // Body Panel
         JPanel horizontalPanel = new JPanel();
         horizontalPanel.setLayout(new BoxLayout(horizontalPanel, BoxLayout.X_AXIS));
         horizontalPanel.setBackground(ColorPalette.BG.getColor());
         horizontalPanel.add(leftPanel);
         horizontalPanel.add(centerPanel);
         horizontalPanel.add(rightPanel);
+
+        // Footer Panel
+        JPanel footerPanel = new JPanel();
+        footerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20,37));
+        footerPanel.setBackground(ColorPalette.BG.getColor());
+
+        JButton executorButton = new JButton("Executor");
+        executorButton.setBackground(ColorPalette.GRID.getColor());
+        executorButton.setForeground(ColorPalette.TEXT.getColor());
+        executorButton.setPreferredSize(new Dimension(92, 35));
+        executorButton.addActionListener((java.awt.event.ActionEvent evt) -> {
+            chamaExecutor();
+        });
+
+        JButton limparButton = new JButton("Limpar");
+        limparButton.setBackground(ColorPalette.GRID.getColor());
+        limparButton.setForeground(ColorPalette.TEXT.getColor());
+        limparButton.setPreferredSize(new Dimension(92, 35));
+        limparButton.addActionListener((java.awt.event.ActionEvent evt) -> {
+            limparButtonActionPerformed(evt);
+        });
+
+        footerPanel.add(executorButton);
+        footerPanel.add(limparButton);
+
+        // Main Panel
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(headerPanel, BorderLayout.NORTH);
         getContentPane().add(horizontalPanel, BorderLayout.CENTER);
+        getContentPane().add(footerPanel, BorderLayout.SOUTH);
 
 
         pack();
@@ -141,6 +171,18 @@ public class MontadorInterface extends JFrame {
         setBackground(ColorPalette.BG.getColor());
         setSize(800, 550);
         setResizable(false);
+    }
+
+    private void chamaExecutor() {
+        ExecutorInterface executor;
+        setVisible(false);
+        executor = new ExecutorInterface();
+    }
+
+    private void limparButtonActionPerformed(ActionEvent evt) {
+        outputArea.setText("");
+        inputArea.setText("");
+        montador.limpaListas();        
     }
 
     // ActionListeners
@@ -171,9 +213,4 @@ public class MontadorInterface extends JFrame {
         }
    }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            MontadorInterface montadorInterface = new MontadorInterface();
-        });
-    }
 }

@@ -53,12 +53,20 @@ public class Montador {
 
     public String montarPrograma(String codigoAssembly)
     {
+        limpaListas();
         setPrograma(codigoAssembly);
         passoUm();    
         passoDois();
         String output = gerarTXTOutput();
         mostrarMensagem();
         return output;
+    }
+
+    public void limpaListas() {
+        input.clear();
+        output.clear();
+        errorMessage = "";
+        SYMTAB.clear();
     }
 
     private void setPrograma(String codigoAssembly)
@@ -208,13 +216,24 @@ public class Montador {
         }
     }
 
- private String gerarTXTOutput() {
-    StringBuilder outputString = new StringBuilder();
-    for (String str : output) {
-        outputString.append(str).append(System.lineSeparator());
+    private String gerarTXTOutput() {
+        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontador.txt")) 
+            {
+                for (String str : output) {
+                    fileWriter.write(str + System.lineSeparator());
+                }
+                fileWriter.close();
+            } catch (IOException e) {
+                errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
+                return errorMessage;
+            }
+        StringBuilder outputString = new StringBuilder();
+        outputString.setLength(0);
+        for (String str : output) {
+            outputString.append(str).append(System.lineSeparator());
+        }
+        return outputString.toString();
     }
-    return outputString.toString();
-}
 
 
     private void mostrarMensagem()
