@@ -17,7 +17,8 @@ MONTADOR:
 TO-DO: 
     Tratar armazenamento de byte 
         ex: BYTE C'EOF' vai de string(EOF) para HEX(454F46)
-            BYTE X'10' vai de decimal(10) para HEX(A), esse já está funcionando
+            BYTE X'10' vai de decimal(10) para HEX(A)
+            BYTE 10 vai de decimal(10) para HEX(0A)
 */ 
 
 public class Montador {
