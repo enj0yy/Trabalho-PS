@@ -70,7 +70,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         backgroundPane.setBackground(ColorPalette.BG.getColor());
         sicLabel.setForeground(ColorPalette.TITLE.getColor());
         sicLabel.setFont(new java.awt.Font("Arial", 1, 24)); 
-        sicLabel.setText("SIC/XE");
+        sicLabel.setText("Executor SIC/XE");
         
         // Registradores
         attRegistradores();
@@ -245,11 +245,11 @@ public class ExecutorInterface extends javax.swing.JFrame {
         pack();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
-        setLocationRelativeTo(null);
         getContentPane().setBackground(ColorPalette.BG.getColor());
         setSize(800,550);
         setResizable(false); 
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
 

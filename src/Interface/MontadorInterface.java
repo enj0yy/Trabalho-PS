@@ -4,8 +4,6 @@ import Montador.Montador;
 
 import javax.swing.*;
 
-import Executor.Executor;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -38,7 +36,7 @@ public class MontadorInterface extends JFrame {
         sicLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         sicLabel.setForeground(ColorPalette.TITLE.getColor());
         sicLabel.setFont(new Font("Arial", Font.BOLD, 24)); 
-        sicLabel.setText("SIC/XE");
+        sicLabel.setText("Montador SIC/XE");
         headerPanel.add(sicLabel);
 
         inputArea = new JTextArea(500, 400);
@@ -166,17 +164,16 @@ public class MontadorInterface extends JFrame {
 
         // Frame settings
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
-        setLocationRelativeTo(null);
         setBackground(ColorPalette.BG.getColor());
         setSize(800, 550);
         setResizable(false);
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
     private void chamaExecutor() {
-        ExecutorInterface executor;
         setVisible(false);
-        executor = new ExecutorInterface();
+        new ExecutorInterface();
     }
 
     private void limparButtonActionPerformed(ActionEvent evt) {

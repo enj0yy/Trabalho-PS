@@ -1,9 +1,6 @@
 package Montador;
 
 import Instrucoes.Instrucoes;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +18,6 @@ TO-DO:
     Tratar armazenamento de byte 
         ex: BYTE C'EOF' vai de string(EOF) para HEX(454F46)
             BYTE X'10' vai de decimal(10) para HEX(A), esse já está funcionando
-    Fazer interface gráfica
 */ 
 
 public class Montador {
@@ -32,7 +28,7 @@ public class Montador {
     private Map<String, Integer> SYMTAB;    // Tabela de simbolos
 
     private List<String> input = new ArrayList<String>();
-    private List<String> output = new ArrayList<String>();
+    StringBuilder output = new StringBuilder();
 
     public Montador()
     {
@@ -57,14 +53,14 @@ public class Montador {
         setPrograma(codigoAssembly);
         passoUm();    
         passoDois();
-        String output = gerarTXTOutput();
+        gerarTXTOutput();
         mostrarMensagem();
-        return output;
+        return output.toString();
     }
 
     public void limpaListas() {
         input.clear();
-        output.clear();
+        output.setLength(0);
         errorMessage = "";
         SYMTAB.clear();
     }
@@ -168,20 +164,20 @@ public class Montador {
 
             if (OPTAB.getInstrucaoPorNome(opcode) != null) // Instrucao
             {
-                output.add(OPTAB.getInstrucaoPorNome(opcode).getOpcode());
+                output.append(OPTAB.getInstrucaoPorNome(opcode).getOpcode());
 
                 for (String operand : operands)
                 {
                     if (isSymbol(operand))
                         if (SYMTAB.get(operand) == null)
                         {
-                            output.add(Integer.toHexString(0).toUpperCase());
+                            output.append(" ").append(Integer.toHexString(0).toUpperCase());
                             errorMessage = errorMessage + "\nERRO - Simbolo nao definido: " + linha;
                         }
                         else
-                            output.add(Integer.toHexString(SYMTAB.get(operand)).toUpperCase());     
+                            output.append(" ").append(Integer.toHexString(SYMTAB.get(operand)).toUpperCase());     
                     else
-                        output.add(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());      
+                        output.append(" ").append(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());      
                 }   
             }
             else if (POPTAB.get(opcode) != null) // Pseudo-instrucao
@@ -189,57 +185,53 @@ public class Montador {
                 switch (opcode) 
                 {
                     case "RD":
-                        output.add("D8");
+                        output.append("D8");
                         break;
 
                     case "WD":
-                        output.add("DC");
+                        output.append("DC");
                         break;
                         
                     case "WORD":
                     case "BYTE":
                         for (String operand : operands)
-                            output.add(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());
+                            output.append(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());
                         break;
 
                     case "RESW":
                     case "RESB":
                         for (String operand : operands)
                             for (Integer i = 0; i < Integer.parseInt(operand); i++)
-                                output.add("0");   
+                            {
+                                output.append("0");
+                                if (i<Integer.parseInt(operand)-1)
+                                    output.append(System.lineSeparator());
+                            }
                         break;
+
 
                     default:
                         break;
                 }
             }
+            output.append(System.lineSeparator());
         }
     }
 
-    private String gerarTXTOutput() {
+    private void gerarTXTOutput() {
         try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontador.txt")) 
             {
-                for (String str : output) {
-                    fileWriter.write(str + System.lineSeparator());
-                }
+                fileWriter.write(output.toString());
                 fileWriter.close();
             } catch (IOException e) {
                 errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
-                return errorMessage;
             }
-        StringBuilder outputString = new StringBuilder();
-        outputString.setLength(0);
-        for (String str : output) {
-            outputString.append(str).append(System.lineSeparator());
-        }
-        return outputString.toString();
     }
 
 
     private void mostrarMensagem()
     {
         StringBuilder mensagem = new StringBuilder();
-        mensagem.append("Arquivo de entrada: ").append(System.getProperty("user.dir")).append("\\txtFiles\\inputMontador.txt").append("\n");
         mensagem.append("Arquivo de saida: ").append(System.getProperty("user.dir")).append("\\txtFiles\\outputMontador.txt").append("\n\n");
         if (errorMessage.isEmpty())
             mensagem.append("Programa montado com sucesso.");
@@ -318,7 +310,7 @@ public class Montador {
     private static boolean isSymbol(String strNum)
     {
         try {
-            double d = Double.parseDouble(strNum);
+            Double.parseDouble(strNum);
         } catch (NumberFormatException nfe) {
             return true;
         }
