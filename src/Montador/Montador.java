@@ -10,17 +10,6 @@ import java.util.Map;
 import javax.swing.JOptionPane;
 import Executor.Registradores;
 
-/* 
-MONTADOR:
-    Livro Página 44.
-
-TO-DO: 
-    Tratar armazenamento de byte 
-        ex: BYTE C'EOF' vai de string(EOF) para HEX(454F46)
-            BYTE X'10' vai de decimal(10) para HEX(A)
-            BYTE 10 vai de decimal(10) para HEX(0A)
-*/ 
-
 public class Montador {
     private String errorMessage = "";
 
@@ -194,9 +183,23 @@ public class Montador {
                         break;
                         
                     case "WORD":
-                    case "BYTE":
                         for (String operand : operands)
                             output.append(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());
+                        break;
+
+                    case "BYTE":
+                        for (String operand : operands)
+                        {
+                            if (operands.get(0).charAt(0) == 'C') // BYTE C'EOF' vai de string(EOF) para HEX(454F46)
+                                for (int i = 2; i < operands.get(0).length()-1; i++)
+                                    output.append(Integer.toHexString((int)operands.get(0).charAt(i)).toUpperCase());
+
+                            else if (operands.get(0).charAt(0) == 'X') //BYTE X'05' para HEX(05)
+                                output.append(operands.get(0).substring(2, operands.get(0).length()-1).toUpperCase());
+
+                            else // BYTE 10 vai de decimal(10) para HEX(0A)
+                                output.append(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());
+                        }   
                         break;
 
                     case "RESW":
