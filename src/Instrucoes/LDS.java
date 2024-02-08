@@ -5,16 +5,14 @@ import Executor.Registradores;
 
 public class LDS extends Instrucao {
     public LDS() {
-        super("LDS", "6C");
+        super("LDS", (byte)0x6C, "3/4");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem),16);
+        int TA = calcularTA(registradores, memoria); // operando
 
-        registradores.getRegistradorPorNome("S").setValor(valorMem);
-
-        registradores.incrementarPC();
+        registradores.getRegistradorPorNome("S").setValorInt(TA); // seta o registrador S para o valor do operando
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
 }

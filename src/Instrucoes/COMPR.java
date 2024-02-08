@@ -6,27 +6,27 @@ import Executor.Registradores;
 public class COMPR extends Instrucao {
 
     public COMPR() {
-        super("COMPR", "A0");
+        super("COMPR", (byte)0xA0, "2");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int idRegistradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16); // pegando o id do registrador A (parametro 1)
-        registradores.incrementarPC(); // apos ler o parametro, incrementar o PC
+        byte[] bytes = memoria.getBytes(registradores.getValorPC(),2); // pega dos 2 bytes que a instrução ocupa
 
-        int idRegistradorB = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16); // pegando o id do registrador B (parametro 2)
-        registradores.incrementarPC(); // apos ler o parametro, incrementar o PC
+        int[] registradoresID = getRegistradores(bytes); // id dos registradores
 
-        int valorRegistradorA = registradores.getRegistrador(idRegistradorA).getValor(); // valor no reg A
-        int valorRegistradorB = registradores.getRegistrador(idRegistradorB).getValor(); // valor no reg B
+        int valorRegistradorA = registradores.getRegistrador(registradoresID[0]).getValorIntSigned(); // valor no reg A
+        int valorRegistradorB = registradores.getRegistrador(registradoresID[1]).getValorIntSigned(); // valor no reg B
 
         if (valorRegistradorA == valorRegistradorB) {
-            registradores.getRegistradorPorNome("SW").setValor(0); // SW recebe "igual", pois ValorRegA == valorRegB
+            registradores.getRegistradorPorNome("SW").setValorInt(0); // SW recebe "igual", pois ValorRegA == valorRegB
         } else if (valorRegistradorA < valorRegistradorB) {
-            registradores.getRegistradorPorNome("SW").setValor(-1); // SW recebe "menor", pois ValorRegA == valorRegB
+            registradores.getRegistradorPorNome("SW").setValorInt(-1); // SW recebe "menor", pois ValorRegA == valorRegB
         } else {
-            registradores.getRegistradorPorNome("SW").setValor(1); // SW recebe "maior", pois ValorRegA == valorRegB
+            registradores.getRegistradorPorNome("SW").setValorInt(1); // SW recebe "maior", pois ValorRegA == valorRegB
         }
+
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
     
 }

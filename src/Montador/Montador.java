@@ -236,7 +236,7 @@ public class Montador {
     private void mostrarMensagem()
     {
         StringBuilder mensagem = new StringBuilder();
-        mensagem.append("Arquivo de saida: ").append(System.getProperty("user.dir")).append("\\txtFiles\\outputMontador.txt").append("\n\n");
+        mensagem.append("Arquivo de saida: ").append(System.getProperty("user.dir")).append("/txtFiles/outputMontador.txt").append("\n\n");
         if (errorMessage.isEmpty())
             mensagem.append("Programa montado com sucesso.");
         else

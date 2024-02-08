@@ -74,21 +74,21 @@ public class Registradores {
         return -1;
     }
 
-    public void incrementarPC() {
-        registradores.get(8).incrementarValor(1);
+    public void incrementarPC(int valor) {
+        registradores.get(8).incrementarValor(valor);
     }
 
     public int getValorPC() {
-        return registradores.get(8).getValor();
+        return registradores.get(8).getValorIntSigned();
     }
     
     public void limparRegistradores(){
-        getRegistradorPorNome("A").setValor(0);
-        getRegistradorPorNome("X").setValor(0);
-        getRegistradorPorNome("L").setValor(0);
-        getRegistradorPorNome("B").setValor(0);
-        getRegistradorPorNome("S").setValor(0);
-        getRegistradorPorNome("T").setValor(0);
-        getRegistradorPorNome("PC").setValor(0);
+        getRegistradorPorNome("A").setValorInt(0);
+        getRegistradorPorNome("X").setValorInt(0);
+        getRegistradorPorNome("L").setValorInt(0);
+        getRegistradorPorNome("B").setValorInt(0);
+        getRegistradorPorNome("S").setValorInt(0);
+        getRegistradorPorNome("T").setValorInt(0);
+        getRegistradorPorNome("PC").setValorInt(0);
     }
 }

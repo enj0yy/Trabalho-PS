@@ -6,21 +6,23 @@ import Executor.Registradores;
 public class MULR extends Instrucao {
 
     public MULR() {
-        super("MULR", "98");
+        super("MULR", (byte)0x98, "2");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int idRegistradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        registradores.incrementarPC();
+        byte[] bytes = memoria.getBytes(registradores.getValorPC(),2); // pega dos 2 bytes que a instrução ocupa
 
-        int idRegistradorB = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        registradores.incrementarPC();
+        int[] registradoresID = getRegistradores(bytes); // id dos registradores
 
-        int valorRegistradorA = registradores.getRegistrador(idRegistradorA).getValor();
-        int valorRegistradorB = registradores.getRegistrador(idRegistradorB).getValor();
+        int valorRegistradorA = registradores.getRegistrador(registradoresID[0]).getValorIntSigned(); // valor no reg A
+        int valorRegistradorB = registradores.getRegistrador(registradoresID[1]).getValorIntSigned(); // valor no reg B
 
-        registradores.getRegistrador(idRegistradorB).setValor(valorRegistradorA * valorRegistradorB);
+        int resultado = valorRegistradorA * valorRegistradorB;
+
+        registradores.getRegistrador(registradoresID[0]).setValorInt(resultado);
+
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
 
 }

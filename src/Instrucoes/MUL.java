@@ -6,19 +6,20 @@ import Executor.Registradores;
 public class MUL extends Instrucao {
 
     public MUL() {
-        super("MUL", "20");
+        super("MUL", (byte)0x20, "3/4");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        registradores.incrementarPC();
-        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem),16);
+        int TA = calcularTA(registradores, memoria); // operando
 
-        int valorAcumulator = registradores.getRegistradorPorNome("A").getValor();
+        int valorAcumulator = registradores.getRegistradorPorNome("A").getValorIntSigned(); // valor do acumulador
 
+        int resultado = TA * valorAcumulator; // faz a soma
 
-        registradores.getRegistradorPorNome("A").setValor(valorAcumulator * valorMem);
+        registradores.getRegistradorPorNome("A").setValorInt(resultado); // armazena o resultado no acumulador
+
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
 
 }

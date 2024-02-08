@@ -5,56 +5,56 @@ import java.util.Map;
 
 
 public class Instrucoes {
-    private final Map<String, Instrucao> instrucoes;
+    private final Map<Byte, Instrucao> instrucoes;
 
     public Instrucoes() {
         instrucoes = new HashMap<>();
 
-        instrucoes.put("18", new ADD());
-        instrucoes.put("90", new ADDR());
-        instrucoes.put("40", new AND());
-        instrucoes.put("4", new CLEAR());
-        instrucoes.put("28", new COMP());
-        instrucoes.put("A0", new COMPR());
-        instrucoes.put("24", new DIV());
-        instrucoes.put("9C", new DIVR());
+        instrucoes.put((byte)0x18, new ADD());
+        instrucoes.put((byte)0x90, new ADDR());
+        instrucoes.put((byte)0x40, new AND());
+        instrucoes.put((byte)0x4, new CLEAR());
+        instrucoes.put((byte)0x28, new COMP());
+        instrucoes.put((byte)0xA0, new COMPR());
+        instrucoes.put((byte)0x24, new DIV());
+        instrucoes.put((byte)0x9C, new DIVR());
         
-        instrucoes.put("3C", new J());
-        instrucoes.put("30", new JEQ());
-        instrucoes.put("34", new JGT());
-        instrucoes.put("38", new JLT());
-        instrucoes.put("48", new JSUB());
-        instrucoes.put("0", new LDA());
-        instrucoes.put("68", new LDB());
-        instrucoes.put("50", new LDCH());
+        instrucoes.put((byte)0x3C, new J());
+        instrucoes.put((byte)0x30, new JEQ());
+        instrucoes.put((byte)0x34, new JGT());
+        instrucoes.put((byte)0x38, new JLT());
+        instrucoes.put((byte)0x48, new JSUB());
+        instrucoes.put((byte)0x0, new LDA());
+        instrucoes.put((byte)0x68, new LDB());
+        instrucoes.put((byte)0x50, new LDCH());
         
-        instrucoes.put("8", new LDL());
-        instrucoes.put("6C", new LDS());
-        instrucoes.put("74", new LDT());
-        instrucoes.put("04", new LDX());
-        instrucoes.put("20", new MUL());
-        instrucoes.put("98", new MULR());
-        instrucoes.put("44", new OR());
-        instrucoes.put("AC", new RMO());
+        instrucoes.put((byte)0x8, new LDL());
+        instrucoes.put((byte)0x6C, new LDS());
+        instrucoes.put((byte)0x74, new LDT());
+        instrucoes.put((byte)0x04, new LDX());
+        instrucoes.put((byte)0x20, new MUL());
+        instrucoes.put((byte)0x98, new MULR());
+        instrucoes.put((byte)0x44, new OR());
+        instrucoes.put((byte)0xAC, new RMO());
         
-        instrucoes.put("4C", new RSUB());
-        instrucoes.put("A4", new SHIFTL());
-        instrucoes.put("A8", new SHIFTR());
-        instrucoes.put("0C", new STA());
-        instrucoes.put("78", new STB());
-        instrucoes.put("54", new STCH());
-        instrucoes.put("14", new STL());
+        instrucoes.put((byte)0x4C, new RSUB());
+        instrucoes.put((byte)0xA4, new SHIFTL());
+        instrucoes.put((byte)0xA8, new SHIFTR());
+        instrucoes.put((byte)0x0C, new STA());
+        instrucoes.put((byte)0x78, new STB());
+        instrucoes.put((byte)0x54, new STCH());
+        instrucoes.put((byte)0x14, new STL());
         
-        instrucoes.put("7C", new STS());
-        instrucoes.put("84", new STT());
-        instrucoes.put("10", new STX());
-        instrucoes.put("1C", new SUB());
-        instrucoes.put("94", new SUBR());
-        instrucoes.put("2C", new TIX());
-        instrucoes.put("B8", new TIXR());
+        instrucoes.put((byte)0x7C, new STS());
+        instrucoes.put((byte)0x84, new STT());
+        instrucoes.put((byte)0x10, new STX());
+        instrucoes.put((byte)0x1C, new SUB());
+        instrucoes.put((byte)0x94, new SUBR());
+        instrucoes.put((byte)0x2C, new TIX());
+        instrucoes.put((byte)0xB8, new TIXR());
     }
 
-    public Instrucao getInstrucao(String opcode) {
+    public Instrucao getInstrucao(byte opcode) { // 8 primeiros bits da instrução, 6 bits de opcode e 2 de flag
         return instrucoes.get(opcode);
     }
 

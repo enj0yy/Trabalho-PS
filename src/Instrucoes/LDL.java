@@ -5,16 +5,14 @@ import Executor.Registradores;
 
 public class LDL extends Instrucao {
     public LDL() {
-        super("LDL", "8");
+        super("LDL", (byte)0x8, "3/4");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem),16);
+        int TA = calcularTA(registradores, memoria); // operando
 
-        registradores.getRegistradorPorNome("L").setValor(valorMem);
-
-        registradores.incrementarPC();
+        registradores.getRegistradorPorNome("L").setValorInt(TA); // seta o registrador L para o valor do operando
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
 }

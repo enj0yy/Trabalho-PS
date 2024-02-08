@@ -6,19 +6,20 @@ import Executor.Registradores;
 public class DIV extends Instrucao {
 
     public DIV() {
-        super("DIV", "24");
+        super("DIV", (byte)0x24, "3/4");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16); // pegando o endereço de memória (parametro 1)
-        registradores.incrementarPC(); // apos ler o parametro, incrementar o PC
-        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem),16); // valor armazenado na posição de memoria lida anteriormente
+        int TA = calcularTA(registradores, memoria); // operando
 
-        int valorAcumulator = registradores.getRegistradorPorNome("A").getValor(); // valor que está no acumulador
-        
+        int valorAcumulator = registradores.getRegistradorPorNome("A").getValorIntSigned(); // valor do acumulador
 
-        registradores.getRegistradorPorNome("A").setValor(valorAcumulator/valorMem); // regA = regA/valorMem 
+        int resultado = TA / valorAcumulator; // faz a operação de divisão
+
+        registradores.getRegistradorPorNome("A").setValorInt(resultado); // armazena o resultado no acumulador
+
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
         // NOTA: em java, quando se divide um int por um int, o resultado vai ser um int também. Somente retorna a parte inteira da divisao
     }
     

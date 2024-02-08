@@ -6,19 +6,19 @@ import Executor.Registradores;
 public class RMO extends Instrucao {
 
     public RMO() {
-        super("RMO", "AC");
+        super("RMO", (byte)0xAC, "2");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int idRegistradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        registradores.incrementarPC();
+        byte[] bytes = memoria.getBytes(registradores.getValorPC(),2); // pega dos 2 bytes que a instrução ocupa
 
-        int idRegistradorB = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        registradores.incrementarPC();
+        int[] registradoresID = getRegistradores(bytes); // id dos registradores
 
-        int valorRegistradorA = registradores.getRegistrador(idRegistradorA).getValor();
+        int valorRegistradorB = registradores.getRegistrador(registradoresID[1]).getValorIntSigned(); // valor no reg B
 
-        registradores.getRegistrador(idRegistradorB).setValor(valorRegistradorA);
+        registradores.getRegistrador(registradoresID[0]).setValorInt(valorRegistradorB);
+
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
 }

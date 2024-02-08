@@ -6,20 +6,18 @@ import Executor.Registradores;
 public class JEQ extends Instrucao {
 
     public JEQ() {
-        super("JEQ", "30");
+        super("JEQ", (byte)0x30, "3/4");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        if (registradores.getRegistradorPorNome("SW").getValor() == 0)
-        {
-            int enderecoJump = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-            registradores.getRegistradorPorNome("PC").setValor(enderecoJump);
-        }
-        else
-        {
-            registradores.incrementarPC();
+
+        int TA = calcularTA(registradores, memoria); // operando
+
+        if (registradores.getRegistradorPorNome("SW").getValorIntSigned() == 0) {
+            registradores.getRegistradorPorNome("PC").setValorInt(TA); // seta o PC para o endereço de jump
+        } else {
+            registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
         }
     }
-    
 }

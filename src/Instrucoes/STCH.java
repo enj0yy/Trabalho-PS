@@ -6,23 +6,17 @@ import Executor.Registradores;
 public class STCH extends Instrucao {
 
     public STCH() {
-        super("STCH", "54");
+        super("STCH", (byte)0x54, "3/4");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
+        int TA = calcularTA(registradores, memoria); // operando
 
-        // Obtém o valor do registrador A
-        int valorRegistradorA = registradores.getRegistradorPorNome("A").getValor();
+        int byteA = registradores.getRegistradorPorNome("A").getValor()[2];
 
-        // Obtém o byte menos significativo do valor do registrador A
-        int byteMenosSignificativo = valorRegistradorA & 0xFF;
+        memoria.setWord(TA, byteA); // guarda o primeiro byte do registrador A na posição de memória espeçificada por TA
 
-        // Armazena o byte menos significativo na posição de memória especificada
-        memoria.setPosicaoMemoria(enderecoMem, Integer.toHexString(byteMenosSignificativo));
-
-        // Incrementa o contador de programa
-        registradores.incrementarPC();
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
 }

@@ -6,20 +6,22 @@ import Executor.Registradores;
 public class LDCH extends Instrucao {
 
     public LDCH() {
-        super("LDCH", "50");
+        super("LDCH", (byte)0x50, "3/4");
     }
 
     @Override
-    public void executar(Memoria memoria, Registradores registradores) {     
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem),16);
-        int byteMenosSigMemoria = valorMem & 0xFF;        
-        
-        // A[byte mais à direita] ← (m) 
-        int registradorA = byteMenosSigMemoria;
-        registradores.getRegistradorPorNome("A").setValor(registradorA);
+    public void executar(Memoria memoria, Registradores registradores) {
 
-        registradores.incrementarPC();
+        int TA = calcularTA(registradores, memoria); // operando
+
+        byte[] bytesA = registradores.getRegistradorPorNome("A").getValor();
+
+        bytesA[2] = (byte)(TA & 0xFF);
+
+        registradores.getRegistradorPorNome("A").setValor(bytesA); // A [byte mais à direita] ← (m) 
+
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
+
     }
     
 }

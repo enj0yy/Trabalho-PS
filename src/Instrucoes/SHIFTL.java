@@ -5,26 +5,24 @@ import Executor.Registradores;
 public class SHIFTL  extends Instrucao {
 
         public SHIFTL() {
-            super("SHIFTL", "A4");
+            super("SHIFTL", (byte)0xA4, "2");
         }
 
         @Override
         public void executar(Memoria memoria, Registradores registradores) {
-            int idRegistradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-            registradores.incrementarPC();
-            int quantidadeDeslocamento = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
 
-            // Obtém o valor do registrador a ser deslocado à esquerda
-            int valorRegistrador = registradores.getRegistrador(idRegistradorA).getValor();
+            byte[] bytes = memoria.getBytes(registradores.getValorPC(),2); // pega dos 2 bytes que a instrução ocupa
 
-            // Realiza o deslocamento à esquerda (shift left) pela quantidade especificada
-            int resultado = valorRegistrador << quantidadeDeslocamento;
-
-            // Atualiza o valor do registrador com o resultado do deslocamento à esquerda
-            registradores.getRegistrador(idRegistradorA).setValor(resultado);
-
-            // Incrementa o contador de programa
-            registradores.incrementarPC();
+            int[] registradoresID = getRegistradores(bytes); // id dos registradores
+    
+            int valorRegistradorA = registradores.getRegistrador(registradoresID[0]).getValorIntSigned() + 1; // valor no reg A, +1 pois r1 = n-1
+            int valorRegistradorB = registradores.getRegistrador(registradoresID[1]).getValorIntSigned() + 1; // valor no reg B, +1 pois r1 = n-1
+    
+            int resultado = ((valorRegistradorA << valorRegistradorB) | (valorRegistradorA >>> (24 - valorRegistradorB))) & 0xFFFFFF; // Deslocamento circular a esquerda
+    
+            registradores.getRegistrador(registradoresID[0]).setValorInt(resultado);
+    
+            registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
 
         }
 

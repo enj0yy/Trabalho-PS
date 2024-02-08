@@ -6,27 +6,28 @@ import Executor.Registradores;
 public class TIX extends Instrucao {
 
     public TIX() {
-        super("TIX", "2C");
+        super("TIX", (byte)0x2C, "3/4");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int valorRegistradorX = (registradores.getRegistradorPorNome("X").getValor()) + 1;
-        registradores.getRegistradorPorNome("X").setValor(valorRegistradorX);
-        
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        int valorMem = Integer.parseInt(memoria.getPosicaoMemoria(enderecoMem),16);
 
-        valorRegistradorX = registradores.getRegistradorPorNome("X").getValor();
+        int TA = calcularTA(registradores, memoria); // operando
+        
+        int valorRegistradorX = (registradores.getRegistradorPorNome("X").getValorIntSigned()) + 1;
+
+        registradores.getRegistradorPorNome("X").setValorInt(valorRegistradorX);
+        
+        int valorMem = memoria.getWord(TA);
 
         if (valorRegistradorX == valorMem) {
-            registradores.getRegistradorPorNome("SW").setValor(0);
+            registradores.getRegistradorPorNome("SW").setValorInt(0);
         } else if (valorRegistradorX < valorMem) {
-            registradores.getRegistradorPorNome("SW").setValor(-1);
+            registradores.getRegistradorPorNome("SW").setValorInt(-1);
         } else {
-            registradores.getRegistradorPorNome("SW").setValor(1);
+            registradores.getRegistradorPorNome("SW").setValorInt(1);
         }
         
-        registradores.incrementarPC();
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }  
 }

@@ -120,7 +120,6 @@ public class ExecutorInterface extends javax.swing.JFrame {
         memoryLabel.setFont(new java.awt.Font("Arial", 0, 20)); 
         memoryLabel.setText("Memória");
         memoryLabel.setForeground(ColorPalette.TEXT.getColor());
-         
 
         // Input e Output
         inputLabel.setFont(new java.awt.Font("Arial", 0, 14)); 
@@ -259,8 +258,7 @@ public class ExecutorInterface extends javax.swing.JFrame {
         try {
             int value = Integer.parseInt(enteredText);
             if ( value >= 0 && value <= 255 ) {
-                    executor.getRegistradores().getRegistradorPorNome("A").setValor(value);
-                    executor.getRegistradores().getRegistradorPorNome("PC").setValor(executor.getRegistradores().getRegistradorPorNome("PC").getValor()+1);
+                    executor.getRegistradores().getRegistradorPorNome("A").setValorInt(value);
                     attRegistradores();
                     stepButton.setEnabled(true);
                     runButton.setEnabled(true);
@@ -359,14 +357,14 @@ public class ExecutorInterface extends javax.swing.JFrame {
     private void attRegistradores() {   
         registerTable.setModel(new DefaultTableModel(
             new Object [][] {
-                {"PC", executor.getRegistradores().getRegistradorPorNome("PC").getValor()},
-                {"A", executor.getRegistradores().getRegistradorPorNome("A").getValor()},
-                {"X", executor.getRegistradores().getRegistradorPorNome("X").getValor()},
-                {"L", executor.getRegistradores().getRegistradorPorNome("L").getValor()},
-                {"B", executor.getRegistradores().getRegistradorPorNome("B").getValor()},
-                {"S", executor.getRegistradores().getRegistradorPorNome("S").getValor()},
-                {"T", executor.getRegistradores().getRegistradorPorNome("T").getValor()},
-                {"SW", executor.getRegistradores().getRegistradorPorNome("SW").getValor()}
+                {"PC", executor.getRegistradores().getValorPC()},
+                {"A", executor.getRegistradores().getRegistradorPorNome("A").getValorIntSigned()},
+                {"X", executor.getRegistradores().getRegistradorPorNome("X").getValorIntSigned()},
+                {"L", executor.getRegistradores().getRegistradorPorNome("L").getValorIntSigned()},
+                {"B", executor.getRegistradores().getRegistradorPorNome("B").getValorIntSigned()},
+                {"S", executor.getRegistradores().getRegistradorPorNome("S").getValorIntSigned()},
+                {"T", executor.getRegistradores().getRegistradorPorNome("T").getValorIntSigned()},
+                {"SW", executor.getRegistradores().getRegistradorPorNome("SW").getValorIntSigned()}
             },
             new String [] {
                 "Nome", "Valor"
@@ -376,14 +374,13 @@ public class ExecutorInterface extends javax.swing.JFrame {
 
     private void attMemoria(JList<String> memoryList) {
         memoryList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = executor.getMemoria().getMemoria().toArray(new String[0]);
+            byte[] bytes = executor.getMemoria().getMemoria();
             
             @Override
-            public int getSize() { return strings.length; }
+            public int getSize() { return bytes.length; }
             
             @Override
-            public String getElementAt(int i) { return strings[i]; }
+            public String getElementAt(int i) { return String.format("%8s", Integer.toBinaryString(bytes[i] & 0xFF)).replace(' ', '0'); } // transforma caad byte em uma string contendo o valor binário armazenado no byte
         });
     }
-     
 }

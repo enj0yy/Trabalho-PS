@@ -5,8 +5,8 @@ Execução:
 - Arquivo de execução: .\src\TrabalhoPS\TrabalhoPS.java
 
 Componentes:
-- Executor ✔️
-- Montador ⌛
+- Executor (https://drive.google.com/file/d/11tbWbTYv844VtkBdwcxaAgLyqsb81Tg_/view?usp=sharing) ✔️
+- Montador (https://drive.google.com/file/d/1ZNLny3NNl0DjN5PY35OqjxW7uYAlreiN/view?usp=sharing) ✔️
 
 # 👥 **Integrantes** 👥
 

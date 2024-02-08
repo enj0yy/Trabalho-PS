@@ -6,18 +6,17 @@ import Executor.Registradores;
 public class STS extends Instrucao {
 
     public STS() {
-        super("STS", "7C");
+        super("STS", (byte)0x7C, "3/4");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
+        int TA = calcularTA(registradores, memoria); // operando
+
+        int bytesRegA = registradores.getRegistradorPorNome("S").getValorIntSigned(); // retorna o valor armazenado no registrador S
         
-        int valorS = registradores.getRegistradorPorNome("S").getValor();
-        String valorSHex = Integer.toHexString(valorS);
+        memoria.setWord(TA, bytesRegA); // armazena o valor do reg a na posição de memória espeçificado por TA
         
-        memoria.setPosicaoMemoria(enderecoMem, valorSHex);
-        
-        registradores.incrementarPC();
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }  
 }

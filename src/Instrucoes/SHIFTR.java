@@ -6,26 +6,23 @@ import Executor.Registradores;
 public class SHIFTR  extends Instrucao {
 
     public SHIFTR() {
-        super("SHIFTL", "A8");
+        super("SHIFTL", (byte)0xA8, "2");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int idRegistradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
-        registradores.incrementarPC();
-        int quantidadeDeslocamento = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
+        byte[] bytes = memoria.getBytes(registradores.getValorPC(),2); // pega dos 2 bytes que a instrução ocupa
 
-        // Obtém o valor do registrador a ser deslocado à direita
-        int valorRegistrador = registradores.getRegistrador(idRegistradorA).getValor();
+        int[] registradoresID = getRegistradores(bytes); // id dos registradores
 
-        // Realiza o deslocamento à direita (shift right) pela quantidade especificada
-        int resultado = valorRegistrador >>> quantidadeDeslocamento; // Usando o operador ">>>" para deslocamento à direita lógico
+        int valorRegistradorA = registradores.getRegistrador(registradoresID[0]).getValorIntSigned() + 1; // valor no reg A, +1 pois r1 = n-1
+        int valorRegistradorB = registradores.getRegistrador(registradoresID[1]).getValorIntSigned() + 1; // valor no reg B, +1 pois r1 = n-1
 
-        // Atualiza o valor do registrador com o resultado do deslocamento à direita
-        registradores.getRegistrador(idRegistradorA).setValor(resultado);
+        int resultado = ((valorRegistradorA >> valorRegistradorB) & 0xFFFFFF); // Deslocamento circular a direita preservando o sinal
 
-        // Incrementa o contador de programa
-        registradores.incrementarPC();
+        registradores.getRegistrador(registradoresID[0]).setValorInt(resultado);
+
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
 
     }
 

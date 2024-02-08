@@ -2,9 +2,9 @@ package Executor;
 
 
 import Instrucoes.Instrucoes;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -16,93 +16,86 @@ public class Executor {
     private boolean stop;
 
     public Executor() {
-        this.memoria = new Memoria();
+        this.memoria = new Memoria(1024); // 1KB de memória
         this.registradores = new Registradores();
         this.instrucoes = new Instrucoes();
         this.output = -1;
     }
     
-    public void setPrograma(String caminho) throws FileNotFoundException, IOException
-    {
-        
+    public void setPrograma(String caminho) {
         memoria.limparMemoria();
         registradores.limparRegistradores();
-        
+
         File file = new File(caminho);
+
+        int posMem = 0;
+
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String str;
-            int pos = 0;
-            while ((str = br.readLine()) != null){
-                String[] splited = str.split("\\s+");
-                for (String splited1 : splited) {
-                    memoria.setPosicaoMemoria(pos, splited1);
-                    pos++;
-                }
+            String binaryString = br.readLine();
+
+            int tamanhoByte = 8;
+            int tamanho = binaryString.length();
+    
+            for (int i = 0; i < tamanho; i += tamanhoByte) {
+                int endIndex = Math.min(i + tamanhoByte, tamanho);
+                String pedaco = binaryString.substring(i, endIndex);
+
+                byte pedacoByte = (byte) Integer.parseInt(pedaco, 2);
+
+                memoria.setByte(posMem++, pedacoByte);
             }
-        } catch(Exception e)
-        {
+        } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Erro ao ler o arquivo.");
         }
     }
     
-    
-    
     public void executarPrograma()
     {
-        int pc = this.registradores.getRegistradorPorNome("PC").getValor();
-        String opcode = memoria.getPosicaoMemoria(pc);
+        int pc = registradores.getValorPC();
         stop = false;
 
-        while (!"00".equals(opcode))
+        while (memoria.getWord(pc) != 0) // para de executar se a proxima palavra for vazia
         {
-            if (opcode.equals("00")){
-                return;
-            }
 
-            if (opcode.equals("D8")){ 
+            byte opcode = memoria.getOpcode(pc);
+            if (opcode == (byte)0xD8){ // Read
                 stop = true;
+                registradores.incrementarPC(1);
                 return;
             }
             
-            registradores.incrementarPC();
-            if ("DC".equals(opcode)) { // Write
-                setOutput(registradores.getRegistradorPorNome("A").getValor());
+            if (opcode == (byte)0xDC) { // Write
+                setOutput(registradores.getRegistradorPorNome("A").getValorIntSigned());
+                registradores.incrementarPC(1);
             } else {
                 instrucoes.getInstrucao(opcode).executar(memoria, registradores);
             }
             
-            pc = this.registradores.getRegistradorPorNome("PC").getValor();
-            opcode = memoria.getPosicaoMemoria(pc);  
+            pc = this.registradores.getRegistradorPorNome("PC").getValorIntSigned();
         }   
     }
 
     public boolean executarPasso()
     {
-        int pc = this.registradores.getRegistradorPorNome("PC").getValor();
-        String opcode = memoria.getPosicaoMemoria(pc);
+        int pc = this.registradores.getRegistradorPorNome("PC").getValorIntSigned();
+        byte opcode = memoria.getOpcode(pc);
         stop = false;
         
-        if (opcode.equals("00")){
-            return false;
-        }
-        
-        if (opcode.equals("D8")){
+        if (opcode == (byte)0xD8){
             stop = true;
+            registradores.incrementarPC(1);
             return true;
         }
 
-        registradores.incrementarPC();
-        if ("DC".equals(opcode)) {
-            setOutput(registradores.getRegistradorPorNome("A").getValor());
+        if (opcode == (byte)0xDC) {
+            setOutput(registradores.getRegistradorPorNome("A").getValorIntSigned());
+            registradores.incrementarPC(1);
         } else {
             instrucoes.getInstrucao(opcode).executar(memoria, registradores);
         }
 
-        pc = this.registradores.getRegistradorPorNome("PC").getValor();
-        opcode = memoria.getPosicaoMemoria(pc);
-        
-        if ("00".equals(opcode))
-            return false;
+        pc = this.registradores.getValorPC();
 
         return true;
     }

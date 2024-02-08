@@ -6,18 +6,17 @@ import Executor.Registradores;
 public class STL extends Instrucao {
 
     public STL() {
-        super("STL", "14");
+        super("STL", (byte)0x14, "3/4");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int enderecoMem = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
-        
-        int valorL = registradores.getRegistradorPorNome("L").getValor();
-        String valorLHex = Integer.toHexString(valorL);
+        int TA = calcularTA(registradores, memoria); // operando
 
-        memoria.setPosicaoMemoria(enderecoMem, valorLHex);
+        int bytesRegA = registradores.getRegistradorPorNome("L").getValorIntSigned(); // retorna o valor armazenado no registrador L
         
-        registradores.incrementarPC();
+        memoria.setWord(TA, bytesRegA); // armazena o valor do reg a na posição de memória espeçificado por TA
+        
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
 }

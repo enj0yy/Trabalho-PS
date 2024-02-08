@@ -6,13 +6,14 @@ import Executor.Registradores;
 public class J extends Instrucao {
     
     public J() {
-        super("J", "3C");
+        super("J", (byte)0x3C, "3/4");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int enderecoJump = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16);
-        registradores.getRegistradorPorNome("PC").setValor(enderecoJump);
+        int TA = calcularTA(registradores, memoria); // operando
+
+        registradores.getRegistradorPorNome("PC").setValorInt(TA); // seta o PC para o endereço de jump
     }
     
 }

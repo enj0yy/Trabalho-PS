@@ -6,15 +6,18 @@ import Executor.Registradores;
 public class CLEAR extends Instrucao {
 
     public CLEAR() {
-        super("CLEAR", "4");
+        super("CLEAR", (byte)0x4, "2");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int idRegistradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()),16); // pegando o id do registrador (parametro 1)
-        registradores.incrementarPC(); // apos ler o parametro, incrementar o PC
+        byte[] bytes = memoria.getBytes(registradores.getValorPC(),2); // pega dos 2 bytes que a instrução ocupa
 
-        registradores.getRegistrador(idRegistradorA).setValor(0); // reg A <- 0
+        int[] registradoresID = getRegistradores(bytes); // id dos registradores
+
+        registradores.getRegistrador(registradoresID[0]).setValorInt(0); // r1 <- 0
+
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
     
 }

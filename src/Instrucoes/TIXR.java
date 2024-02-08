@@ -6,25 +6,29 @@ import Executor.Registradores;
 public class TIXR extends Instrucao {
 
     public TIXR() {
-        super("TIXR", "B8");
+        super("TIXR", (byte)0xB8, "2");
     }
 
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
-        int valorRegistradorX = (registradores.getRegistradorPorNome("X").getValor()) + 1;
-        registradores.getRegistradorPorNome("X").setValor(valorRegistradorX);
-        
-        int registradorA = Integer.parseInt(memoria.getPosicaoMemoria(registradores.getValorPC()), 16);
-        int valorRegistradorA = registradores.getRegistrador(registradorA).getValor();
-            
-        if(valorRegistradorX == valorRegistradorA) {
-            registradores.getRegistradorPorNome("SW").setValor(0);
-        } else if(valorRegistradorX > valorRegistradorA) {
-            registradores.getRegistradorPorNome("SW").setValor(1);
+
+        byte[] bytes = memoria.getBytes(registradores.getValorPC(),2); // pega dos 2 bytes que a instrução ocupa
+
+        int[] registradoresID = getRegistradores(bytes); // id dos registradores
+
+        int valorRegistradorA = registradores.getRegistrador(registradoresID[0]).getValorIntSigned(); // valor no reg A
+
+        int valorRegistradorX = (registradores.getRegistradorPorNome("X").getValorIntSigned()) + 1;
+        registradores.getRegistradorPorNome("X").setValorInt(valorRegistradorX);
+
+        if (valorRegistradorX == valorRegistradorA) {
+            registradores.getRegistradorPorNome("SW").setValorInt(0);
+        } else if (valorRegistradorX < valorRegistradorA) {
+            registradores.getRegistradorPorNome("SW").setValorInt(-1);
         } else {
-            registradores.getRegistradorPorNome("SW").setValor(-1);
+            registradores.getRegistradorPorNome("SW").setValorInt(1);
         }
         
-        registradores.incrementarPC();
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }  
 }
