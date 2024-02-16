@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class LDCH extends Instrucao {
 
     public LDCH() {
-        super("LDCH", (byte)0x50, "3/4");
+        super("LDCH", (byte)0x50, "3/4", 3);
     }
 
     @Override

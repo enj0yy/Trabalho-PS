@@ -5,7 +5,7 @@ import Executor.Registradores;
 
 public class LDB extends Instrucao {
     public LDB() {
-        super("LDB", (byte)0x68, "3/4");
+        super("LDB", (byte)0x68, "3/4", 3);
     }
 
     @Override

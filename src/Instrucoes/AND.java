@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class AND extends Instrucao {
 
     public AND() {
-        super("AND", (byte)0x40, "3/4");
+        super("AND", (byte)0x40, "3/4",3);
     }
 
     @Override

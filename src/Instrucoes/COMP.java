@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class COMP extends Instrucao {
 
     public COMP() {
-        super("COMP", (byte)0x28, "3/4");
+        super("COMP", (byte)0x28, "3/4",3);
     }
 
     @Override

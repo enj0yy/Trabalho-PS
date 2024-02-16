@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class DIV extends Instrucao {
 
     public DIV() {
-        super("DIV", (byte)0x24, "3/4");
+        super("DIV", (byte)0x24, "3/4",3);
     }
 
     @Override

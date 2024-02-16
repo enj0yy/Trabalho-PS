@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class JEQ extends Instrucao {
 
     public JEQ() {
-        super("JEQ", (byte)0x30, "3/4");
+        super("JEQ", (byte)0x30, "3/4",3 );
     }
 
     @Override

@@ -5,7 +5,7 @@ import Executor.Registradores;
 
 public class LDS extends Instrucao {
     public LDS() {
-        super("LDS", (byte)0x6C, "3/4");
+        super("LDS", (byte)0x6C, "3/4", 3);
     }
 
     @Override

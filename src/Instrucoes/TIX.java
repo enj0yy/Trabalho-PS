@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class TIX extends Instrucao {
 
     public TIX() {
-        super("TIX", (byte)0x2C, "3/4");
+        super("TIX", (byte)0x2C, "3/4", 3);
     }
 
     @Override

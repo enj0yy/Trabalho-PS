@@ -7,7 +7,7 @@ import Executor.Registradores;
 public class STA extends Instrucao {
 
     public STA() {
-        super("STA", (byte)0x0C, "3/4");
+        super("STA", (byte)0x0C, "3/4", 3);
     }
 
     @Override

@@ -5,7 +5,7 @@ import Executor.Registradores;
 
 public class JGT extends Instrucao {
     public JGT() {
-        super("JGT", (byte)0x34, "3/4");
+        super("JGT", (byte)0x34, "3/4", 3);
     }
 
     @Override

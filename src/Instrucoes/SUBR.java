@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class SUBR extends Instrucao {
 
     public SUBR() {
-        super("SUBR", (byte)0x94, "2");
+        super("SUBR", (byte)0x94, "2", 2);
     }
 
     @Override

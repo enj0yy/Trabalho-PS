@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class RSUB extends Instrucao {
     
     public RSUB() {
-        super("RSUB", (byte)0x4C, "1");
+        super("RSUB", (byte)0x4C, "1", 1);
     }
 
     @Override

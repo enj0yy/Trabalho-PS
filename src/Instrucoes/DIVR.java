@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class DIVR extends Instrucao {
 
     public DIVR() {
-        super("DIVR", (byte)0x9C, "2");
+        super("DIVR", (byte)0x9C, "2",2);
     }
 
     @Override

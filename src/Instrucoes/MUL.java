@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class MUL extends Instrucao {
 
     public MUL() {
-        super("MUL", (byte)0x20, "3/4");
+        super("MUL", (byte)0x20, "3/4", 3);
     }
 
     @Override

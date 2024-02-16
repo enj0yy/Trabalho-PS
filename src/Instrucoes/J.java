@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class J extends Instrucao {
     
     public J() {
-        super("J", (byte)0x3C, "3/4");
+        super("J", (byte)0x3C, "3/4", 3);
     }
 
     @Override

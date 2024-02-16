@@ -5,7 +5,7 @@ import Executor.Registradores;
 
 public class LDT extends Instrucao {
     public LDT() {
-        super("LDT", (byte)0x74, "3/4");
+        super("LDT", (byte)0x74, "3/4", 3);
     }
 
     @Override

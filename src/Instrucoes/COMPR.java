@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class COMPR extends Instrucao {
 
     public COMPR() {
-        super("COMPR", (byte)0xA0, "2");
+        super("COMPR", (byte)0xA0, "2",2);
     }
 
     @Override

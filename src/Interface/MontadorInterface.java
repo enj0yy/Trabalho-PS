@@ -1,8 +1,9 @@
 package Interface;
 
-import Montador.Montador;
 
 import javax.swing.*;
+
+import Montador.Montador;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -203,7 +204,7 @@ public class MontadorInterface extends JFrame {
         outputArea.setText(""); 
         String input = inputArea.getText();
         try {
-            String out = montador.montarPrograma(input);
+            String out = montador.Montar(input);
             outputArea.setText(out);
         } catch (Exception e) {
             outputArea.setText("Erro ao montar o programa: " + e.getMessage());

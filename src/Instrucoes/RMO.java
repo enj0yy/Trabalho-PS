@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class RMO extends Instrucao {
 
     public RMO() {
-        super("RMO", (byte)0xAC, "2");
+        super("RMO", (byte)0xAC, "2",2);
     }
 
     @Override

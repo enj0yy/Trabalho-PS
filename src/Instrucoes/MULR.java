@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class MULR extends Instrucao {
 
     public MULR() {
-        super("MULR", (byte)0x98, "2");
+        super("MULR", (byte)0x98, "2", 2);
     }
 
     @Override

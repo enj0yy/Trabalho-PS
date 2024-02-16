@@ -5,7 +5,7 @@ import Executor.Registradores;
 
 public class JLT extends Instrucao {
     public JLT() {
-        super("JLT", (byte)0x38, "3/4");
+        super("JLT", (byte)0x38, "3/4", 3);
     }
 
     @Override

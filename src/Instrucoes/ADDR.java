@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class ADDR extends Instrucao {
 
     public ADDR() {
-        super("ADDR", (byte)0x90, "2");
+        super("ADDR", (byte)0x90, "2",2);
     }
 
     @Override

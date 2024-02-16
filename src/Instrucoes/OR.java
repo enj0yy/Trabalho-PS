@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class OR extends Instrucao {
 
     public OR() {
-        super("OR", (byte)0x44, "3/4");
+        super("OR", (byte)0x44, "3/4", 3);
     }
 
     @Override

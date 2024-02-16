@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class STB extends Instrucao {
 
     public STB() {
-        super("STB", (byte)0x78, "3/4");
+        super("STB", (byte)0x78, "3/4", 3);
     }
 
     @Override

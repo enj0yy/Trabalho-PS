@@ -5,7 +5,7 @@ import Executor.Registradores;
 
 public class LDA extends Instrucao {
     public LDA() {
-        super("LDA", (byte)0x00, "3/4");
+        super("LDA", (byte)0x00, "3/4", 3);
     }
 
     @Override

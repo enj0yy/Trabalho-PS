@@ -5,233 +5,84 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
-import Executor.Registradores;
 
+/*
+ * Todo:
+ * Tratar RD e WD
+ * Tratar Formato 1
+ * Tratar o pc relative do executor que ta metendo o loco
+ */
 public class Montador {
     private String errorMessage = "";
 
-    private Instrucoes OPTAB;               // Tabela de instrucoes
-    private Map<String, String> POPTAB;     // Tabela de pseudo-instrucoes
     private Map<String, Integer> SYMTAB;    // Tabela de simbolos
+    private Instrucoes OPTAB;               // Tabela de instrucoes
 
-    private List<String> input = new ArrayList<String>();
-    StringBuilder output = new StringBuilder();
+    private ArrayList<String> input = new ArrayList<String>(); 
+    public ListingObject output = new ListingObject();
 
-    public Montador()
-    {
+    ArrayList<ParserLine> medfile = new ArrayList<>();
+
+    public Montador(){
         OPTAB = new Instrucoes();
 
-        POPTAB = new HashMap<String, String>();
-        POPTAB.put("START", "0");
-        POPTAB.put("END", "0");
-        POPTAB.put("RD", "D8");
-        POPTAB.put("WD", "DC");
-        POPTAB.put("WORD", "0");
-        POPTAB.put("BYTE", "0");
-        POPTAB.put("RESW", "0");
-        POPTAB.put("RESB",  "0");
-
         SYMTAB = new HashMap<String, Integer>();
+        SYMTAB.put("A", 0);
+        SYMTAB.put("X", 1);
+        SYMTAB.put("L", 2);
+        SYMTAB.put("B", 3);
+        SYMTAB.put("S", 4);
+        SYMTAB.put("T", 5);
+        SYMTAB.put("PC", 6);
+        SYMTAB.put("SW", 7);
     }
 
-    public String montarPrograma(String codigoAssembly)
-    {
-        limpaListas();
-        setPrograma(codigoAssembly);
-        passoUm();    
-        passoDois();
-        gerarTXTOutput();
-        mostrarMensagem();
-        return output.toString();
-    }
-
-    public void limpaListas() {
-        input.clear();
-        output.setLength(0);
-        errorMessage = "";
-        SYMTAB.clear();
-    }
-
-    private void setPrograma(String codigoAssembly)
-    {
+    public void setPrograma(String codigoAssembly) {
         String[] linhas = codigoAssembly.split("\\r?\\n");
         for (String linha : linhas){
             input.add(linha);
         }
     }
 
-
-    private void passoUm()
-    {
-        int LocationCounter = 0;
-
-        String primeiraLinha = input.get(0);
-
-        String label = getLabel(primeiraLinha);
-        String opcode = getOpcode(primeiraLinha);
-        List<String> operands = getOperands(primeiraLinha);
-
-        if (opcode != null && opcode.equals("START")) 
-            LocationCounter = Integer.parseInt(operands.get(0));
-        else
-            LocationCounter = 0;    
-  
-        
-        for (int i = 1; i < input.size(); i++) 
-        {
-            String linha = input.get(i);
-
-            if (linha.isEmpty() || Character.compare(linha.charAt(0), '.') == 0)
-                continue;
-
-            label = getLabel(linha);
-            opcode = getOpcode(linha);
-            operands = getOperands(linha);
-
-            if (opcode != null && opcode.equals("END")) 
-                break;
-            
-            if(label != null)
-                SYMTAB.put(label, LocationCounter);    
-
-            if (OPTAB.getInstrucaoPorNome(opcode) != null) // Instrucao
-            {
-                LocationCounter++;
-
-                for (String operand : operands)
-                {
-                    if (isSymbol(operand))
-                        if (SYMTAB.get(operand) == null)
-                            SYMTAB.put(operand, null);
-
-                    LocationCounter++;
-                }
-            }
-            else if (POPTAB.get(opcode) != null) // Pseudo-instrucao
-            {
-                switch (opcode) 
-                {
-                    case "RD":
-                    case "WD":
-                    case "WORD": 
-                    case "BYTE":
-                        LocationCounter++;
-                        break;
-
-                    case "RESW":
-                    case "RESB":
-                        for (String operand : operands)
-                            LocationCounter += Integer.parseInt(operand);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-            else 
-                errorMessage = errorMessage + "\nERRO - Instrucao invalida: " + linha;
-        }  
+    public void limpaListas() {
+        input.clear();
+        output.reset();
+        SYMTAB.clear();
+        medfile.clear();
+        SYMTAB.put("A", 0);
+        SYMTAB.put("X", 1);
+        SYMTAB.put("L", 2);
+        SYMTAB.put("B", 3);
+        SYMTAB.put("S", 4);
+        SYMTAB.put("T", 5);
+        SYMTAB.put("PC", 6);
+        SYMTAB.put("SW", 7);
+        errorMessage = "";
     }
 
-    private void passoDois()
-    {       
-        for(String linha : input)
-        {
-            if (linha.isEmpty() || Character.compare(linha.charAt(0), '.') == 0) // Pula linhas que começam com . (comentários)
-                continue;
+    public String Montar(String codigoAssembly){
+        limpaListas();
+        setPrograma(codigoAssembly);
+        passoUm();
+        passoDois();
+        gerarTXTOutput();
+        mostrarMensagem();
 
-            String opcode = getOpcode(linha);
-            List<String> operands = getOperands(linha);
-
-            if (opcode != null && opcode.equals("START")) 
-                continue;
-
-            if (opcode != null && opcode.equals("END")) 
-                break;
-
-            if (OPTAB.getInstrucaoPorNome(opcode) != null) // Instrucao
-            {
-                output.append(OPTAB.getInstrucaoPorNome(opcode).getOpcode());
-
-                for (String operand : operands)
-                {
-                    if (isSymbol(operand))
-                        if (SYMTAB.get(operand) == null)
-                        {
-                            output.append(" ").append(Integer.toHexString(0).toUpperCase());
-                            errorMessage = errorMessage + "\nERRO - Simbolo nao definido: " + linha;
-                        }
-                        else
-                            output.append(" ").append(Integer.toHexString(SYMTAB.get(operand)).toUpperCase());     
-                    else
-                        output.append(" ").append(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());      
-                }   
-            }
-            else if (POPTAB.get(opcode) != null) // Pseudo-instrucao
-            {
-                switch (opcode) 
-                {
-                    case "RD":
-                        output.append("D8");
-                        break;
-
-                    case "WD":
-                        output.append("DC");
-                        break;
-                        
-                    case "WORD":
-                        for (String operand : operands)
-                            output.append(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());
-                        break;
-
-                    case "BYTE":
-                        for (String operand : operands)
-                        {
-                            if (operands.get(0).charAt(0) == 'C') // BYTE C'EOF' vai de string(EOF) para HEX(454F46)
-                                for (int i = 2; i < operands.get(0).length()-1; i++)
-                                    output.append(Integer.toHexString((int)operands.get(0).charAt(i)).toUpperCase());
-
-                            else if (operands.get(0).charAt(0) == 'X') //BYTE X'05' para HEX(05)
-                                output.append(operands.get(0).substring(2, operands.get(0).length()-1).toUpperCase());
-
-                            else // BYTE 10 vai de decimal(10) para HEX(0A)
-                                output.append(Integer.toHexString(Integer.parseInt(operand)).toUpperCase());
-                        }   
-                        break;
-
-                    case "RESW":
-                    case "RESB":
-                        for (String operand : operands)
-                            for (Integer i = 0; i < Integer.parseInt(operand); i++)
-                            {
-                                output.append("0");
-                                if (i<Integer.parseInt(operand)-1)
-                                    output.append(System.lineSeparator());
-                            }
-                        break;
-
-
-                    default:
-                        break;
-                }
-            }
-            output.append(System.lineSeparator());
-        }
+        return String.join("\n", output.TextRecord);
+        
     }
 
     private void gerarTXTOutput() {
         try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontador.txt")) 
             {
-                fileWriter.write(output.toString());
+                fileWriter.write(String.join("", output.TextRecord));
                 fileWriter.close();
             } catch (IOException e) {
                 errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
             }
     }
-
 
     private void mostrarMensagem()
     {
@@ -244,80 +95,358 @@ public class Montador {
             JOptionPane.showMessageDialog(null, mensagem, "Montador", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private String getLabel(String linha)
+    public void passoUm()
     {
-        String[] splited = linha.split("\\s+");
-        try 
-        {
-            if ( (OPTAB.getInstrucaoPorNome(splited[0]) != null) || (POPTAB.get(splited[0]) != null) )  // Nao Possui Label
-                return null;
-            else // Possui Label
-                return splited[0];
+        int lc = 0;
+        int LOCCTR = 0;
+        
+        ParserLine line = new ParserLine();
+        line.parser(input.get(lc));
 
-        } catch ( Exception e) {
-            return null;
-        }
-    }
-    
-    private String getOpcode(String linha)
-    {
-        String[] splited = linha.split("\\s+");
-        try
+        if(line.opcode.equals("START"))
         {
-            if ( (OPTAB.getInstrucaoPorNome(splited[0]) != null) || (POPTAB.get(splited[0]) != null) )  // Nao Possui Label
-                return splited[0];
-            else // Possui Label
-                return splited[1];
-                
-        } catch ( Exception e ) {
-            return null;
+            LOCCTR = Integer.parseInt(line.operands[0]);
+            medfile.add(line); 
+
+            lc +=1; 
+            line = new ParserLine();
+            line.parser(input.get(lc));
+        }
+        else
+        {
+            LOCCTR = 0;
+        }
+
+        output.startingAddress = LOCCTR;
+
+        while(!(line.opcode.equals("END")))
+        {
+            if( !(line.label.isEmpty()) )
+            {  
+                if(SYMTAB.containsKey(line.label))
+                {
+                    errorMessage = errorMessage + "\nERRO - Multipla definição: " + input.get(lc);
+                }
+                else
+                {
+                    SYMTAB.put(line.label,LOCCTR);
+                }
+            }
+
+            if(OPTAB.getInstrucaoPorNome(line.opcode) != null)
+            {
+                int tamanhoIntrucao = OPTAB.getInstrucaoPorNome(line.opcode).getLength();
+                switch (tamanhoIntrucao) 
+                {
+                    case 3:
+                        if(line.extended)
+                        {
+                            LOCCTR += 4;
+                            line.set_tamanho_instr(4);
+                        }
+                        else
+                        {
+                            LOCCTR += 3;
+                            line.set_tamanho_instr(3);
+                        }
+                    break;
+                    default:
+                        LOCCTR += tamanhoIntrucao;
+                        line.set_tamanho_instr(tamanhoIntrucao);
+                        break;
+                }
+            }
+            else if (line.opcode.equals("WORD"))
+            {
+                LOCCTR +=3;
+                line.set_tamanho_instr(3);
+            }
+            else if(line.opcode.equals("RESW"))
+            {
+                int aux = Integer.parseInt(line.operands[0]); 
+                LOCCTR = LOCCTR + (3*aux);
+                line.set_tamanho_instr(3*aux);
+            }
+            else if(line.opcode.equals("RESB"))
+            {
+                int aux = Integer.parseInt(line.operands[0]); 
+                LOCCTR += aux;
+                line.set_tamanho_instr(aux);
+            }
+            else if(line.opcode.equals("BYTE"))
+            {
+                LOCCTR += 1; 
+                line.set_tamanho_instr(1);
+            }
+            else
+            {
+                errorMessage = errorMessage + "\nERRO - Opcode Inválido: " + input.get(lc);
+            }
+
+            medfile.add(line);
+            line = new ParserLine();
+            lc +=1;
+            line.parser(input.get(lc));
         }
         
+        medfile.add(line);
     }
 
-    private List<String> getOperands(String linha)
+    public void passoDois()
     {
-        String[] splited = linha.split("\\s+");
-        List<String> operands = new ArrayList<String>();
+        int lc = 0;
+        int LOCCTR = 0;
+        String obj;
+        ArrayList<String> machine_code = new ArrayList<>();
 
-        try
+        if (medfile.get(lc).opcode.equals("START"))
         {
-            if ( (OPTAB.getInstrucaoPorNome(splited[0]) != null) || (POPTAB.get(splited[0]) != null) )  // Nao Possui Label
-            {
-                // Split operandos por virgula (ex: ADDR S,T)
-                splited = splited[1].split(",");
+            LOCCTR = Integer.parseInt(medfile.get(lc).operands[0]);
+            lc +=1;
+        }
+        else
+        {
+            LOCCTR = 0;
+        }
 
-                for (int i = 0; i < splited.length; i++)
-                    if (Registradores.getChaveRegistradorPorNome(splited[i]) != -1) // Registrador
-                        operands.add(Integer.toString(Registradores.getChaveRegistradorPorNome(splited[i])));
-                    else // Simbolo ou Constante
-                        operands.add(splited[i]);  
-            }
-            else // Possui Label
+        while (!medfile.get(lc).opcode.equals("END"))
+        {
+            if( OPTAB.getInstrucaoPorNome(medfile.get(lc).opcode) != null )
             {
-                // Split operandos por virgula (ex: ADICIONAR ADDR S,T)
-                splited = splited[2].split(",");
+                LOCCTR += medfile.get(lc).tamanho_instr;
+
+                if(medfile.get(lc).tamanho_instr == 2)
+                {
+                    obj = montarF2(medfile.get(lc));
+                    machine_code.add(hexToBinary(obj));
+                }
+
+                else if(medfile.get(lc).tamanho_instr > 2)
+                {
+                    obj = montarF3F4(medfile.get(lc),LOCCTR);
+                    machine_code.add(hexToBinary(obj));
+                }
+            }
+            else if(medfile.get(lc).opcode.equals("BYTE"))
+            {
+                LOCCTR +=1;
+                char c = medfile.get(lc).operands[0].charAt(0);
+                obj = c+"";
+                machine_code.add(hexToBinary(obj));
                 
-                for (int i = 0; i < splited.length; i++)
-                    if(Registradores.getChaveRegistradorPorNome(splited[i]) != -1) // Registrador
-                        operands.add(Integer.toString(Registradores.getChaveRegistradorPorNome(splited[i])));
-                    else // Simbolo ou Constante
-                        operands.add(splited[i]);
+            }
+            else if(medfile.get(lc).opcode.equals("WORD"))
+            {
+                LOCCTR +=3;
+                int word = Integer.parseInt(medfile.get(lc).operands[0]);
+                obj = String.format("%1$06X",word & 0xFFFFFF);
+                machine_code.add(hexToBinary(obj));
+            }
+            else if(medfile.get(lc).opcode.equals("RESW"))
+            {
+                LOCCTR += medfile.get(lc).tamanho_instr;
+                int numero_palavras = (medfile.get(lc).tamanho_instr)/3;
+                for(int i=0; i < numero_palavras;i++){
+                    obj = String.format("%1$06X",0x0 & 0xFFFFFF);
+                    machine_code.add(hexToBinary(obj));
+                }
+            }
+            else if(medfile.get(lc).opcode.equals("RESB"))
+            {
+                LOCCTR += medfile.get(lc).tamanho_instr;
+                int numero_bytes = medfile.get(lc).tamanho_instr;
+                for(int i=0; i < numero_bytes;i++){
+                    obj = String.format("%1$02X",0x0 & 0xFF);
+                    machine_code.add(hexToBinary(obj));
+                }
+            }
+            else
+            {
+                errorMessage = errorMessage + "\nERRO - Opcode Inválido: " + input.get(lc);
+            }
+            lc+=1;
+        }
+
+        output.endAddress = LOCCTR;
+        output.set_length();
+        output.TextRecord = machine_code;
+    }
+
+    public String montarF2(ParserLine line){
+
+        String OpCode = String.format("%1$02X", OPTAB.getInstrucaoPorNome(line.opcode).getOpcode()& 0xFF);
+        String operando1 = line.operands[0];
+        String operando2 = line.operands[1];
+
+        String r1 = "0";
+        String r2 = "0";
+        
+        String object_code;
+        String prefixo = line.prefix;
+
+        // Usando Endereço númerico do Registrador
+        if(prefixo.equals("#"))
+        {
+            try {
+                r1 = operando1;
+            } catch (NumberFormatException e) {
+                errorMessage = errorMessage + "\nERRO - O endereço passsado não pode ser convertido para constante do tipo inteiro";
+            }
+            if(!operando2.isEmpty()){
+                try {
+                    r2 = operando2;
+                    
+                } catch (NumberFormatException e) {
+                    errorMessage = errorMessage + "\nERRO - O endereço passado não pode ser convertido para constante do tipo inteiro";
+                }
+            }
+        }
+
+        // Usando nome do Registrador
+        else{
+            if(SYMTAB.containsKey(operando1)){
+                r1 = String.format("%1$01X", SYMTAB.get(operando1) & 0xF);
+                if(SYMTAB.containsKey(operando2)){
+                    r2 = String.format("%1$01X", SYMTAB.get(operando2) & 0xF);
+                }
+            }
+            else{
+                errorMessage = errorMessage + "\nERRO - Simbolo não definido: " + operando1;
+            }
+        }
+        object_code = OpCode + r1+r2;
+        return object_code;
+    }
+
+    public String montarF3F4(ParserLine line, int PC)
+    {
+        int ni = 0;
+        byte opcode = OPTAB.getInstrucaoPorNome(line.opcode).getOpcode();
+        int operand;
+        int disp=0;
+        int xbpe;
+        int obj;
+        String prefixo = line.prefix;
+        
+        if(prefixo.isEmpty()){
+            ni = 0x03;
+        }
+        else if(prefixo.equals("#")){
+            ni = 0x01;
+        }
+        else if(prefixo.equals("@")){
+            ni = 0x02;
+        }
+        else{
+            errorMessage = errorMessage + "\nERRO - Prefixo inválido";
+        }
+
+
+        if( !SYMTAB.containsKey(line.operands[0]) ) // Constante
+        {
+            try {
+                disp = Integer.parseInt(line.operands[0]);
+                
+            } catch (NumberFormatException e) {
+                errorMessage = errorMessage + "\nERRO - Input String cannot be parsed to Integer.";
+            }
+            xbpe = 0;
+            obj = ((opcode & 0xFC) <<16) + (ni<< 16) + (xbpe << 12)+ disp;
+        }
+        else if(line.extended == true) // Extendido - Formato 4
+        {
+            operand = SYMTAB.get(line.operands[0]);
+            xbpe = 0x01;
+            disp = operand;
+            obj = ((opcode & 0xFC) <<24) + (ni<< 24) + (xbpe << 20)+ disp;
+        }
+        else // Formato 3
+        {
+            operand = SYMTAB.get(line.operands[0]);
+
+            if(line.operands[1].equals("X"))
+            {
+                    disp = operand - PC + SYMTAB.get("X");
+                    xbpe = 0xA;
+            }
+            else
+            {
+                    disp = operand - PC;
+                    xbpe = 0x2;
+            }
+                
+            String string_disp;
+
+            if(disp < 0)
+            {
+                string_disp = String.format("%1$01X", disp & 0xFFF);
+            }
+            else if(disp >=2048) 
+            {
+                errorMessage = errorMessage + "\nERRO - Formato SIC padrão detectado!";
+                ni = 0x0;
+                disp +=PC;
+                string_disp = String.format("%1$04X", disp & 0x7FFF);
+                String firstByte = String.format("%1$02X", (opcode + ni) & 0xFF);
+                return firstByte + string_disp;
+
+            }
+            else
+            {
+                string_disp = String.format("%1$03X", disp & 0xFFF);
             }
 
-            return operands;
-        } catch ( Exception e ) {
-            return null;
+            String string_xbpe = String.format("%1$01X", xbpe & 0xF);
+            String hexAddress = string_xbpe + string_disp;
+            String firstByte = String.format("%1$02X", (opcode + ni) & 0xFF);
+            return firstByte + hexAddress;
         }
+
+        String firstByte = String.format("%1$02X", (opcode + ni) & 0xFF);
+        String hexAddress = String.format("%1$04X",obj & 0xFFFF);
+
+        return firstByte + hexAddress;
     }
 
-    private static boolean isSymbol(String strNum)
+    String hexToBinary(String hex)
     {
-        try {
-            Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return true;
+        String binary = "";
+ 
+        hex = hex.toUpperCase();
+
+        HashMap<Character, String> hashMap
+            = new HashMap<Character, String>();
+ 
+        hashMap.put('0', "0000");
+        hashMap.put('1', "0001");
+        hashMap.put('2', "0010");
+        hashMap.put('3', "0011");
+        hashMap.put('4', "0100");
+        hashMap.put('5', "0101");
+        hashMap.put('6', "0110");
+        hashMap.put('7', "0111");
+        hashMap.put('8', "1000");
+        hashMap.put('9', "1001");
+        hashMap.put('A', "1010");
+        hashMap.put('B', "1011");
+        hashMap.put('C', "1100");
+        hashMap.put('D', "1101");
+        hashMap.put('E', "1110");
+        hashMap.put('F', "1111");
+ 
+        int i;
+        char ch;
+ 
+        for (i = 0; i < hex.length(); i++) {
+            ch = hex.charAt(i);
+            if (hashMap.containsKey(ch))
+                binary += hashMap.get(ch);
+            else {
+                binary = "Invalid Hexadecimal String";
+                return binary;
+            }
         }
-        return false;
+        return binary;
     }
+    
 }

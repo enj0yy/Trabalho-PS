@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class STX extends Instrucao {
     
     public STX() {
-        super("STX", (byte)0x10, "3/4");
+        super("STX", (byte)0x10, "3/4", 3);
     }
 
     @Override

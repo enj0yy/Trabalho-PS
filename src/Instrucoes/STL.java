@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class STL extends Instrucao {
 
     public STL() {
-        super("STL", (byte)0x14, "3/4");
+        super("STL", (byte)0x14, "3/4", 3);
     }
 
     @Override

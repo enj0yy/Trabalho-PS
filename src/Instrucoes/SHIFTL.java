@@ -5,7 +5,7 @@ import Executor.Registradores;
 public class SHIFTL  extends Instrucao {
 
         public SHIFTL() {
-            super("SHIFTL", (byte)0xA4, "2");
+            super("SHIFTL", (byte)0xA4, "2", 2);
         }
 
         @Override

@@ -5,7 +5,7 @@ import Executor.Registradores;
 
 public class LDL extends Instrucao {
     public LDL() {
-        super("LDL", (byte)0x8, "3/4");
+        super("LDL", (byte)0x8, "3/4", 3);
     }
 
     @Override

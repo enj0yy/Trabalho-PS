@@ -5,7 +5,7 @@ import Executor.Registradores;
 
 public class JSUB extends Instrucao {
     public JSUB() {
-        super("JSUB", (byte)0x48, "3/4");
+        super("JSUB", (byte)0x48, "3/4", 3);
     }
 
     @Override

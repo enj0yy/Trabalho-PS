@@ -5,7 +5,7 @@ import Executor.Registradores;
 
 public class LDX extends Instrucao {
     public LDX() {
-        super("LDX", (byte)0x04, "3/4");
+        super("LDX", (byte)0x04, "3/4", 3);
     }
 
     @Override

@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class SHIFTR  extends Instrucao {
 
     public SHIFTR() {
-        super("SHIFTL", (byte)0xA8, "2");
+        super("SHIFTL", (byte)0xA8, "2", 2);
     }
 
     @Override

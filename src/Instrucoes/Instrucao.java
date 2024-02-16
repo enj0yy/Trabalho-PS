@@ -10,11 +10,13 @@ public abstract class Instrucao {
     private final String nome;
     private final byte opcode;
     private final String formato;
+    private final int length;
 
-    Instrucao(String nome, byte opcode, String formato) {
+    Instrucao(String nome, byte opcode, String formato, int length) {
         this.nome = nome;
         this.opcode = opcode;
         this.formato = formato;
+        this.length = length;
     }
 
     public abstract void executar(Memoria memoria, Registradores registradores);
@@ -29,6 +31,10 @@ public abstract class Instrucao {
 
     public String getFormato() {
         return formato;
+    }
+
+    public int getLength() {
+        return length;
     }
 
     public Map<String,Boolean> getFlags(byte[] bytes) { // retorna um map com os flags em booleano, deve ser usado com formato 3 ou 4

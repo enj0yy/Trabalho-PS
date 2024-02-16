@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class CLEAR extends Instrucao {
 
     public CLEAR() {
-        super("CLEAR", (byte)0x4, "2");
+        super("CLEAR", (byte)0x4, "2",2);
     }
 
     @Override
