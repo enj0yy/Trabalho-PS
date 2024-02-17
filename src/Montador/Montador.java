@@ -10,10 +10,10 @@ import javax.swing.JOptionPane;
 
 /*
  * Todo:
- * Tratar RD e WD
  * Tratar Formato 1
- * Tratar o pc relative do executor que ta metendo o loco
+ * Tirar o pc++ das funçoes que chamam o calcular TA, pois já chama lá (Igual fiz com o ADD)
  */
+
 public class Montador {
     private String errorMessage = "";
 
@@ -39,18 +39,21 @@ public class Montador {
         SYMTAB.put("SW", 7);
     }
 
-    public void setPrograma(String codigoAssembly) {
+    public void setPrograma(String codigoAssembly) 
+    {
         String[] linhas = codigoAssembly.split("\\r?\\n");
         for (String linha : linhas){
             input.add(linha);
         }
     }
 
-    public void limpaListas() {
+    public void limpaListas() 
+    {
         input.clear();
         output.reset();
         SYMTAB.clear();
         medfile.clear();
+        errorMessage = "";
         SYMTAB.put("A", 0);
         SYMTAB.put("X", 1);
         SYMTAB.put("L", 2);
@@ -59,7 +62,6 @@ public class Montador {
         SYMTAB.put("T", 5);
         SYMTAB.put("PC", 6);
         SYMTAB.put("SW", 7);
-        errorMessage = "";
     }
 
     public String Montar(String codigoAssembly){
@@ -71,7 +73,6 @@ public class Montador {
         mostrarMensagem();
 
         return String.join("\n", output.TextRecord);
-        
     }
 
     private void gerarTXTOutput() {
@@ -156,6 +157,11 @@ public class Montador {
                         break;
                 }
             }
+            else if (line.opcode.equals("RD") || line.opcode.equals("WD"))
+            {
+                LOCCTR +=1;
+                line.set_tamanho_instr(1);
+            }
             else if (line.opcode.equals("WORD"))
             {
                 LOCCTR +=3;
@@ -226,6 +232,16 @@ public class Montador {
                     obj = montarF3F4(medfile.get(lc),LOCCTR);
                     machine_code.add(hexToBinary(obj));
                 }
+            }
+            else if (medfile.get(lc).opcode.equals("RD"))
+            {
+                LOCCTR +=1;
+                machine_code.add("11011000");
+            }
+            else if (medfile.get(lc).opcode.equals("WD"))
+            {
+                LOCCTR +=1;
+                machine_code.add("11011100");
             }
             else if(medfile.get(lc).opcode.equals("BYTE"))
             {
@@ -414,8 +430,7 @@ public class Montador {
  
         hex = hex.toUpperCase();
 
-        HashMap<Character, String> hashMap
-            = new HashMap<Character, String>();
+        HashMap<Character, String> hashMap = new HashMap<Character, String>();
  
         hashMap.put('0', "0000");
         hashMap.put('1', "0001");

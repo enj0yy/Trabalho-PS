@@ -9,18 +9,15 @@ public class ParserLine {
     public boolean extended;
     public boolean constant = false;
     public int tamanho_instr;
-
-
-    
-    
     
     public void parser(String Line){
         String[] loo = Line.split(" ");
 
-        if(loo.length <3){
+        if(loo.length <3)
+        {
             label = "";
             opcode = loo[0];
-            if (!opcode.equals("END"))
+            if (!opcode.equals("END") && !opcode.equals("RD") && !opcode.equals("WD"))
             {
                 String[] aux = loo[1].split(",");
                 if(aux.length >1){
@@ -46,7 +43,7 @@ public class ParserLine {
             operands[0] = aux[0];
         }
 
-        if (!opcode.equals("END"))
+        if (!opcode.equals("END") && !opcode.equals("RD") && !opcode.equals("WD"))
         {
             //remover prefix if exists
             if(operands[0].contains("#")){
@@ -66,6 +63,7 @@ public class ParserLine {
                 prefix = "";
             }
         }
+
         //remove prefix from instruction
         if(opcode.contains("+")){
             extended = true;

@@ -42,12 +42,13 @@ public abstract class Instrucao {
 
         flags.put("n", (bytes[0] & 0b00000010) != 0); 
         flags.put("i", (bytes[0] & 0b00000001) != 0);
+
         flags.put("x", (bytes[1] & 0b10000000) != 0);
-        flags.put("p", (bytes[1] & 0b01000000) != 0);
-        flags.put("b", (bytes[1] & 0b00100000) != 0);
+        flags.put("b", (bytes[1] & 0b01000000) != 0);
+        flags.put("p", (bytes[1] & 0b00100000) != 0);
         flags.put("e", (bytes[1] & 0b00010000) != 0);
 
-        return flags;
+        return flags; 
     }
 
     public int getFormato(byte[] bytes) {
@@ -119,6 +120,8 @@ public abstract class Instrucao {
         }
         // b e p são flags para modo de endereçamento relativo a base TA = ((B) ou (PC)) + disp
 
+        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2)));
+        
         if(flags.get("b")) { // b = 1 caso a soma seja com o registrador base
             base += registradores.getRegistradorPorNome("B").getValorIntSigned();
         } else if (flags.get("p")) { // p = 1 caso a soma seja com o program counter

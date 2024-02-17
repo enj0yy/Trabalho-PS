@@ -18,8 +18,6 @@ public class ADD extends Instrucao {
         int resultado = TA + valorAcumulator; // faz a soma
 
         registradores.getRegistradorPorNome("A").setValorInt(resultado); // armazena o resultado no acumulador
-
-        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
     
 }

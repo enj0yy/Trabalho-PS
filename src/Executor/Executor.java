@@ -22,7 +22,8 @@ public class Executor {
         this.output = -1;
     }
     
-    public void setPrograma(String caminho) {
+    public void setPrograma(String caminho) 
+    {
         memoria.limparMemoria();
         registradores.limparRegistradores();
 
@@ -79,10 +80,17 @@ public class Executor {
     public boolean executarPasso()
     {
         int pc = this.registradores.getRegistradorPorNome("PC").getValorIntSigned();
+
+        if (memoria.getWord(pc) == 0) // para de executar se a proxima palavra for vazia
+        {
+            return false;
+        }
+        
         byte opcode = memoria.getOpcode(pc);
         stop = false;
         
-        if (opcode == (byte)0xD8){
+        if (opcode == (byte)0xD8)
+        {
             stop = true;
             registradores.incrementarPC(1);
             return true;
