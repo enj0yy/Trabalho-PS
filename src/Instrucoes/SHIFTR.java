@@ -6,7 +6,7 @@ import Executor.Registradores;
 public class SHIFTR  extends Instrucao {
 
     public SHIFTR() {
-        super("SHIFTL", (byte)0xA8, "2", 2);
+        super("SHIFTR", (byte)0xA8, "2", 2);
     }
 
     @Override
@@ -15,10 +15,10 @@ public class SHIFTR  extends Instrucao {
 
         int[] registradoresID = getRegistradores(bytes); // id dos registradores
 
-        int valorRegistradorA = registradores.getRegistrador(registradoresID[0]).getValorIntSigned() + 1; // valor no reg A, +1 pois r1 = n-1
-        int valorRegistradorB = registradores.getRegistrador(registradoresID[1]).getValorIntSigned() + 1; // valor no reg B, +1 pois r1 = n-1
+        int valorRegistradorA = registradores.getRegistrador(registradoresID[0]).getValorIntSigned() + 1; 
+        int n = (bytes[1] & 0xFF);
 
-        int resultado = ((valorRegistradorA >> valorRegistradorB) & 0xFFFFFF); // Deslocamento circular a direita preservando o sinal
+        int resultado = ((valorRegistradorA >> n) & 0xFFFFFF); // Deslocamento circular a direita preservando o sinal
 
         registradores.getRegistrador(registradoresID[0]).setValorInt(resultado);
 

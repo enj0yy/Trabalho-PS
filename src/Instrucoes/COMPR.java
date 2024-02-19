@@ -21,9 +21,9 @@ public class COMPR extends Instrucao {
         if (valorRegistradorA == valorRegistradorB) {
             registradores.getRegistradorPorNome("SW").setValorInt(0); // SW recebe "igual", pois ValorRegA == valorRegB
         } else if (valorRegistradorA < valorRegistradorB) {
-            registradores.getRegistradorPorNome("SW").setValorInt(-1); // SW recebe "menor", pois ValorRegA == valorRegB
+            registradores.getRegistradorPorNome("SW").setValorInt(1); // SW recebe "menor", pois ValorRegA == valorRegB
         } else {
-            registradores.getRegistradorPorNome("SW").setValorInt(1); // SW recebe "maior", pois ValorRegA == valorRegB
+            registradores.getRegistradorPorNome("SW").setValorInt(2); // SW recebe "maior", pois ValorRegA == valorRegB
         }
 
         registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução

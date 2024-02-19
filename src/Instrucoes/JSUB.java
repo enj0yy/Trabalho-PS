@@ -1,5 +1,7 @@
 package Instrucoes;
 
+import java.util.Map;
+
 import Executor.Memoria;
 import Executor.Registradores;
 
@@ -12,7 +14,9 @@ public class JSUB extends Instrucao {
     public void executar(Memoria memoria, Registradores registradores) {
         int TA = calcularTA(registradores, memoria); // operando
 
-        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
+        Map<String, Boolean> flags = getFlags(memoria.getBytes(registradores.getValorPC(), 2));
+        if (flags.get("n") && !flags.get("i"))           // N = 1 e I = 0       
+            TA = memoria.getWord(memoria.getWord(TA)); 
 
         int enderecoRetorno = registradores.getValorPC();
         registradores.getRegistradorPorNome("L").setValorInt(enderecoRetorno); // seta L para o endereço de retorno

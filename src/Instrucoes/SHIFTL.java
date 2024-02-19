@@ -15,10 +15,10 @@ public class SHIFTL  extends Instrucao {
 
             int[] registradoresID = getRegistradores(bytes); // id dos registradores
     
-            int valorRegistradorA = registradores.getRegistrador(registradoresID[0]).getValorIntSigned() + 1; // valor no reg A, +1 pois r1 = n-1
-            int valorRegistradorB = registradores.getRegistrador(registradoresID[1]).getValorIntSigned() + 1; // valor no reg B, +1 pois r1 = n-1
+            int valorRegistradorA = registradores.getRegistrador(registradoresID[0]).getValorIntSigned();
+            int n = (bytes[1] & 0xFF);
     
-            int resultado = ((valorRegistradorA << valorRegistradorB) | (valorRegistradorA >>> (24 - valorRegistradorB))) & 0xFFFFFF; // Deslocamento circular a esquerda
+            int resultado = ((valorRegistradorA << n) | (valorRegistradorA >>> (24 - n))) & 0xFFFFFF; // Deslocamento circular a esquerda
     
             registradores.getRegistrador(registradoresID[0]).setValorInt(resultado);
     

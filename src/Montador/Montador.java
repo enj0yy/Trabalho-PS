@@ -8,11 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
 
-/*
- * Todo:
- * Tratar Formato 1
- * Tirar o pc++ das funçoes que chamam o calcular TA, pois já chama lá (Igual fiz com o ADD)
- */
+
 
 public class Montador {
     private String errorMessage = "";
@@ -78,7 +74,7 @@ public class Montador {
     private void gerarTXTOutput() {
         try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontador.txt")) 
             {
-                fileWriter.write(String.join("", output.TextRecord));
+                fileWriter.write(String.join("\n", output.TextRecord));
                 fileWriter.close();
             } catch (IOException e) {
                 errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
@@ -320,10 +316,14 @@ public class Montador {
 
         // Usando nome do Registrador
         else{
-            if(SYMTAB.containsKey(operando1)){
+            if(SYMTAB.containsKey(operando1)) {
                 r1 = String.format("%1$01X", SYMTAB.get(operando1) & 0xF);
                 if(SYMTAB.containsKey(operando2)){
                     r2 = String.format("%1$01X", SYMTAB.get(operando2) & 0xF);
+                }
+                else
+                {
+                    r2 = operando2;
                 }
             }
             else{

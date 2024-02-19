@@ -2,34 +2,44 @@ package Montador;
 
 public class ParserLine {
     
-    public String label;
-    public String opcode;
+    public String label = "";
+    public String opcode = "";
     public String[] operands = new String[2];
-    public String prefix;
-    public boolean extended;
+    public String prefix = "";
+    public boolean extended = false;
     public boolean constant = false;
     public int tamanho_instr;
     
     public void parser(String Line){
         String[] loo = Line.split(" ");
 
-        if(loo.length <3)
+        if (loo[0].equals("RD") || loo[0].equals("WD") || loo[0].equals("END"))
         {
             label = "";
             opcode = loo[0];
-            if (!opcode.equals("END") && !opcode.equals("RD") && !opcode.equals("WD"))
-            {
-                String[] aux = loo[1].split(",");
-                if(aux.length >1){
-                    operands[1] = aux[1];
-                }
-                else{
-                    operands[1] = "";
-                }
-                operands[0] = aux[0];
-            }
+            return;
         }
-        else
+        else if (loo[1].equals("RD") || loo[1].equals("WD"))
+        {
+            label = loo[0];
+            opcode = loo[1];
+            return;
+        }
+
+        if(loo.length <3) // Sem label
+        {
+            label = "";
+            opcode = loo[0];
+            String[] aux = loo[1].split(",");
+            if(aux.length > 1){
+                operands[1] = aux[1];
+            }
+            else{
+                operands[1] = "";
+            }
+            operands[0] = aux[0];
+        }
+        else // Com label
         {
             label = loo[0];
             opcode = loo[1];
@@ -43,8 +53,6 @@ public class ParserLine {
             operands[0] = aux[0];
         }
 
-        if (!opcode.equals("END") && !opcode.equals("RD") && !opcode.equals("WD"))
-        {
             //remover prefix if exists
             if(operands[0].contains("#")){
                 prefix = "#";
@@ -62,7 +70,6 @@ public class ParserLine {
             else{
                 prefix = "";
             }
-        }
 
         //remove prefix from instruction
         if(opcode.contains("+")){

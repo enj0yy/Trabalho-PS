@@ -9,6 +9,7 @@ import Executor.Registradores;
 public abstract class Instrucao {
     private final String nome;
     private final byte opcode;
+    Map<String, Boolean> flags = new HashMap<>();
     private final String formato;
     private final int length;
 
@@ -37,18 +38,18 @@ public abstract class Instrucao {
         return length;
     }
 
-    public Map<String,Boolean> getFlags(byte[] bytes) { // retorna um map com os flags em booleano, deve ser usado com formato 3 ou 4
-        Map<String, Boolean> flags = new HashMap<>();
-
+    public void setFlags(byte[] bytes)
+    {
         flags.put("n", (bytes[0] & 0b00000010) != 0); 
         flags.put("i", (bytes[0] & 0b00000001) != 0);
-
         flags.put("x", (bytes[1] & 0b10000000) != 0);
         flags.put("b", (bytes[1] & 0b01000000) != 0);
         flags.put("p", (bytes[1] & 0b00100000) != 0);
         flags.put("e", (bytes[1] & 0b00010000) != 0);
+    }
 
-        return flags; 
+    public Map<String,Boolean> getFlags(byte[] bytes) { // retorna um map com os flags em booleano, deve ser usado com formato 3 ou 4
+        return this.flags; 
     }
 
     public int getFormato(byte[] bytes) {
@@ -78,25 +79,25 @@ public abstract class Instrucao {
     }
 
     public int getDisp(byte[] bytes) { // retorna os 12 ultimos bits dentre 3 bytes, usado para o formato de instrução 3
-        int byte1 = bytes[2];
-        int byte2 = (bytes[1] & 0b00001111)<<8;
-
-        return byte1+byte2;
+        int byte1 = (bytes[1] & 0b00001111)<<8;
+        int byte2 = bytes[2];
+        
+        return byte1 | byte2;
     }
 
     public int getDispbpe(byte[] bytes) { // retorna os 15 ultimos bits entre 3 bytes, usado para o formato de instrução 3 onde os flags i e n são iguais a 0, e os flags b,p,e são parte do disp
-        int byte1 = bytes[2];
-        int byte2 = (bytes[1] & 0b01111111)<<8;
+        int byte1 = (bytes[1] & 0b01111111)<<7;
+        int byte2 = bytes[2] & 0xFF;
 
-        return byte1+byte2;
+        return byte1 | byte2;
     }
 
     public int getAddr(byte[] bytes) { // retorna os 20 ultimos bits dentre 4 bytes, usado para o formato de instrução 4
-        int byte1 = bytes[3];
-        int byte2 = bytes[2]<<8;
-        int byte3 = (bytes[1] & 0b00001111)<<16;
+        int byte1 = (bytes[1] & 0b00001111) << 16;  // 4 bits menos significativos do byte1, deslocados para a posição correta
+        int byte2 = (bytes[2] & 0xFF) << 8;         // byte2 com todos os bits, deslocados para a posição correta
+        int byte3 = bytes[3] & 0xFF;                // byte3 com todos os bits
 
-        return byte1+byte2+byte3;
+        return byte1 | byte2 | byte3;               // Combinando todos os bytes com o operador OR
     }
 
     public int calcularTA(Registradores registradores, Memoria memoria) { // usado para buscar o TA para instruções do tipo 3 ou 4
@@ -106,7 +107,7 @@ public abstract class Instrucao {
         int tamanhom = 0;
         int pc = registradores.getValorPC();
         
-        Map<String, Boolean> flags = getFlags(memoria.getBytes(pc, 2));
+        setFlags(memoria.getBytes(pc, 2));
 
         if(!(flags.get("i") || flags.get("n"))) { // se ambos forem 0, deve-se considerar as flags b,p,e como parte do deslocamento (somente aconteçe com n e i sendo iguais a 0)
             m = getDispbpe(memoria.getBytes(pc, 3)); // tipo de instrução 3, com disp sendo os ultimos 15 bits da instrução
@@ -135,13 +136,13 @@ public abstract class Instrucao {
             x = registradores.getRegistradorPorNome("X").getValorIntSigned();
         }
 
-        if(flags.get("i") && !flags.get("n")) { // endereçamento imediato, o valor calculado é o operando
-            return m + base; // endereçamento indexado não pode ser usado com endereçamento imediato, então não soma o valor do registrador X
-        } else if (flags.get("n") && !flags.get("i")) { // endereçamento indireto, o valor calculado é onde o endereço do operando está armazenado na memória
-            int endereco = memoria.getWord(m+base);// endereçamento indexado não pode ser usado com endereçamento indireto, então não soma o valor do registrador X
-            return memoria.getWord(endereco); 
+
+        if(flags.get("i") && !flags.get("n")) {             // endereçamento imediato, o valor calculado é o operando
+            return m + base;                                        // endereçamento indexado não pode ser usado com endereçamento imediato, então não soma o valor do registrador X
+        } else if (flags.get("n") && !flags.get("i")) {     // endereçamento indireto, o valor calculado é onde o endereço do operando está armazenado na memória
+            return m + base;                                        // endereçamento indexado não pode ser usado com endereçamento indireto, então não soma o valor do registrador X
         }
 
-        return memoria.getWord(m+base+x);// se i e n são 0, endereçamento simples: o valor calculado é o endereço do operando
+        return m+base+x;                                            // se i e n são 0, endereçamento simples: o valor calculado é o endereço do operando
     }
 }

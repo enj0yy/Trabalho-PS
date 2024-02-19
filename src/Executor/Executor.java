@@ -22,7 +22,8 @@ public class Executor {
         this.output = -1;
     }
     
-    public void setPrograma(String caminho) 
+    
+    public void setProgramaold(String caminho) 
     {
         memoria.limparMemoria();
         registradores.limparRegistradores();
@@ -50,6 +51,38 @@ public class Executor {
             System.out.println("Erro ao ler o arquivo.");
         }
     }
+
+
+    public void setPrograma(String caminho) {
+        memoria.limparMemoria();
+        registradores.limparRegistradores();
+
+        int posMem = 0;
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(caminho));
+            String line;
+            StringBuilder binaryString = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+                binaryString.append(line.trim());
+            }
+
+            br.close();
+
+            // Lê de 8 em 8 caracteres
+            for (int i = 0; i < binaryString.length(); i += 8) {
+                String pedaco = binaryString.substring(i, Math.min(i + 8, binaryString.length()));
+
+                byte pedacoByte = (byte) Integer.parseInt(pedaco, 2);
+
+                memoria.setByte(posMem++, pedacoByte);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     
     public void executarPrograma()
     {

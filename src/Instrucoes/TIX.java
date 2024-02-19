@@ -1,5 +1,7 @@
 package Instrucoes;
 
+import java.util.Map;
+
 import Executor.Memoria;
 import Executor.Registradores;
 
@@ -13,7 +15,12 @@ public class TIX extends Instrucao {
     public void executar(Memoria memoria, Registradores registradores) {
 
         int TA = calcularTA(registradores, memoria); // operando
-        
+        Map<String, Boolean> flags = getFlags(memoria.getBytes(registradores.getValorPC(), 2));
+        if (flags.get("n") && !flags.get("i"))           // N = 1 e I = 0       
+            TA = memoria.getWord(memoria.getWord(TA)); 
+        else if ((!flags.get("n") && !flags.get("i")) || (flags.get("n") && flags.get("i"))) 
+            TA = memoria.getWord(TA);
+
         int valorRegistradorX = (registradores.getRegistradorPorNome("X").getValorIntSigned()) + 1;
 
         registradores.getRegistradorPorNome("X").setValorInt(valorRegistradorX);
@@ -27,7 +34,5 @@ public class TIX extends Instrucao {
         } else {
             registradores.getRegistradorPorNome("SW").setValorInt(1);
         }
-        
-        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }  
 }

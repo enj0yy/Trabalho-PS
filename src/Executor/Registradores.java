@@ -19,9 +19,9 @@ public class Registradores {
         
         regs.put(9, new Registrador("SW",9)); 
         // Palavra de Status - Contém várias informações, incluindo código condicional (CC)
-        // -1 -> <
+        // 1 -> <
         // 0 ->  =
-        // 1 ->  >
+        // 2 ->  >
 
         registradores = regs;
     }

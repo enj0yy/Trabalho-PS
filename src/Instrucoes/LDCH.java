@@ -1,5 +1,7 @@
 package Instrucoes;
 
+import java.util.Map;
+
 import Executor.Memoria;
 import Executor.Registradores;
 
@@ -13,15 +15,16 @@ public class LDCH extends Instrucao {
     public void executar(Memoria memoria, Registradores registradores) {
 
         int TA = calcularTA(registradores, memoria); // operando
+        Map<String, Boolean> flags = getFlags(memoria.getBytes(registradores.getValorPC(), 2));
+        if (flags.get("n") && !flags.get("i"))           // N = 1 e I = 0       
+            TA = memoria.getWord(memoria.getWord(TA)); 
+        else if ((!flags.get("n") && !flags.get("i")) || (flags.get("n") && flags.get("i"))) 
+            TA = memoria.getByte(TA);
 
         byte[] bytesA = registradores.getRegistradorPorNome("A").getValor();
-
         bytesA[2] = (byte)(TA & 0xFF);
 
         registradores.getRegistradorPorNome("A").setValor(bytesA); // A [byte mais à direita] ← (m) 
-
-        registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
-
     }
     
 }
