@@ -380,7 +380,9 @@ public class ExecutorInterface extends javax.swing.JFrame {
             public int getSize() { return bytes.length; }
             
             @Override
-            public String getElementAt(int i) { return String.format("%8s", Integer.toBinaryString(bytes[i] & 0xFF)).replace(' ', '0'); } // transforma caad byte em uma string contendo o valor binário armazenado no byte
+            public String getElementAt(int i) { 
+                return "(" + String.format("%04d", i) + ")   " +  String.format("%8s", Integer.toBinaryString(bytes[i] & 0xFF)).replace(' ', '0'); 
+            } 
         });
     }
 }

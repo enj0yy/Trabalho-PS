@@ -48,14 +48,16 @@ public abstract class Instrucao {
         flags.put("e", (bytes[1] & 0b00010000) != 0);
     }
 
-    public Map<String,Boolean> getFlags(byte[] bytes) { // retorna um map com os flags em booleano, deve ser usado com formato 3 ou 4
+    public Map<String,Boolean> getFlags() { // retorna um map com os flags da instrucao
         return this.flags; 
     }
 
     public int getFormato(byte[] bytes) {
-        Map<String, Boolean> flags = getFlags(bytes);
+        if (flags.isEmpty()) {
+            setFlags(bytes);
+        }
 
-        if(formato != "1" || formato != "2") {
+        if(formato != "1" && formato != "2") {
             if(!(flags.get("i") || flags.get("n"))) { // se ambos forem 0, deve-se considerar as flags b,p,e como parte do deslocamento (somente aconteçe com n e i sendo iguais a 0)
                 return 3; // tipo de instrução 3
             } else if (flags.get("e")) {
@@ -66,7 +68,6 @@ public abstract class Instrucao {
         }
 
         return Integer.parseInt(formato); // tipo de instrução 1 ou 2
-
     }
 
     public int[] getRegistradores(byte[] bytes) { // retorna o número dos registradores para o formato de instrução 2

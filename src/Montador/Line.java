@@ -1,7 +1,8 @@
 package Montador;
 
-public class ParserLine {
+public class Line {
     
+    public String line = "";
     public String label = "";
     public String opcode = "";
     public String[] operands = new String[2];
@@ -11,6 +12,7 @@ public class ParserLine {
     public int tamanho_instr;
     
     public void parser(String Line){
+        this.line = Line;
         String[] loo = Line.split(" ");
 
         if (loo[0].equals("RD") || loo[0].equals("WD") || loo[0].equals("END"))
@@ -53,25 +55,27 @@ public class ParserLine {
             operands[0] = aux[0];
         }
 
-            //remover prefix if exists
-            if(operands[0].contains("#")){
+        // Remover prefixos dos operandos
+            if(operands[0].contains("#"))
+            {
                 prefix = "#";
                 StringBuilder sb = new StringBuilder(operands[0]); 
                 sb.deleteCharAt(0);
                 operands[0] = sb.toString();
-
             }
-            else if(operands[0].contains("@")){
+            else if(operands[0].contains("@"))
+            {
                 prefix = "@";
                 StringBuilder sb = new StringBuilder(operands[0]); 
                 sb.deleteCharAt(0);
                 operands[0] = sb.toString();
             }
-            else{
+            else
+            {
                 prefix = "";
             }
 
-        //remove prefix from instruction
+        // Remover prefixos da instrução
         if(opcode.contains("+")){
             extended = true;
             StringBuilder sb = new StringBuilder(opcode); 
@@ -80,6 +84,7 @@ public class ParserLine {
         }
 
     }
+    
     public void set_tamanho_instr(int LOCCTR){
         tamanho_instr = LOCCTR;
     }

@@ -21,7 +21,7 @@ public class ADDR extends Instrucao {
 
         int resultado = valorRegistradorA + valorRegistradorB;
 
-        registradores.getRegistrador(registradoresID[0]).setValorInt(resultado);
+        registradores.getRegistrador(registradoresID[1]).setValorInt(resultado);                    // seta o valor do reg B para o resultado
 
         registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }

@@ -24,9 +24,9 @@ public class TIXR extends Instrucao {
         if (valorRegistradorX == valorRegistradorA) {
             registradores.getRegistradorPorNome("SW").setValorInt(0);
         } else if (valorRegistradorX < valorRegistradorA) {
-            registradores.getRegistradorPorNome("SW").setValorInt(-1);
-        } else {
             registradores.getRegistradorPorNome("SW").setValorInt(1);
+        } else {
+            registradores.getRegistradorPorNome("SW").setValorInt(2);
         }
         
         registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução

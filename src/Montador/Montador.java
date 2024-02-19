@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JOptionPane;
 
-
-
 public class Montador {
     private String errorMessage = "";
 
@@ -17,9 +15,9 @@ public class Montador {
     private Instrucoes OPTAB;               // Tabela de instrucoes
 
     private ArrayList<String> input = new ArrayList<String>(); 
-    public ListingObject output = new ListingObject();
+    public Output output = new Output();
 
-    ArrayList<ParserLine> medfile = new ArrayList<>();
+    ArrayList<Line> intermediateFile = new ArrayList<>();
 
     public Montador(){
         OPTAB = new Instrucoes();
@@ -31,8 +29,8 @@ public class Montador {
         SYMTAB.put("B", 3);
         SYMTAB.put("S", 4);
         SYMTAB.put("T", 5);
-        SYMTAB.put("PC", 6);
-        SYMTAB.put("SW", 7);
+        SYMTAB.put("PC", 8);
+        SYMTAB.put("SW", 9);
     }
 
     public void setPrograma(String codigoAssembly) 
@@ -48,7 +46,7 @@ public class Montador {
         input.clear();
         output.reset();
         SYMTAB.clear();
-        medfile.clear();
+        intermediateFile.clear();
         errorMessage = "";
         SYMTAB.put("A", 0);
         SYMTAB.put("X", 1);
@@ -56,8 +54,8 @@ public class Montador {
         SYMTAB.put("B", 3);
         SYMTAB.put("S", 4);
         SYMTAB.put("T", 5);
-        SYMTAB.put("PC", 6);
-        SYMTAB.put("SW", 7);
+        SYMTAB.put("PC", 8);
+        SYMTAB.put("SW", 9);
     }
 
     public String Montar(String codigoAssembly){
@@ -68,13 +66,13 @@ public class Montador {
         gerarTXTOutput();
         mostrarMensagem();
 
-        return String.join("\n", output.TextRecord);
+        return String.join("\n", output.machineCode);
     }
 
     private void gerarTXTOutput() {
         try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontador.txt")) 
             {
-                fileWriter.write(String.join("\n", output.TextRecord));
+                fileWriter.write(String.join("\n", output.machineCode));
                 fileWriter.close();
             } catch (IOException e) {
                 errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
@@ -94,20 +92,20 @@ public class Montador {
 
     public void passoUm()
     {
-        int lc = 0;
+        int lineCounter = 0;
         int LOCCTR = 0;
         
-        ParserLine line = new ParserLine();
-        line.parser(input.get(lc));
+        Line line = new Line();
+        line.parser(input.get(lineCounter));
 
         if(line.opcode.equals("START"))
         {
             LOCCTR = Integer.parseInt(line.operands[0]);
-            medfile.add(line); 
+            intermediateFile.add(line); 
 
-            lc +=1; 
-            line = new ParserLine();
-            line.parser(input.get(lc));
+            lineCounter +=1; 
+            line = new Line();
+            line.parser(input.get(lineCounter));
         }
         else
         {
@@ -116,13 +114,13 @@ public class Montador {
 
         output.startingAddress = LOCCTR;
 
-        while(!(line.opcode.equals("END")))
+        while( !(line.opcode.equals("END")) )
         {
             if( !(line.label.isEmpty()) )
             {  
-                if(SYMTAB.containsKey(line.label))
+                if( SYMTAB.containsKey(line.label) )
                 {
-                    errorMessage = errorMessage + "\nERRO - Multipla definição: " + input.get(lc);
+                    errorMessage = errorMessage + "\nERRO - Multipla definição: " + input.get(lineCounter);
                 }
                 else
                 {
@@ -130,7 +128,7 @@ public class Montador {
                 }
             }
 
-            if(OPTAB.getInstrucaoPorNome(line.opcode) != null)
+            if( OPTAB.getInstrucaoPorNome(line.opcode) != null )
             {
                 int tamanhoIntrucao = OPTAB.getInstrucaoPorNome(line.opcode).getLength();
                 switch (tamanhoIntrucao) 
@@ -182,179 +180,190 @@ public class Montador {
             }
             else
             {
-                errorMessage = errorMessage + "\nERRO - Opcode Inválido: " + input.get(lc);
+                errorMessage = errorMessage + "\nERRO - Opcode Inválido: " + input.get(lineCounter);
             }
 
-            medfile.add(line);
-            line = new ParserLine();
-            lc +=1;
-            line.parser(input.get(lc));
+            intermediateFile.add(line);
+
+            lineCounter +=1;
+            line = new Line();
+            line.parser(input.get(lineCounter));
         }
         
-        medfile.add(line);
+        intermediateFile.add(line);
     }
 
     public void passoDois()
     {
-        int lc = 0;
+        int lineCounter = 0;
         int LOCCTR = 0;
-        String obj;
-        ArrayList<String> machine_code = new ArrayList<>();
 
-        if (medfile.get(lc).opcode.equals("START"))
+        String obj = "";
+
+        Line line = intermediateFile.get(lineCounter);
+
+        if ( line.opcode.equals("START") )
         {
-            LOCCTR = Integer.parseInt(medfile.get(lc).operands[0]);
-            lc +=1;
+            LOCCTR = Integer.parseInt(line.operands[0]);
+            lineCounter +=1;
         }
         else
         {
             LOCCTR = 0;
         }
 
-        while (!medfile.get(lc).opcode.equals("END"))
+        line = intermediateFile.get(lineCounter);
+
+        while ( !line.opcode.equals("END") )
         {
-            if( OPTAB.getInstrucaoPorNome(medfile.get(lc).opcode) != null )
+            if( OPTAB.getInstrucaoPorNome(line.opcode) != null )
             {
-                LOCCTR += medfile.get(lc).tamanho_instr;
+                LOCCTR += line.tamanho_instr;
 
-                if(medfile.get(lc).tamanho_instr == 2)
+                // Nao possuimos instruçoes formato 1 (Alem de RD e WD que são tratadas a parte)
+
+                if(line.tamanho_instr == 2)
                 {
-                    obj = montarF2(medfile.get(lc));
-                    machine_code.add(hexToBinary(obj));
+                    obj = montarF2(line);
+                    output.machineCode.add(hexToBinary(obj));
                 }
 
-                else if(medfile.get(lc).tamanho_instr > 2)
+                else if(line.tamanho_instr > 2)
                 {
-                    obj = montarF3F4(medfile.get(lc),LOCCTR);
-                    machine_code.add(hexToBinary(obj));
+                    obj = montarF3F4(line,LOCCTR);
+                    output.machineCode.add(hexToBinary(obj));
                 }
             }
-            else if (medfile.get(lc).opcode.equals("RD"))
+            else if (line.opcode.equals("RD"))
             {
                 LOCCTR +=1;
-                machine_code.add("11011000");
+                output.machineCode.add("11011000");
             }
-            else if (medfile.get(lc).opcode.equals("WD"))
+            else if (line.opcode.equals("WD"))
             {
                 LOCCTR +=1;
-                machine_code.add("11011100");
+                output.machineCode.add("11011100");
             }
-            else if(medfile.get(lc).opcode.equals("BYTE"))
+            else if(line.opcode.equals("BYTE"))
             {
                 LOCCTR +=1;
-                char c = medfile.get(lc).operands[0].charAt(0);
-                obj = c+"";
-                machine_code.add(hexToBinary(obj));
+                char c = line.operands[0].charAt(0);
+
+                if (c == 'C') // ASCII ex: C'EOF'
+                {
+                    String aux = line.operands[0].substring(2,line.operands[0].length()-1);
+                    for(int i=0; i < aux.length(); i++)
+                    {
+                        obj = String.format("%1$02X",(int)aux.charAt(i) & 0xFF);
+                    }
+                } else if (c == 'X') // Hexadecimal ex: X'05'
+                {
+                    obj = line.operands[0].substring(2,line.operands[0].length()-1);
+                } else // Numero ex: 5
+                {
+                    obj = line.operands[0]; 
+                }
+
+                output.machineCode.add(hexToBinary(obj));
                 
             }
-            else if(medfile.get(lc).opcode.equals("WORD"))
+            else if(line.opcode.equals("WORD"))
             {
                 LOCCTR +=3;
-                int word = Integer.parseInt(medfile.get(lc).operands[0]);
+                int word = Integer.parseInt(line.operands[0]);
                 obj = String.format("%1$06X",word & 0xFFFFFF);
-                machine_code.add(hexToBinary(obj));
+                output.machineCode.add(hexToBinary(obj));
             }
-            else if(medfile.get(lc).opcode.equals("RESW"))
+            else if(line.opcode.equals("RESW"))
             {
-                LOCCTR += medfile.get(lc).tamanho_instr;
-                int numero_palavras = (medfile.get(lc).tamanho_instr)/3;
-                for(int i=0; i < numero_palavras;i++){
+                LOCCTR += line.tamanho_instr;
+                int numero_palavras = (line.tamanho_instr)/3;
+
+                for(int i=0; i < numero_palavras; i++)
+                {
                     obj = String.format("%1$06X",0x0 & 0xFFFFFF);
-                    machine_code.add(hexToBinary(obj));
+                    output.machineCode.add(hexToBinary(obj));
                 }
             }
-            else if(medfile.get(lc).opcode.equals("RESB"))
+            else if(line.opcode.equals("RESB"))
             {
-                LOCCTR += medfile.get(lc).tamanho_instr;
-                int numero_bytes = medfile.get(lc).tamanho_instr;
-                for(int i=0; i < numero_bytes;i++){
+                LOCCTR += line.tamanho_instr;
+                int numero_bytes = line.tamanho_instr;
+
+                for(int i=0; i < numero_bytes;i++)
+                {
                     obj = String.format("%1$02X",0x0 & 0xFF);
-                    machine_code.add(hexToBinary(obj));
+                    output.machineCode.add(hexToBinary(obj));
                 }
             }
             else
             {
-                errorMessage = errorMessage + "\nERRO - Opcode Inválido: " + input.get(lc);
+                errorMessage = errorMessage + "\nERRO - Opcode Inválido: " + input.get(lineCounter);
             }
-            lc+=1;
+
+            lineCounter+=1;
+            line = intermediateFile.get(lineCounter);
         }
 
         output.endAddress = LOCCTR;
         output.set_length();
-        output.TextRecord = machine_code;
     }
 
-    public String montarF2(ParserLine line){
+    public String montarF2(Line line){
 
-        String OpCode = String.format("%1$02X", OPTAB.getInstrucaoPorNome(line.opcode).getOpcode()& 0xFF);
+        String opCode = String.format("%1$02X", OPTAB.getInstrucaoPorNome(line.opcode).getOpcode()& 0xFF);
         String operando1 = line.operands[0];
         String operando2 = line.operands[1];
 
         String r1 = "0";
         String r2 = "0";
-        
-        String object_code;
-        String prefixo = line.prefix;
 
-        // Usando Endereço númerico do Registrador
-        if(prefixo.equals("#"))
+        if( SYMTAB.containsKey(operando1) ) 
         {
-            try {
-                r1 = operando1;
-            } catch (NumberFormatException e) {
-                errorMessage = errorMessage + "\nERRO - O endereço passsado não pode ser convertido para constante do tipo inteiro";
-            }
-            if(!operando2.isEmpty()){
-                try {
-                    r2 = operando2;
-                    
-                } catch (NumberFormatException e) {
-                    errorMessage = errorMessage + "\nERRO - O endereço passado não pode ser convertido para constante do tipo inteiro";
-                }
-            }
+            r1 = String.format("%1$01X", SYMTAB.get(operando1) & 0xF);
+        }
+        else
+        {
+            r1 = operando1;
         }
 
-        // Usando nome do Registrador
-        else{
-            if(SYMTAB.containsKey(operando1)) {
-                r1 = String.format("%1$01X", SYMTAB.get(operando1) & 0xF);
-                if(SYMTAB.containsKey(operando2)){
-                    r2 = String.format("%1$01X", SYMTAB.get(operando2) & 0xF);
-                }
-                else
-                {
-                    r2 = operando2;
-                }
-            }
-            else{
-                errorMessage = errorMessage + "\nERRO - Simbolo não definido: " + operando1;
-            }
+        if( SYMTAB.containsKey(operando2) )
+        {
+            r2 = String.format("%1$01X", SYMTAB.get(operando2) & 0xF);
         }
-        object_code = OpCode + r1+r2;
-        return object_code;
+        else
+        {
+            r2 = operando2;
+        }
+
+        return opCode + r1 + r2;
     }
 
-    public String montarF3F4(ParserLine line, int PC)
+    public String montarF3F4(Line line, int PC)
     {
-        int ni = 0;
         byte opcode = OPTAB.getInstrucaoPorNome(line.opcode).getOpcode();
-        int operand;
-        int disp=0;
-        int xbpe;
-        int obj;
-        String prefixo = line.prefix;
+        int operand = 0;
+
+        int ni = 0;
+        int xbpe = 0;
+        int disp = 0;
+
+        int obj = 0;
+
+        String firstByte = "";
+        String hexAddress = "";
         
-        if(prefixo.isEmpty()){
+        if( line.prefix.isEmpty() ){
             ni = 0x03;
         }
-        else if(prefixo.equals("#")){
+        else if( line.prefix.equals("#") ) {
             ni = 0x01;
         }
-        else if(prefixo.equals("@")){
+        else if( line.prefix.equals("@") ) {
             ni = 0x02;
         }
-        else{
-            errorMessage = errorMessage + "\nERRO - Prefixo inválido";
+        else {
+            errorMessage = errorMessage + "\nERRO - Prefixo inválido: " + line.line;
         }
 
 
@@ -364,34 +373,41 @@ public class Montador {
                 disp = Integer.parseInt(line.operands[0]);
                 
             } catch (NumberFormatException e) {
-                errorMessage = errorMessage + "\nERRO - Input String cannot be parsed to Integer.";
+                errorMessage = errorMessage + "\nERRO - Nao foi possivel converter para inteiro: " + line.line;
             }
+
             xbpe = 0;
             obj = ((opcode & 0xFC) <<16) + (ni<< 16) + (xbpe << 12)+ disp;
+
+            firstByte = String.format("%1$02X", (opcode + ni) & 0xFF);
+            hexAddress = String.format("%1$04X",obj & 0xFFFF);
         }
-        else if(line.extended == true) // Extendido - Formato 4
+        else if( line.extended == true ) // Formato 4
         {
             operand = SYMTAB.get(line.operands[0]);
             xbpe = 0x01;
             disp = operand;
             obj = ((opcode & 0xFC) <<24) + (ni<< 24) + (xbpe << 20)+ disp;
+
+            firstByte = String.format("%1$02X", (opcode + ni) & 0xFF);
+            hexAddress = String.format("%1$04X",obj & 0xFFFF);
         }
         else // Formato 3
         {
             operand = SYMTAB.get(line.operands[0]);
 
-            if(line.operands[1].equals("X"))
+            if(line.operands[1].equals("X")) // Indexado
             {
-                    disp = operand - PC + SYMTAB.get("X");
-                    xbpe = 0xA;
+                disp = operand - PC + SYMTAB.get("X");
+                xbpe = 0xA;
             }
             else
             {
-                    disp = operand - PC;
-                    xbpe = 0x2;
+                disp = operand - PC;
+                xbpe = 0x2;
             }
                 
-            String string_disp;
+            String string_disp = "";
 
             if(disp < 0)
             {
@@ -399,27 +415,20 @@ public class Montador {
             }
             else if(disp >=2048) 
             {
-                errorMessage = errorMessage + "\nERRO - Formato SIC padrão detectado!";
                 ni = 0x0;
                 disp +=PC;
-                string_disp = String.format("%1$04X", disp & 0x7FFF);
-                String firstByte = String.format("%1$02X", (opcode + ni) & 0xFF);
-                return firstByte + string_disp;
-
+                
+                firstByte = String.format("%1$02X", (opcode + ni) & 0xFF);
+                hexAddress = String.format("%1$04X", disp & 0x7FFF);
             }
             else
             {
                 string_disp = String.format("%1$03X", disp & 0xFFF);
             }
 
-            String string_xbpe = String.format("%1$01X", xbpe & 0xF);
-            String hexAddress = string_xbpe + string_disp;
-            String firstByte = String.format("%1$02X", (opcode + ni) & 0xFF);
-            return firstByte + hexAddress;
+            firstByte = String.format("%1$02X", (opcode + ni) & 0xFF);
+            hexAddress = String.format("%1$01X", xbpe & 0xF) + string_disp;
         }
-
-        String firstByte = String.format("%1$02X", (opcode + ni) & 0xFF);
-        String hexAddress = String.format("%1$04X",obj & 0xFFFF);
 
         return firstByte + hexAddress;
     }

@@ -14,11 +14,10 @@ public class STCH extends Instrucao {
     @Override
     public void executar(Memoria memoria, Registradores registradores) {
         int TA = calcularTA(registradores, memoria); // operando
-        Map<String, Boolean> flags = getFlags(memoria.getBytes(registradores.getValorPC(), 2));
+
+        Map<String, Boolean> flags = getFlags();
         if (flags.get("n") && !flags.get("i"))           // N = 1 e I = 0       
             TA = memoria.getWord(memoria.getWord(TA)); 
-        else if ((!flags.get("n") && !flags.get("i")) || (flags.get("n") && flags.get("i"))) 
-            TA = memoria.getByte(TA);
 
         Byte byteA = registradores.getRegistradorPorNome("A").getValor()[2];
 
