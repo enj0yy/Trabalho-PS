@@ -53,9 +53,7 @@ public abstract class Instrucao {
     }
 
     public int getFormato(byte[] bytes) {
-        if (flags.isEmpty()) {
-            setFlags(bytes);
-        }
+        setFlags(bytes);
 
         if(formato != "1" && formato != "2") {
             if(!(flags.get("i") || flags.get("n"))) { // se ambos forem 0, deve-se considerar as flags b,p,e como parte do deslocamento (somente aconteçe com n e i sendo iguais a 0)
