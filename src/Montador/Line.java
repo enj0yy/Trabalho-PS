@@ -1,11 +1,15 @@
 package Montador;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Line {
     
     public String line = "";
     public String label = "";
     public String opcode = "";
     public String[] operands = new String[2];
+    public List<String> macroArguments = new ArrayList<>();
     public String prefix = "";
     public boolean extended = false;
     public boolean constant = false;
@@ -15,7 +19,23 @@ public class Line {
         this.line = Line;
         String[] loo = Line.split(" ");
 
-        if (loo[0].equals("RD") || loo[0].equals("WD") || loo[0].equals("END"))
+        if (loo[0].equals("MACRO")){
+            opcode = loo[0];
+            label = loo[1];
+            String[] aux = loo[2].split(",");
+            for (String arg : aux){
+                macroArguments.add(arg);
+            }
+            return;
+        }
+
+        else if (loo[0].equals("MEND")){
+            label = "";
+            opcode = loo[0];
+            return;
+        }
+
+        else if (loo[0].equals("RD") || loo[0].equals("WD") || loo[0].equals("END"))
         {
             label = "";
             opcode = loo[0];
