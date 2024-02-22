@@ -10,6 +10,7 @@ public class Line {
     public String opcode = "";
     public String[] operands = new String[2];
     public List<String> macroArguments = new ArrayList<>();
+    public List<String> macroNames = new ArrayList<>();
     public String prefix = "";
     public boolean extended = false;
     public boolean constant = false;
@@ -20,8 +21,10 @@ public class Line {
         String[] loo = Line.split(" ");
 
         if (loo[0].equals("MACRO")){
+            macroArguments.clear();
             opcode = loo[0];
             label = loo[1];
+            macroNames.add(label);
             String[] aux = loo[2].split(",");
             for (String arg : aux){
                 macroArguments.add(arg);
@@ -32,6 +35,16 @@ public class Line {
         else if (loo[0].equals("MEND")){
             label = "";
             opcode = loo[0];
+            return;
+        }
+
+        else if (macroNames.contains(loo[0])){
+            label = loo[0];
+            macroArguments.clear();
+            String[] aux = loo[1].split(",");
+            for (String arg : aux){
+                macroArguments.add(arg);
+            }
             return;
         }
 

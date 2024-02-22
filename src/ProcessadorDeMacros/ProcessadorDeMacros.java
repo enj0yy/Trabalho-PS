@@ -1,5 +1,7 @@
 package ProcessadorDeMacros;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,13 +9,18 @@ import java.util.Map;
 
 import Montador.Line;
 
+
+// TODO: PERMITIR MACROS DENTRO DE MACROS NA DEFINIÇÃO
+
 public class ProcessadorDeMacros {
     
-    private Map<String, Tupla> NAMTAB;          // Tabela com os nomes dos macros e seus ponteiros
-    private Map<String, String> DEFTAB;         // Tabela com os nomes dos macros e seus códigos
-    private Map<String, List<String>> ARGTAB;   // Tabela com os nomes dos macros e seus argumentos
+    public Map<String, Tupla> NAMTAB;          // CHANGE PRIVATE // Tabela com os nomes dos macros e seus ponteiros
+    public Map<String, String> DEFTAB;         // CHANGE PRIVATE // Tabela com os nomes dos macros e seus códigos
+    public Map<String, List<String>> ARGTAB;   // CHANGE PRIVATE // Tabela com os nomes dos macros e seus argumentos
 
-    private ArrayList<String> input = new ArrayList<String>(); 
+    private ArrayList<String> input = new ArrayList<String>();
+    private ArrayList<String> output = new ArrayList<String>();
+    private String errorMessage = "";
 
 
     public ProcessadorDeMacros() {
@@ -32,48 +39,61 @@ public class ProcessadorDeMacros {
         
         while (!line.opcode.equals("END")){
             if (line.opcode.equals("MACRO")){
-                StringBuffer macroCode = new StringBuffer();
-                String macroName = line.label;
-                Tupla tupla = new Tupla(lineCounter, 0);
-                NAMTAB.put(macroName, tupla);
-                ARGTAB.put(macroName, new ArrayList<String>());
-                lineCounter++;
-                line.parser(input.get(lineCounter));
-                while (!line.label.equals("MEND")){
-                    macroCode.append(line.line + "\n");
+                if (!expanding){
+                    StringBuffer macroCode = new StringBuffer();
+                    ArrayList<String> macroArgs = new ArrayList<String>();
+                    String macroName = line.label;
+                    Tupla tupla = new Tupla(lineCounter, 0);
+                    NAMTAB.put(macroName, tupla);
                     lineCounter++;
                     line.parser(input.get(lineCounter));
+
+                    while (!line.opcode.equals("MEND")){
+                        macroCode.append(line.line + "\n");
+                        lineCounter++;
+                        line.parser(input.get(lineCounter));
+                    }
+
+                    NAMTAB.get(macroName).setEndPointer(lineCounter);
+                    DEFTAB.put(macroName, macroCode.toString());
+                    macroArgs.addAll(line.macroArguments);
+                    ARGTAB.put(macroName, macroArgs);
+                    lineCounter++;
+                    line.parser(input.get(lineCounter));  
                 }
-                NAMTAB.get(macroName).setEndPointer(lineCounter);
-                DEFTAB.put(macroName, macroCode.toString());
-                ARGTAB.put(macroName, line.macroArguments);
-                        
             }
-        //     else if (NAMTAB.containsKey(line.operator)){
-        //         String macroName = line.operator;
-        //         List<String> arguments = ARGTAB.get(macroName);
-        //         String[] macroArguments = line.operand.split(",");
-        //         for (String argument : macroArguments){
-        //             arguments.add(argument);
-        //         }
-        //         ARGTAB.put(macroName, arguments);
-        //         lineCounter++;
-        //         line.parser(input.get(lineCounter));
-        //         while (!line.operator.equals("MEND")){
-        //             String macroLine = DEFTAB.get(macroName);
-        //             for (int i = 0; i < arguments.size(); i++){
-        //                 macroLine = macroLine.replace("&" + arguments.get(i), line.operand.split(",")[i]);
-        //             }
-        //             input.add(lineCounter, macroLine);
-        //             lineCounter++;
-        //             line.parser(input.get(lineCounter));
-        //         }
-        //     }
-        
-        //     lineCounter++;
-        // }
+            else if (DEFTAB.containsKey(line.label)){
+                String macroBody = DEFTAB.get(line.label);
+                List<String> macroArgs = ARGTAB.get(line.label);
+                List<String> macroParams = line.macroArguments;
+                for (int i = 0; i < macroArgs.size(); i++){
+                    macroBody = macroBody.replaceAll(macroArgs.get(i), macroParams.get(i));
+                }
+                String[] linhas = macroBody.split("\\r?\\n");
+                for (String linha : linhas){
+                    output.add(linha);
+                }
+                lineCounter++;
+                line.parser(input.get(lineCounter));
+            }     
+            else if (line.opcode.equals("START")){
+                output.add(line.line);
+                lineCounter++;
+                line.parser(input.get(lineCounter));
+                expanding = true;
+            }
+            else{
+                output.add(line.line);
+                lineCounter++;
+                line.parser(input.get(lineCounter));
+            }
         }
+
+        output.add(line.line);
+        gerarTXTOutput();
+        return;
     }
+
 
     public void setPrograma(String codigoAssembly) 
     {
@@ -81,6 +101,16 @@ public class ProcessadorDeMacros {
         for (String linha : linhas){
             input.add(linha);
         }
+    }
+
+    private void gerarTXTOutput() {
+        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMacro.txt")) 
+            {
+                fileWriter.write(String.join("\n", output));
+                fileWriter.close();
+            } catch (IOException e) {
+                errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
+            }
     }
 
 }

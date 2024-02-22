@@ -1,0 +1,17 @@
+MACRO multDois par1,par2
+MUL par1,par2
+STT #10
+COMP par1
+MEND
+MACRO addTwo x,y
+ADD x
+ADD y
+MEND
+START 0
+LDS UM
+LDT CEM
+multDois ARGONE,ARGTWO
+LDS UM
+LDT CEM
+addTwo w,z
+END
