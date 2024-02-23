@@ -10,13 +10,22 @@ import java.util.Map;
 import Montador.Line;
 
 
-// TODO: PERMITIR MACROS DENTRO DE MACROS NA DEFINIÇÃO
+/* MACRO nomeMacro parametro1,parametro2, ... */   // Macro com parâmetros
+/* MACRO nomeMacro                            */   // Macro sem parâmetros
+/* MEND                                       */   // Fim da definição do macro
+/* nomeMacro parametro1,parametro2, ...       */   // Chamada de macro
+/* nomeMacro                                  */   // Chamada de macro sem parâmetros
+
+// Chamadas de macro dentro de um macro devem ter como prefixo &
+
+
 
 public class ProcessadorDeMacros {
     
-    public Map<String, Tupla> NAMTAB;          // CHANGE PRIVATE // Tabela com os nomes dos macros e seus ponteiros
-    public Map<String, String> DEFTAB;         // CHANGE PRIVATE // Tabela com os nomes dos macros e seus códigos
-    public Map<String, List<String>> ARGTAB;   // CHANGE PRIVATE // Tabela com os nomes dos macros e seus argumentos
+    private Map<String, Tupla> NAMTAB;          // Tabela com os nomes dos macros e seus ponteiros
+    private Map<String, String> DEFTAB;         // Tabela com os nomes dos macros e seus códigos
+    private Map<String, List<String>> ARGTAB;   // Tabela com os nomes dos macros e seus argumentos
+    public Line line;
 
     private ArrayList<String> input = new ArrayList<String>();
     private ArrayList<String> output = new ArrayList<String>();
@@ -27,22 +36,24 @@ public class ProcessadorDeMacros {
         NAMTAB = new HashMap<String, Tupla>();
         DEFTAB = new HashMap<String, String>();
         ARGTAB = new HashMap<String, List<String>>();
+        line = new Line();
     }
 
-    public void macroProcessor(){
+    public void macroProcessor(){           // Função principal e única do processador de macros
         
         int lineCounter = 0;
         boolean expanding = false;
         
-        Line line = new Line();
         line.parser(input.get(lineCounter));
         
         while (!line.opcode.equals("END")){
-            if (line.opcode.equals("MACRO")){
+            if (line.opcode.equals("MACRO")){           // Se a linha for um macro, define
                 if (!expanding){
                     StringBuffer macroCode = new StringBuffer();
                     ArrayList<String> macroArgs = new ArrayList<String>();
                     String macroName = line.label;
+                    macroArgs.addAll(line.macroArguments);          
+                    ARGTAB.put(macroName, macroArgs);               
                     Tupla tupla = new Tupla(lineCounter, 0);
                     NAMTAB.put(macroName, tupla);
                     lineCounter++;
@@ -56,23 +67,32 @@ public class ProcessadorDeMacros {
 
                     NAMTAB.get(macroName).setEndPointer(lineCounter);
                     DEFTAB.put(macroName, macroCode.toString());
-                    macroArgs.addAll(line.macroArguments);
-                    ARGTAB.put(macroName, macroArgs);
                     lineCounter++;
                     line.parser(input.get(lineCounter));  
                 }
             }
-            else if (DEFTAB.containsKey(line.label)){
+            else if (DEFTAB.containsKey(line.label)){       // Se a linha for uma chamada de macro, expande
                 String macroBody = DEFTAB.get(line.label);
                 List<String> macroArgs = ARGTAB.get(line.label);
                 List<String> macroParams = line.macroArguments;
+
                 for (int i = 0; i < macroArgs.size(); i++){
                     macroBody = macroBody.replaceAll(macroArgs.get(i), macroParams.get(i));
                 }
+
                 String[] linhas = macroBody.split("\\r?\\n");
                 for (String linha : linhas){
-                    output.add(linha);
+                    Line tmpLine = new Line();
+                    tmpLine = line;
+                    tmpLine.parser(linha);
+                    if (DEFTAB.containsKey(tmpLine.label)){
+                        expandNestedMacros(linha);          // Se a linha expandida for um macro, expande o macro interno
+                    }
+                    else{
+                        output.add(linha);
+                    }
                 }
+
                 lineCounter++;
                 line.parser(input.get(lineCounter));
             }     
@@ -82,7 +102,7 @@ public class ProcessadorDeMacros {
                 line.parser(input.get(lineCounter));
                 expanding = true;
             }
-            else{
+            else{                                         // Se a linha não for um macro, apenas copia
                 output.add(line.line);
                 lineCounter++;
                 line.parser(input.get(lineCounter));
@@ -91,6 +111,26 @@ public class ProcessadorDeMacros {
 
         output.add(line.line);
         gerarTXTOutput();
+        return;
+    }
+
+    public void expandNestedMacros(String linha) {
+        line.parser(linha);
+
+        String macroBody = DEFTAB.get(line.label);
+        List<String> macroArgs = ARGTAB.get(line.label);
+        List<String> macroParams = line.macroArguments;
+        for (int i = 0; i < macroArgs.size(); i++) {
+            macroBody = macroBody.replaceAll(macroArgs.get(i), macroParams.get(i));
+        }
+        String[] lines = macroBody.split("\\r?\\n");
+        for (String macroLine : lines) {
+            if (DEFTAB.containsKey(macroLine)) {
+                expandNestedMacros(macroLine);              // se a linha expandida for um macro, expande o macro interno
+            } else {
+                output.add(macroLine);
+            }
+        }
         return;
     }
 

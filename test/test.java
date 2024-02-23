@@ -14,7 +14,7 @@ public class test {
     
     public static void main(String[] args) throws IOException {
         
-        String filePath = System.getProperty("user.dir") + "/txtFiles/inputMacro.txt/";
+        String filePath = System.getProperty("user.dir") + "/txtFiles/inputMacroNested.txt/";
         List<String> lines = Files.readAllLines(Paths.get(filePath));
         StringBuilder contentBuilder = new StringBuilder();
         for (String line : lines) {

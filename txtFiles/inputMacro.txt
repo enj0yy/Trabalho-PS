@@ -1,17 +1,17 @@
-MACRO multDois
-MUL S,T
+MACRO multDois x,y
+MUL x,y
 STT #10
 COMP T
 MEND
-MACRO addTwo x,y
-ADD x
-ADD y
+MACRO addTwo
+ADD #10
+ADD #10
 MEND
 START 0
 LDS UM
 LDT CEM
-multDois
+multDois S,T
 LDS UM
 LDT CEM
-addTwo w,z
+addTwo
 END

@@ -20,7 +20,20 @@ public class Line {
         this.line = Line;
         String[] loo = Line.split(" ");
 
-        if (loo[0].equals("MACRO")){            // DEFININDO
+        if (loo[0].charAt(0) == '&'){              // Chamada de macro dentro de macro
+            StringBuilder sb = new StringBuilder(line); 
+            sb.deleteCharAt(0);
+            line = sb.toString();
+            if (loo.length > 1){                        // Se tiver argumentos (não obrigatório)
+                String[] aux = loo[1].split(",");
+                for (String arg : aux){
+                    macroArguments.add(arg);
+                }
+            }
+            return;
+        }
+
+        else if (loo[0].equals("MACRO")){            // DEFININDO
             macroArguments.clear();
             opcode = loo[0];
             label = loo[1];
