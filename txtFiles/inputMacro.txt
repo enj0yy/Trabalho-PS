@@ -1,7 +1,7 @@
-MACRO multDois par1,par2
-MUL par1,par2
+MACRO multDois
+MUL S,T
 STT #10
-COMP par1
+COMP T
 MEND
 MACRO addTwo x,y
 ADD x
@@ -10,7 +10,7 @@ MEND
 START 0
 LDS UM
 LDT CEM
-multDois ARGONE,ARGTWO
+multDois
 LDS UM
 LDT CEM
 addTwo w,z

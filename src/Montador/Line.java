@@ -20,17 +20,19 @@ public class Line {
         this.line = Line;
         String[] loo = Line.split(" ");
 
-        if (loo[0].equals("MACRO")){
+        if (loo[0].equals("MACRO")){            // DEFININDO
             macroArguments.clear();
             opcode = loo[0];
             label = loo[1];
             macroNames.add(label);
-            String[] aux = loo[2].split(",");
-            for (String arg : aux){
-                macroArguments.add(arg);
+            if (loo.length > 2){                        // Se tiver argumentos (não obrigatório)
+                String[] aux = loo[2].split(",");
+                for (String arg : aux){
+                    macroArguments.add(arg);
+                }
             }
             return;
-        }
+        }   
 
         else if (loo[0].equals("MEND")){
             label = "";
@@ -38,12 +40,14 @@ public class Line {
             return;
         }
 
-        else if (macroNames.contains(loo[0])){
+        else if (macroNames.contains(loo[0])){          // EXPANDINDO
             label = loo[0];
             macroArguments.clear();
-            String[] aux = loo[1].split(",");
-            for (String arg : aux){
-                macroArguments.add(arg);
+            if (loo.length > 1){                        // Se tiver argumentos (não obrigatório)
+                String[] aux = loo[1].split(",");
+                for (String arg : aux){
+                    macroArguments.add(arg);
+                }
             }
             return;
         }
