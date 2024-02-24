@@ -1,17 +1,17 @@
-MACRO multDois x,y
-MUL x,y
-STT #10
-COMP T
+MACRO outer_macro
+ADD x
+&inner_macro
+ADD y
 MEND
-MACRO addTwo
-ADD #10
-ADD #10
+MACRO inner_macro
+LDS #10
+LDT #20
+LDS #40
 MEND
 START 0
-LDS UM
-LDT CEM
-multDois S,T
-LDS UM
-LDT CEM
-addTwo
+outer_macro
+inner_macro
+outer_macro
+LDS #10
+LDS #10000
 END

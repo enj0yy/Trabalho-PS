@@ -153,4 +153,15 @@ public class ProcessadorDeMacros {
             }
     }
 
+    public void limpar() {
+        ARGTAB.clear();
+        DEFTAB.clear();
+        NAMTAB.clear();
+        output.clear();
+        input.clear();
+    }
+
+    public String getOutput() {
+        return String.join("\n", output);
+    }
 }

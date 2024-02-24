@@ -1,17 +1,17 @@
-MACRO outer_macro
-ADD x
-&inner_macro
-ADD y
-MEND
-MACRO inner_macro
-LDS #10
-LDT #20
-LDS #40
+MACRO aaa VA,VB
+ADDR VA,VB
+COMP CEM
 MEND
 START 0
-outer_macro
-inner_macro
-outer_macro
-LDS #10
-LDS #10000
+LDS UM
+ADICIONAR ADD #10
+aaa S,T
+JEQ FIM
+J ADICIONAR
+UM WORD 1
+CEM WORD 100
+VEZES RESW 1
+FIM STT VEZES
+LDA VEZES
+WD
 END

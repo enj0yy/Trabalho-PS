@@ -3,27 +3,32 @@ package Interface;
 
 import javax.swing.*;
 
-import Montador.Montador;
+import ProcessadorDeMacros.ProcessadorDeMacros;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.List;
 
-//@SuppressWarnings("serial")
-public class MontadorInterface extends JFrame {
-    private final Montador montador;
+public class ProcessadorMacrosInterface extends JFrame{
+    private final ProcessadorDeMacros processadorDeMacros;
+    private String content;
     private JPanel headerPanel;
-    private JTextArea inputArea;
-    private JTextArea outputArea;
-    private JButton montarButton;
+    private JTextArea codeArea;
+    private JTextArea macrosArea;
+    private JButton converterButton;
     private JButton selectFileButton;
+    private JButton montadorButton;
+    private JButton limparButton;
     private JLabel sicLabel;
+    private JScrollPane outputScrollPane;
+    private JScrollPane inputPane;
 
-    public MontadorInterface() {
-        super("Montador SIC/XE");
-        montador = new Montador();
+    public ProcessadorMacrosInterface() {
+        super("Processador de Macros SIC/XE");
+        processadorDeMacros = new ProcessadorDeMacros();
         initComponents();
     }
 
@@ -37,31 +42,31 @@ public class MontadorInterface extends JFrame {
         sicLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         sicLabel.setForeground(ColorPalette.TITLE.getColor());
         sicLabel.setFont(new Font("Arial", Font.BOLD, 24)); 
-        sicLabel.setText("Montador SIC/XE");
+        sicLabel.setText("Processador de Macros SIC/XE");
         headerPanel.add(sicLabel);
 
-        inputArea = new JTextArea(500, 400);
-        inputArea.setBackground(ColorPalette.BG_GRID.getColor());
-        inputArea.setForeground(Color.white);
-        JScrollPane inputPane = new JScrollPane(inputArea);
+        codeArea = new JTextArea(500, 400);
+        codeArea.setBackground(ColorPalette.BG_GRID.getColor());
+        codeArea.setForeground(Color.white);
+        inputPane = new JScrollPane(codeArea);
 
 
-        outputArea = new JTextArea(500, 400);
-        outputArea.setEditable(false);
-        outputArea.setBackground(ColorPalette.BG_GRID.getColor());
-        outputArea.setForeground(Color.white);
-        JScrollPane outputScrollPane = new JScrollPane(outputArea);
+        macrosArea = new JTextArea(500, 400);
+        macrosArea.setEditable(false);
+        macrosArea.setBackground(ColorPalette.BG_GRID.getColor());
+        macrosArea.setForeground(Color.white);
+        outputScrollPane = new JScrollPane(macrosArea);
 
-        montarButton = new JButton("Montar");
-        montarButton.setEnabled(false);
-        montarButton.setBackground(ColorPalette.GRID.getColor());
-        montarButton.setForeground(ColorPalette.TEXT.getColor());
-        montarButton.addActionListener((ActionEvent e) -> {
-            montarPrograma();
+        converterButton = new JButton("Converter");
+        converterButton.setEnabled(false);
+        converterButton.setBackground(ColorPalette.GRID.getColor());
+        converterButton.setForeground(ColorPalette.TEXT.getColor());
+        converterButton.addActionListener((ActionEvent e) -> {
+            converter();
         });
 
-        montarButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        montarButton.setPreferredSize(new Dimension(150, 50)); 
+        converterButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        converterButton.setPreferredSize(new Dimension(150, 50)); 
 
         selectFileButton = new JButton("Selecionar");
         selectFileButton.setBackground(ColorPalette.GRID.getColor());
@@ -82,11 +87,11 @@ public class MontadorInterface extends JFrame {
         innerLeftPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         innerLeftPanel.setBackground(ColorPalette.BG.getColor());
 
-        JLabel inputLabel = new JLabel("Input");
-        inputLabel.setFont(new Font("Arial", 0, 20));
-        inputLabel.setForeground(ColorPalette.TEXT.getColor());
+        JLabel codeLabel = new JLabel("Código");
+        codeLabel.setFont(new Font("Arial", 0, 20));
+        codeLabel.setForeground(ColorPalette.TEXT.getColor());
 
-        innerLeftPanel.add(inputLabel);
+        innerLeftPanel.add(codeLabel);
         leftPanel.add(innerLeftPanel, BorderLayout.NORTH);
         leftPanel.add(inputPane, BorderLayout.CENTER);
         leftPanel.setPreferredSize(new Dimension(300, 600));
@@ -96,9 +101,9 @@ public class MontadorInterface extends JFrame {
         // Center Panel
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 20));
-        centerPanel.add(montarButton);
+        centerPanel.add(converterButton);
         centerPanel.add(selectFileButton);
-        centerPanel.setPreferredSize(new Dimension(300, 600)); 
+        centerPanel.setPreferredSize(new Dimension(200, 600)); 
         centerPanel.setBorder(BorderFactory.createEmptyBorder(30, 25, 30, 25));
         centerPanel.setBackground(ColorPalette.BG.getColor());
 
@@ -111,13 +116,37 @@ public class MontadorInterface extends JFrame {
         innerRightPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         innerRightPanel.setBackground(ColorPalette.BG.getColor());
 
-        JLabel outputLabel = new JLabel("Output");
-        outputLabel.setForeground(ColorPalette.TEXT.getColor());
-        outputLabel.setFont(new Font("Arial", 0, 20));
+        JLabel macrosLabel = new JLabel("Macros");
+        macrosLabel.setForeground(ColorPalette.TEXT.getColor());
+        macrosLabel.setFont(new Font("Arial", 0, 20));
 
-        innerRightPanel.add(outputLabel);
+        montadorButton = new JButton("Montador");
+        montadorButton.setBackground(ColorPalette.GRID.getColor());
+        montadorButton.setForeground(ColorPalette.TEXT.getColor());
+        montadorButton.setPreferredSize(new Dimension(110, 50));
+        montadorButton.addActionListener((java.awt.event.ActionEvent evt) -> {
+            chamaMontador();
+        });
+
+        limparButton = new JButton("Limpar");
+        limparButton.setBackground(ColorPalette.GRID.getColor());
+        limparButton.setForeground(ColorPalette.TEXT.getColor());
+        limparButton.setPreferredSize(new Dimension(110, 50));
+        limparButton.addActionListener((java.awt.event.ActionEvent evt) -> {
+            limpar();
+        });
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
+        buttonPanel.setBackground(ColorPalette.BG.getColor());
+        buttonPanel.add(montadorButton);
+        buttonPanel.add(limparButton);
+
+        innerRightPanel.add(macrosLabel);
         rightPanel.add(innerRightPanel, BorderLayout.NORTH);
         rightPanel.add(outputScrollPane, BorderLayout.CENTER);
+        rightPanel.add(buttonPanel, BorderLayout.SOUTH);
         rightPanel.setPreferredSize(new Dimension(300, 600)); 
         rightPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 30, 45));  
         rightPanel.setBackground(ColorPalette.BG.getColor());
@@ -130,37 +159,10 @@ public class MontadorInterface extends JFrame {
         horizontalPanel.add(centerPanel);
         horizontalPanel.add(rightPanel);
 
-        // Footer Panel
-        JPanel footerPanel = new JPanel();
-        footerPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        footerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20,37));
-        footerPanel.setBackground(ColorPalette.BG.getColor());
-
-        JButton executorButton = new JButton("Executor");
-        executorButton.setBackground(ColorPalette.GRID.getColor());
-        executorButton.setForeground(ColorPalette.TEXT.getColor());
-        executorButton.setPreferredSize(new Dimension(92, 35));
-        executorButton.addActionListener((java.awt.event.ActionEvent evt) -> {
-            chamaExecutor();
-        });
-
-        JButton limparButton = new JButton("Limpar");
-        limparButton.setBackground(ColorPalette.GRID.getColor());
-        limparButton.setForeground(ColorPalette.TEXT.getColor());
-        limparButton.setPreferredSize(new Dimension(92, 35));
-        limparButton.addActionListener((java.awt.event.ActionEvent evt) -> {
-            limpar();
-        });
-
-        footerPanel.add(executorButton);
-        footerPanel.add(limparButton);
-
         // Main Panel
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(headerPanel, BorderLayout.NORTH);
         getContentPane().add(horizontalPanel, BorderLayout.CENTER);
-        getContentPane().add(footerPanel, BorderLayout.SOUTH);
-
 
         pack();
 
@@ -173,21 +175,28 @@ public class MontadorInterface extends JFrame {
         setVisible(true);
     }
 
-    private void chamaExecutor() {
+    private void converter() {
+        processadorDeMacros.setPrograma(content);
+        processadorDeMacros.macroProcessor();
+        codeArea.setText(processadorDeMacros.getOutput());
+        converterButton.setEnabled(false);
+    }
+
+    private void chamaMontador() {
         setVisible(false);
-        new ExecutorInterface();
+        new MontadorInterface();
     }
 
     private void limpar() {
-        outputArea.setText("");
-        inputArea.setText("");
-        montador.limpaListas();        
+        codeArea.setText("");
+        macrosArea.setText("");
+        content = "";
+        processadorDeMacros.limpar();
     }
 
-    // ActionListeners
     private void selectFileButtonActionPerformed(java.awt.event.ActionEvent evt) {
         limpar();
-        montarButton.setEnabled(true);
+        converterButton.setEnabled(true);
         JFileChooser fileChooser = new JFileChooser();
         File workingDirectory = new File(System.getProperty("user.dir"));
         fileChooser.setCurrentDirectory(workingDirectory);
@@ -195,24 +204,32 @@ public class MontadorInterface extends JFrame {
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
             try {
-                String content = new String(Files.readAllBytes(selectedFile.toPath()));
-                inputArea.setText(content);
-            } catch (IOException ex) {
-                ex.printStackTrace();
+                List<String> lines = Files.readAllLines(selectedFile.toPath());
+                StringBuilder contentBuilder = new StringBuilder();
+                for (String line : lines) {
+                    contentBuilder.append(line).append("\n");
+                }
+                content = contentBuilder.toString();
+                separaString();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
 
-   private void montarPrograma() {
-        outputArea.setText(""); 
-        String input = inputArea.getText();
-        try {
-            String out = montador.Montar(input);
-            outputArea.setText(out);
-        } catch (Exception e) {
-            outputArea.setText("Erro ao montar o programa: " + e.getMessage());
-        }
-        montarButton.setEnabled(false);
-   }
+    private void separaString() {
+        String macros = "";
+        String programa = "START";
+        String separada[] = content.split("START");
 
+        if (separada.length > 1) {
+            macros = separada[0];
+            programa += separada[1];
+        } else {
+            programa += separada[0];
+        }
+
+        codeArea.setText(programa);
+        macrosArea.setText(macros);
+    }
 }
