@@ -11,8 +11,8 @@ public class TrabalhoPS {
     
     public static void main(String[] args) throws IOException {
         //executor = new ExecutorInterface();
-        montador = new MontadorInterface();
-        //processadorMacros = new ProcessadorMacrosInterface();
+        // montador = new MontadorInterface();
+        processadorMacros = new ProcessadorMacrosInterface();
     }
     
 }
