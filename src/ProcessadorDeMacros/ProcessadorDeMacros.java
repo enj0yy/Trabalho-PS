@@ -110,7 +110,7 @@ public class ProcessadorDeMacros {
         }
 
         output.add(line.line);
-        gerarTXTOutput();
+        gerarASMOutput();
         return;
     }
 
@@ -143,8 +143,8 @@ public class ProcessadorDeMacros {
         }
     }
 
-    private void gerarTXTOutput() {
-        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMacro.txt")) 
+    private void gerarASMOutput() {
+        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMacro.asm")) 
             {
                 fileWriter.write(String.join("\n", output));
                 fileWriter.close();
