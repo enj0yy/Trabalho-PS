@@ -9,6 +9,7 @@ Componentes:
 - Montador (https://drive.google.com/file/d/1ZNLny3NNl0DjN5PY35OqjxW7uYAlreiN/view?usp=sharing) ✔️
 - Processador de Macros ✔️
 - Ligador ⌛
+- Carregador ⌛
 
 # 👥 **Integrantes** 👥
 
