@@ -32,7 +32,9 @@ public class Montador {
         SYMTAB.put("PC", 8);
         SYMTAB.put("SW", 9);
     }
-
+    public Map<String, Integer> getSYMTAB() {
+        return SYMTAB;
+    }
     public void setPrograma(String codigoAssembly) 
     {
         String[] linhas = codigoAssembly.split("\\r?\\n");

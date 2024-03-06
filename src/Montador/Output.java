@@ -25,4 +25,13 @@ public class Output {
         this.length = 0;
         this.machineCode.clear();
     }
+    public String getMachineCodeAsString() {
+        StringBuilder codeBuilder = new StringBuilder();
+        
+        for (String code : machineCode) {
+            codeBuilder.append(code);
+        }
+        
+        return codeBuilder.toString();
+    }
 }
