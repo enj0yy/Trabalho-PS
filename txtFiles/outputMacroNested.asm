@@ -1,0 +1,5 @@
+START 0
+ADD #10
+ADD #20
+ADD #10
+END

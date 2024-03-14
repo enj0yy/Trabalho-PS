@@ -474,5 +474,9 @@ public class Montador {
         }
         return binary;
     }
+
+    public Output geOutput(){
+        return this.output;
+    }
     
 }

@@ -38,9 +38,7 @@ public class Ligador {
             tabelaDeSimbolosGlobal.putAll(montador.getSYMTAB());
 
             // Incrementa o endereço atual considerando o tamanho do programa
-            // enderecoAtual += Output.get_length();
-            Output output = new Output();
-            enderecoAtual += output.get_length();
+            enderecoAtual += montador.geOutput().get_length();
         }
     }
 
@@ -55,17 +53,14 @@ public class Ligador {
             montador.passoDois(); // Executa a segunda passagem do montador
 
             // Obtém o código de máquina do programa atual e realiza eventuais ajustes de
-            // endereço
-            Output output = new Output();
-            String codigoPrograma = output.getMachineCodeAsString();
+            String codigoPrograma = montador.geOutput().getMachineCodeAsString();
+
+            // Incrementa o endereço atual considerando o tamanho do programa
+            enderecoAtual += montador.geOutput().get_length();
 
             // Adiciona o código do programa ligado ao código final, considerando eventuais
             // ajustes de endereço
             codigoLigado.append(ajustarEnderecos(codigoPrograma, enderecoAtual));
-
-            // Incrementa o endereço atual considerando o tamanho do programa
-            // Output output = new Output();
-            enderecoAtual += output.get_length();
         }
 
         return codigoLigado.toString();
@@ -85,8 +80,8 @@ public class Ligador {
     public static void main(String[] args) {
         // Exemplo de uso do ligador
         Ligador ligador = new Ligador();
-        ligador.adicionarPrograma("/txtFiles/inputMacro.txt");
-        ligador.adicionarPrograma("/txtFiles/inputMacroNested.txt");
+        ligador.adicionarPrograma("/txtFiles/outputMacro.asm");
+        ligador.adicionarPrograma("/txtFiles/outputMacroNested.asm");
 
         String codigoLigado = ligador.ligarProgramas();
         System.out.println("Código ligado:\n" + codigoLigado);
