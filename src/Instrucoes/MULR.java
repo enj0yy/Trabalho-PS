@@ -20,7 +20,7 @@ public class MULR extends Instrucao {
 
         int resultado = valorRegistradorA * valorRegistradorB;
 
-        registradores.getRegistrador(registradoresID[0]).setValorInt(resultado);
+        registradores.getRegistrador(registradoresID[1]).setValorInt(resultado);
 
         registradores.incrementarPC(getFormato(memoria.getBytes(registradores.getValorPC(), 2))); // incrementa PC para a proxima instrução
     }
