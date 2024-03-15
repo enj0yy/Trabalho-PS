@@ -8,7 +8,10 @@ import ProcessadorDeMacros.ProcessadorDeMacros;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -25,6 +28,8 @@ import Executor.Executor;
  * @author Graziele
  */
 public class SICXE extends javax.swing.JFrame{
+    private javax.swing.JButton modulo1Button;
+    private javax.swing.JButton modulo2Button;
     private javax.swing.JButton carregarButton;
     private javax.swing.JTextField input;
     private javax.swing.JLabel jLabel1;
@@ -232,7 +237,11 @@ public class SICXE extends javax.swing.JFrame{
         }
 
         montarButton.setEnabled(false);
-        ligarButton.setEnabled(true);
+        if (segundoModulo.getText().isEmpty()) {
+            carregarButton.setEnabled(true);
+        } else {
+            ligarButton.setEnabled(true);
+        }
     }
 
     public void ligar() {
@@ -257,6 +266,40 @@ public class SICXE extends javax.swing.JFrame{
         carregarButton.setEnabled(true);
     }
 
+    private void carregarModulo1() {
+        JFileChooser fileChooser = new JFileChooser();
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        fileChooser.setCurrentDirectory(workingDirectory);
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try {
+                String content = new String(Files.readAllBytes(selectedFile.toPath()));
+                primeiroModulo.setText(content);
+                processarMacrosButton.setEnabled(true);
+                modulo2Button.setEnabled(true);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void carregarModulo2() {
+        JFileChooser fileChooser = new JFileChooser();
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        fileChooser.setCurrentDirectory(workingDirectory);
+        int returnValue = fileChooser.showOpenDialog(null);
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try {
+                String content = new String(Files.readAllBytes(selectedFile.toPath()));
+                segundoModulo.setText(content);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     public void carregar() {
         executor.setOutput(-1);
         output.setText("");
@@ -275,12 +318,13 @@ public class SICXE extends javax.swing.JFrame{
     }
 
     public void reiniciar() {
-        processarMacrosButton.setEnabled(true);
+        processarMacrosButton.setEnabled(false);
         montarButton.setEnabled(false);
         carregarButton.setEnabled(false);
         ligarButton.setEnabled(false);
         runButton.setEnabled(false);
         stepButton.setEnabled(false);
+        modulo2Button.setEnabled(false);
 
         primeiroModulo.setText("");
         segundoModulo.setText("");
@@ -332,6 +376,8 @@ public class SICXE extends javax.swing.JFrame{
         processarMacrosButton = new javax.swing.JButton();
         reiniciarButton = new javax.swing.JButton();
         stepButton = new javax.swing.JButton();
+        modulo1Button = new javax.swing.JButton();
+        modulo2Button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(24, 25, 26));
@@ -399,6 +445,24 @@ public class SICXE extends javax.swing.JFrame{
         runButton.setEnabled(false);
         runButton.addActionListener((java.awt.event.ActionEvent evt) -> {
             runButtonActionPerformed(evt, memory);
+        });
+
+        modulo1Button.setBackground(new java.awt.Color(36, 37, 38));
+        modulo1Button.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        modulo1Button.setForeground(new java.awt.Color(228, 230, 235));
+        modulo1Button.setText("Carregar Módulo Um");
+        modulo1Button.setEnabled(true);
+        modulo1Button.addActionListener((java.awt.event.ActionEvent evt) -> {
+            carregarModulo1();
+        });
+
+        modulo2Button.setBackground(new java.awt.Color(36, 37, 38));
+        modulo2Button.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        modulo2Button.setForeground(new java.awt.Color(228, 230, 235));
+        modulo2Button.setText("Carregar Módulo Dois");
+        modulo2Button.setEnabled(false);
+        modulo2Button.addActionListener((java.awt.event.ActionEvent evt) -> {
+            carregarModulo2();
         });
 
         carregarButton.setBackground(new java.awt.Color(36, 37, 38));
@@ -492,6 +556,7 @@ public class SICXE extends javax.swing.JFrame{
         processarMacrosButton.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         processarMacrosButton.setForeground(new java.awt.Color(228, 230, 235));
         processarMacrosButton.setText("Processar Macros");
+        processarMacrosButton.setEnabled(false);
         processarMacrosButton.addActionListener((java.awt.event.ActionEvent evt) -> {
             processarMacros();
         });
@@ -540,6 +605,8 @@ public class SICXE extends javax.swing.JFrame{
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(reiniciarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(modulo1Button, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(modulo2Button, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(montarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(carregarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(ligarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -609,18 +676,22 @@ public class SICXE extends javax.swing.JFrame{
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(primeiroModuloLabel)
                                 .addGap(18, 18, 18)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(modulo1Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(modulo2Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(reiniciarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(80, 80, 80)
+                                .addGap(81, 81, 81)
                                 .addComponent(processarMacrosButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(montarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(19, 19, 19)
+                                .addGap(18, 18, 18)
                                 .addComponent(ligarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(carregarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))))
