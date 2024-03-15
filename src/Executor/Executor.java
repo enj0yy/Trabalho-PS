@@ -3,11 +3,6 @@ package Executor;
 
 import Instrucoes.Instrucoes;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
 public class Executor {
     private Memoria memoria;
     private Registradores registradores;
