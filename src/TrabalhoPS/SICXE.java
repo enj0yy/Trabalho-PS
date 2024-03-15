@@ -1,6 +1,5 @@
 package TrabalhoPS;
 
-import Interface.ColorPalette;
 import Ligador.Ligador;
 import Montador.Montador;
 import ProcessadorDeMacros.ProcessadorDeMacros;
@@ -18,15 +17,6 @@ import javax.swing.table.DefaultTableModel;
 
 import Executor.Executor;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author Graziele
- */
 public class SICXE extends javax.swing.JFrame{
     private javax.swing.JButton modulo1Button;
     private javax.swing.JButton modulo2Button;
@@ -126,7 +116,7 @@ public class SICXE extends javax.swing.JFrame{
             stepButton.setEnabled(false);
             runButton.setEnabled(false);
             input.setEnabled(true);
-            input.setBackground(ColorPalette.TITLE.getColor());  
+            input.setBackground(new java.awt.Color(255, 217, 102));  
             input.setForeground(Color.black);
         }
         attRegistradores();
@@ -145,7 +135,7 @@ public class SICXE extends javax.swing.JFrame{
             stepButton.setEnabled(false);
             runButton.setEnabled(false);
             input.setEnabled(true);
-            input.setBackground(ColorPalette.TITLE.getColor());  
+            input.setBackground(new java.awt.Color(255, 217, 102));  
             input.setForeground(Color.black);
         }
         attRegistradores();
@@ -512,9 +502,9 @@ public class SICXE extends javax.swing.JFrame{
 
         registers.setBackground(new java.awt.Color(36, 37, 38));
         registers.setForeground(new java.awt.Color(228, 230, 235));
-        registers.setGridColor(ColorPalette.GRID.getColor());
+        registers.setGridColor(new java.awt.Color(58, 59, 60));
         registers.setFillsViewportHeight(true);
-        registers.setBackground(ColorPalette.BG_GRID.getColor());
+        registers.setBackground(new java.awt.Color(36, 37, 38));
         registers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {"a", null},
@@ -681,13 +671,14 @@ public class SICXE extends javax.swing.JFrame{
                                 .addComponent(modulo1Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(modulo2Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
+                            .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
                                 .addComponent(reiniciarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(81, 81, 81)
+                                .addGap(51, 51, 51)
                                 .addComponent(processarMacrosButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(montarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
