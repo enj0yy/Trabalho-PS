@@ -69,21 +69,42 @@ public class Montador {
         SYMTAB.put("SW", 9);
     }
 
-    public String Montar(String codigoAssembly){
+    public String Montar(String codigoAssembly, String modulo){
         limpaListas();
         setPrograma(codigoAssembly);
         passoUm();
         passoDois();
-        //gerarTXTOutput();
+        gerarTXTOutput(modulo);
         mostrarMensagem();
 
         return String.join("\n", output.machineCode);
     }
 
-    private void gerarTXTOutput() {
-        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontador.txt")) 
+    private void gerarTXTOutput(String modulo) {
+        // Output modulo: codiog objeto, tabela de uso, tabela de definições
+        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontadorModulo" + modulo + ".txt")) 
             {
                 fileWriter.write(String.join("\n", output.machineCode));
+                fileWriter.close();
+            } catch (IOException e) {
+                errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
+            }
+        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontadorModulo" + modulo + "TabelaDeUso.txt")) 
+            {
+                for (Object[] entradaUseTab : USETAB)
+                {
+                    fileWriter.write(entradaUseTab[0] + " " + entradaUseTab[1] + " " + entradaUseTab[2] + "\n");
+                }
+                fileWriter.close();
+            } catch (IOException e) {
+                errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
+            }
+        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMontadorModulo" + modulo + "TabelaDeDefinicoes.txt")) 
+            {
+                for (Object[] entradaDefTab : DEFTAB)
+                {
+                    fileWriter.write(entradaDefTab[0] + " " + entradaDefTab[1] + " " + entradaDefTab[2] + "\n");
+                }
                 fileWriter.close();
             } catch (IOException e) {
                 errorMessage = errorMessage + "\nERRO - Erro ao gerar arquivo de saida.";
@@ -111,6 +132,10 @@ public class Montador {
 
         if(line.opcode.equals("START"))
         {
+            if (Integer.parseInt(line.operands.get(0) ) != 0)
+            {
+                errorMessage = errorMessage + "\nERRO - START apenas suporta 0: " + input.get(lineCounter);
+            }
             LOCCTR = Integer.parseInt(line.operands.get(0));
             intermediateFile.add(line); 
 
@@ -252,6 +277,10 @@ public class Montador {
 
         if ( line.opcode.equals("START") )
         {
+            if (Integer.parseInt(line.operands.get(0) ) != 0)
+            {
+                return;
+            }
             LOCCTR = Integer.parseInt(line.operands.get(0));
             lineCounter +=1;
         }

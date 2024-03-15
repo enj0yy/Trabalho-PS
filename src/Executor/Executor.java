@@ -22,6 +22,11 @@ public class Executor {
         this.output = -1;
     }
     
+    public void limpar() {
+        memoria.limparMemoria();
+        registradores.limparRegistradores();
+        output = -1;
+    }
 
     public void setPrograma(String programaObjeto) {
         memoria.limparMemoria();

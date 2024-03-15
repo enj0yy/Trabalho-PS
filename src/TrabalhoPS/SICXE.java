@@ -43,6 +43,7 @@ public class SICXE extends javax.swing.JFrame{
     private javax.swing.JLabel primeiroModuloLabel;
     private javax.swing.JTextArea primeiroModuloOutput;
     private javax.swing.JButton processarMacrosButton;
+    private javax.swing.JButton reiniciarButton;
     private javax.swing.JTable registers;
     private javax.swing.JButton runButton;
     private javax.swing.JTextArea segundoModulo;
@@ -55,14 +56,17 @@ public class SICXE extends javax.swing.JFrame{
     private javax.swing.JButton stepButton;
     
     
-    private ProcessadorDeMacros processadorDeMacros = new ProcessadorDeMacros();
+    private ProcessadorDeMacros processadorDeMacrosPrimeiroModulo = new ProcessadorDeMacros();
+    private ProcessadorDeMacros processadorDeMacrosSegundoModulo = new ProcessadorDeMacros();
+
     private Montador montadorPrimeiroModulo = new Montador();
     private Montador montadorSegundoModulo = new Montador();
+
     private Ligador ligador = new Ligador();
     private Executor executor  = new Executor();
 
     public SICXE() {
-        super("SIC XE");
+        super("SIC/XE");
         initComponents();
         attRegistradores();
         attMemoria(memory);
@@ -176,15 +180,15 @@ public class SICXE extends javax.swing.JFrame{
             JOptionPane.showMessageDialog(null, "Preencha os dois módulos!", "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        processadorDeMacros.setPrograma(primeiroModulo.getText());
-        processadorDeMacros.macroProcessor();
-        primeiroModuloOutput.setText(processadorDeMacros.getOutput());
+        processadorDeMacrosPrimeiroModulo.limpar();
+        processadorDeMacrosPrimeiroModulo.setPrograma(primeiroModulo.getText());
+        processadorDeMacrosPrimeiroModulo.macroProcessor("1");
+        primeiroModuloOutput.setText(processadorDeMacrosPrimeiroModulo.getOutput());
 
-        processadorDeMacros.limpar();
-
-        processadorDeMacros.setPrograma(segundoModulo.getText());
-        processadorDeMacros.macroProcessor();
-        segundoModuloOutput.setText(processadorDeMacros.getOutput());
+        processadorDeMacrosSegundoModulo.limpar();
+        processadorDeMacrosSegundoModulo.setPrograma(segundoModulo.getText());
+        processadorDeMacrosSegundoModulo.macroProcessor("2");
+        segundoModuloOutput.setText(processadorDeMacrosSegundoModulo.getOutput());
 
         processarMacrosButton.setEnabled(false);
         montarButton.setEnabled(true);
@@ -195,18 +199,26 @@ public class SICXE extends javax.swing.JFrame{
             JOptionPane.showMessageDialog(null, "Primeiro processe as macros!", "Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        montadorPrimeiroModulo.Montar(primeiroModuloOutput.getText());
+        montadorPrimeiroModulo.Montar(primeiroModuloOutput.getText(), "1");
         primeiroModuloOutput.setText(montadorPrimeiroModulo.getOutput().getMachineCodeAsString());
 
         if (!montadorPrimeiroModulo.getErrorMessage().isEmpty()) {
+            processarMacrosButton.setEnabled(true);
+            montarButton.setEnabled(false);
+            primeiroModuloOutput.setText("");
+            segundoModuloOutput.setText("");
             return;
         }
 
 
-        montadorSegundoModulo.Montar(segundoModuloOutput.getText());
+        montadorSegundoModulo.Montar(segundoModuloOutput.getText(), "2");
         segundoModuloOutput.setText(montadorSegundoModulo.getOutput().getMachineCodeAsString());
 
         if (!montadorSegundoModulo.getErrorMessage().isEmpty()) {
+            processarMacrosButton.setEnabled(true);
+            montarButton.setEnabled(false);
+            primeiroModuloOutput.setText("");
+            segundoModuloOutput.setText("");
             return;
         }
 
@@ -242,6 +254,33 @@ public class SICXE extends javax.swing.JFrame{
         carregarButton.setEnabled(true);
     }
 
+    public void reiniciar() {
+        processarMacrosButton.setEnabled(true);
+        montarButton.setEnabled(false);
+        carregarButton.setEnabled(false);
+        ligarButton.setEnabled(false);
+        runButton.setEnabled(false);
+        stepButton.setEnabled(false);
+
+        primeiroModulo.setText("");
+        segundoModulo.setText("");
+        primeiroModuloOutput.setText("");
+        segundoModuloOutput.setText("");
+        
+        output.setText("");
+        input.setText("");
+
+        processadorDeMacrosPrimeiroModulo.limpar();
+        processadorDeMacrosSegundoModulo.limpar();
+        montadorPrimeiroModulo.limpaListas();
+        montadorSegundoModulo.limpaListas();
+        ligador.limpar();
+        executor.limpar();
+
+        attRegistradores();
+        attMemoria(memory);
+    }
+
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -271,6 +310,7 @@ public class SICXE extends javax.swing.JFrame{
         segundoModuloLabel4 = new javax.swing.JLabel();
         output = new javax.swing.JTextField();
         processarMacrosButton = new javax.swing.JButton();
+        reiniciarButton = new javax.swing.JButton();
         stepButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -362,7 +402,7 @@ public class SICXE extends javax.swing.JFrame{
         jLabel1.setBackground(new java.awt.Color(255, 217, 102));
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 217, 102));
-        jLabel1.setText("SIC XE");
+        jLabel1.setText("SIC/XE");
         jLabel1.setToolTipText("");
 
         segundoModuloLabel1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
@@ -436,6 +476,14 @@ public class SICXE extends javax.swing.JFrame{
             processarMacros();
         });
 
+        reiniciarButton.setBackground(new java.awt.Color(36, 37, 38));
+        reiniciarButton.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        reiniciarButton.setForeground(new java.awt.Color(228, 230, 235));
+        reiniciarButton.setText("Reiniciar");
+        reiniciarButton.addActionListener((java.awt.event.ActionEvent evt) -> {
+            reiniciar();
+        });
+
         stepButton.setBackground(new java.awt.Color(36, 37, 38));
         stepButton.setForeground(new java.awt.Color(228, 230, 235));
         stepButton.setText("Step");
@@ -471,10 +519,12 @@ public class SICXE extends javax.swing.JFrame{
                                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(reiniciarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(montarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(carregarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(ligarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(processarMacrosButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                    .addComponent(processarMacrosButton, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    )))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -545,6 +595,8 @@ public class SICXE extends javax.swing.JFrame{
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(reiniciarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(80, 80, 80)
                                 .addComponent(processarMacrosButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(montarButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)

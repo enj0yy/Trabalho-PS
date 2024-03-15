@@ -1,3 +1,0 @@
-START 0
-RD
-END

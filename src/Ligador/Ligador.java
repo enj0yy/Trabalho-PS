@@ -14,6 +14,13 @@ public class Ligador {
     private Output output = new Output();
     private Instrucoes instrucoes = new Instrucoes();
 
+    public void limpar()
+    {
+        programas.clear();
+        tabelaDeSimbolosGlobal.clear();
+        output.machineCode.clear();
+    }
+
     public void adicionarPrograma(Montador montador) {
         programas.add(montador);
     }
@@ -58,6 +65,78 @@ public class Ligador {
         for (String codigo : programas.get(1).getOutput().machineCode) 
         {
             output.machineCode.add(codigo);
+        }
+
+        int loc = 0;
+        for (int i = 0; i < output.machineCode.size(); i++)
+        {
+            // Verificar Tabela de Uso programa 0
+            for (Object[] entrada : programas.get(0).getUSETAB()) 
+            {
+                if (loc == (int)entrada[1]) 
+                {
+                    String simbolo = (String)entrada[0];
+                    int valor = 0;
+
+                    for (Object[] entrada2 : tabelaDeSimbolosGlobal) 
+                    {
+                        if (entrada2[0].equals(simbolo)) 
+                        {
+                            valor = (int)entrada2[1];
+                        }
+                    }
+
+                    String disp = Integer.toBinaryString(valor);
+                    disp = String.format("%12s", disp).replaceAll(" ", "0");
+
+                    String codigoAtualizado = output.machineCode.get(i).substring(0, 12) + disp;
+                    output.machineCode.set(i, codigoAtualizado);
+                }
+            }
+
+            // Verificar Tabela de Uso programa 1
+            for (Object[] entrada : programas.get(1).getUSETAB()) 
+            {
+                if (loc == (int)entrada[1]) 
+                {
+                    String simbolo = (String)entrada[0];
+                    int valor = 0;
+
+                    for (Object[] entrada2 : tabelaDeSimbolosGlobal) 
+                    {
+                        if (entrada2[0].equals(simbolo)) 
+                        {
+                            valor = (int)entrada2[1];
+                        }
+                    }
+
+                    String disp = Integer.toBinaryString(valor);
+                    disp = String.format("%12s", disp).replaceAll(" ", "0");
+
+                    String codigoAtualizado = output.machineCode.get(i).substring(0, 12) + disp;
+                    output.machineCode.set(i, codigoAtualizado);
+                }
+            }
+
+            // Pegar primeiros 8 bits para pegar o opcode
+            String opcodeString = output.machineCode.get(i).substring(0, 8);
+            Byte opcode = (byte) ((byte)Integer.parseInt(opcodeString, 2) & 0b11111100);
+
+            if (opcode == (byte)0xD8 || opcode == (byte)0xD) // RD e WD
+            {
+                loc+=1;
+            }
+            else if (instrucoes.getInstrucao(opcode) == null)   // Se a inrtucao nao existe é BYTE, WORD, etc
+            {
+                if (output.machineCode.get(i).length() > 8)     // WORD
+                    loc+=3;
+                else                                            // BYTE
+                    loc+=1;
+            }
+            else
+            {
+                loc += instrucoes.getInstrucao(opcode).getLength();
+            }
         }
 
     }

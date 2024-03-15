@@ -39,7 +39,7 @@ public class ProcessadorDeMacros {
         line = new Line();
     }
 
-    public void macroProcessor(){           // Função principal e única do processador de macros
+    public void macroProcessor(String moduloIndex){           // Função principal e única do processador de macros
         
         int lineCounter = 0;
         boolean expanding = false;
@@ -110,7 +110,7 @@ public class ProcessadorDeMacros {
         }
 
         output.add(line.line);
-        gerarASMOutput();
+        gerarASMOutput(moduloIndex);
         return;
     }
 
@@ -143,8 +143,8 @@ public class ProcessadorDeMacros {
         }
     }
 
-    private void gerarASMOutput() {
-        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMacro.asm")) 
+    private void gerarASMOutput(String moduloIndex) {
+        try (FileWriter fileWriter = new FileWriter(System.getProperty("user.dir")+ "/txtFiles/outputMacroModulo" + moduloIndex + ".asm"))
             {
                 fileWriter.write(String.join("\n", output));
                 fileWriter.close();

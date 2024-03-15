@@ -177,7 +177,7 @@ public class ProcessadorMacrosInterface extends JFrame{
 
     private void converter() {
         processadorDeMacros.setPrograma(content);
-        processadorDeMacros.macroProcessor();
+        processadorDeMacros.macroProcessor("1");
         codeArea.setText(processadorDeMacros.getOutput());
         converterButton.setEnabled(false);
     }
