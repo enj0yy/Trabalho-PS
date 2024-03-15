@@ -8,8 +8,8 @@ Componentes:
 - Executor (https://drive.google.com/file/d/11tbWbTYv844VtkBdwcxaAgLyqsb81Tg_/view?usp=sharing) ✔️
 - Montador (https://drive.google.com/file/d/1ZNLny3NNl0DjN5PY35OqjxW7uYAlreiN/view?usp=sharing) ✔️
 - Processador de Macros (https://drive.google.com/file/d/1heAm-XKyZn0E3zFRzTm_V7FEgXhuq4Kb/view?usp=drivesdk) ✔️
-- Ligador ⌛
-- Carregador ⌛
+- Ligador ✔️
+- Carregador ✔️
 
 # 👥 **Integrantes** 👥
 
