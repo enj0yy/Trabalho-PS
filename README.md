@@ -6,9 +6,11 @@ O projeto consiste no desenvolvimento de um simulador do SIC/XE, desenvolvido em
 
 ## Execução:
 1. Clone ou faça o download deste repositório
-   `git clone https://github.com/enj0yy/Trabalho-PS.git`
+   ```git clone https://github.com/enj0yy/Trabalho-PS.git````
 2. Abre a pasta do repositório em uma das IDEs citadas anteriormente
-3. 
+3. Vá para o arquivo `src/TrabalhoPS/TrabalhoPS.java`
+4. Clique com o botão direito no arquivo e clique na opção Run Java ou abra-o e o execute
+5. Pronto. Agora faça os testes e aproveite o simulador do **SIC/XE**
 
 ## Componentes:
 - Executor (https://drive.google.com/file/d/11tbWbTYv844VtkBdwcxaAgLyqsb81Tg_/view?usp=sharing) ✔️
