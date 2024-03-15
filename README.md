@@ -7,7 +7,7 @@ O projeto consiste no desenvolvimento de um simulador do SIC/XE, desenvolvido em
 ## Especificações
 Caso queira ter uma ideia mais aprofundada das instruções, pseudoinstruções e modos de endereçamento, pode acessar a [documentação](https://docs.google.com/document/d/1GtI9dttAeRHsBylN86nAUqaykJP78BXk8GI2fD5ATA8/edit?usp=sharing) de especificações
 
-## Execução:
+## Execução
 1. Clone ou faça o download deste repositório
    
    ```
@@ -18,7 +18,7 @@ Caso queira ter uma ideia mais aprofundada das instruções, pseudoinstruções 
 5. Clique com o botão direito no arquivo e clique na opção Run Java ou abra-o e o execute
 6. Pronto. Agora faça os testes e aproveite o simulador do **SIC/XE**
 
-## Componentes:
+## Componentes
 - Executor (https://drive.google.com/file/d/11tbWbTYv844VtkBdwcxaAgLyqsb81Tg_/view?usp=sharing) ✔️
 - Montador (https://drive.google.com/file/d/1ZNLny3NNl0DjN5PY35OqjxW7uYAlreiN/view?usp=sharing) ✔️
 - Processador de Macros (https://drive.google.com/file/d/1heAm-XKyZn0E3zFRzTm_V7FEgXhuq4Kb/view?usp=drivesdk) ✔️
