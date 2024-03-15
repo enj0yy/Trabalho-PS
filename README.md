@@ -1,9 +1,10 @@
 # 💻 **Computador Hipotético (SIC/XE)** 💻
 Este repositório contém o projeto final desenvolvido como parte da disciplina de Programação de Sistemas que prevê a implementação do Computador Hipotético (SIC/XE) (presente no livro Sytems Software: An Introduction to System Programming de Leland L. Beck).
 
+### **Construção**
 O projeto consiste no desenvolvimento de um simulador do SIC/XE, desenvolvido em Java, permitindo que você interaja a partir de uma interface simples, feita utilizando Java Swing.
 
-Execução:
+### Execução:
 - Arquivo de execução: .\src\TrabalhoPS\TrabalhoPS.java
 
 Componentes:
