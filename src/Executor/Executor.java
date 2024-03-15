@@ -22,64 +22,28 @@ public class Executor {
         this.output = -1;
     }
     
-    
-    public void setProgramaold(String caminho) 
-    {
+
+    public void setPrograma(String programaObjeto) {
         memoria.limparMemoria();
         registradores.limparRegistradores();
 
-        File file = new File(caminho);
-
         int posMem = 0;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String binaryString = br.readLine();
+        StringBuilder binaryString = new StringBuilder();
 
-            int tamanhoByte = 8;
-            int tamanho = binaryString.length();
-    
-            for (int i = 0; i < tamanho; i += tamanhoByte) {
-                int endIndex = Math.min(i + tamanhoByte, tamanho);
-                String pedaco = binaryString.substring(i, endIndex);
+        String[] lines = programaObjeto.split("\\r?\\n");
 
-                byte pedacoByte = (byte) Integer.parseInt(pedaco, 2);
-
-                memoria.setByte(posMem++, pedacoByte);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Erro ao ler o arquivo.");
+        for (String l : lines) {
+            binaryString.append(l.trim());
         }
-    }
 
+        // Lê de 8 em 8 caracteres
+        for (int i = 0; i < binaryString.length(); i += 8) {
+            String pedaco = binaryString.substring(i, Math.min(i + 8, binaryString.length()));
 
-    public void setPrograma(String caminho) {
-        memoria.limparMemoria();
-        registradores.limparRegistradores();
+            byte pedacoByte = (byte) Integer.parseInt(pedaco, 2);
 
-        int posMem = 0;
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(caminho));
-            String line;
-            StringBuilder binaryString = new StringBuilder();
-
-            while ((line = br.readLine()) != null) {
-                binaryString.append(line.trim());
-            }
-
-            br.close();
-
-            // Lê de 8 em 8 caracteres
-            for (int i = 0; i < binaryString.length(); i += 8) {
-                String pedaco = binaryString.substring(i, Math.min(i + 8, binaryString.length()));
-
-                byte pedacoByte = (byte) Integer.parseInt(pedaco, 2);
-
-                memoria.setByte(posMem++, pedacoByte);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            memoria.setByte(posMem++, pedacoByte);
         }
     }
 

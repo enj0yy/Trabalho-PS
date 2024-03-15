@@ -11,10 +11,10 @@ public class Output {
     
     public void set_length()
     {
-        this.length = startingAddress - endAddress;
+        this.length = endAddress - startingAddress;
     }
 
-    public int get_length()
+    public int getLength()
     {
         return this.length;
     }
@@ -25,11 +25,13 @@ public class Output {
         this.length = 0;
         this.machineCode.clear();
     }
+
     public String getMachineCodeAsString() {
         StringBuilder codeBuilder = new StringBuilder();
         
         for (String code : machineCode) {
             codeBuilder.append(code);
+            codeBuilder.append("\n");
         }
         
         return codeBuilder.toString();

@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
 
@@ -13,6 +14,12 @@ public class Montador {
 
     private Map<String, Integer> SYMTAB;    // Tabela de simbolos
     private Instrucoes OPTAB;               // Tabela de instrucoes
+
+    // Tabela de definições (simbolo, endereco, modo de relocabilidade)
+    List<Object[]> DEFTAB = new ArrayList<Object[]>();
+
+    // Tabela de uso (simbolo, location counter, sinal)
+    List<Object[]> USETAB = new ArrayList<Object[]>();
 
     private ArrayList<String> input = new ArrayList<String>(); 
     public Output output = new Output();
@@ -49,6 +56,8 @@ public class Montador {
         output.reset();
         SYMTAB.clear();
         intermediateFile.clear();
+        DEFTAB.clear();
+        USETAB.clear();
         errorMessage = "";
         SYMTAB.put("A", 0);
         SYMTAB.put("X", 1);
@@ -65,7 +74,7 @@ public class Montador {
         setPrograma(codigoAssembly);
         passoUm();
         passoDois();
-        gerarTXTOutput();
+        //gerarTXTOutput();
         mostrarMensagem();
 
         return String.join("\n", output.machineCode);
@@ -83,13 +92,13 @@ public class Montador {
 
     private void mostrarMensagem()
     {
-        StringBuilder mensagem = new StringBuilder();
-        mensagem.append("Arquivo de saida: ").append(System.getProperty("user.dir")).append("/txtFiles/outputMontador.txt").append("\n\n");
-        if (errorMessage.isEmpty())
-            mensagem.append("Programa montado com sucesso.");
-        else
+        if (!errorMessage.isEmpty())
+        {
+            StringBuilder mensagem = new StringBuilder();
+            mensagem.append("Arquivo de saida: ").append(System.getProperty("user.dir")).append("/txtFiles/outputMontador.txt").append("\n\n");
             mensagem.append("Programa montado com erros. Erro(s): \n").append(errorMessage);
             JOptionPane.showMessageDialog(null, mensagem, "Montador", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     public void passoUm()
@@ -102,8 +111,14 @@ public class Montador {
 
         if(line.opcode.equals("START"))
         {
-            LOCCTR = Integer.parseInt(line.operands[0]);
+            LOCCTR = Integer.parseInt(line.operands.get(0));
             intermediateFile.add(line); 
+
+            Object[] entradaDefTab = new Object[3];
+            entradaDefTab[0] = line.label;
+            entradaDefTab[1] = LOCCTR;
+            entradaDefTab[2] = "R";
+            DEFTAB.add(entradaDefTab);
 
             lineCounter +=1; 
             line = new Line();
@@ -127,6 +142,15 @@ public class Montador {
                 else
                 {
                     SYMTAB.put(line.label,LOCCTR);
+                }
+
+                // Verifica se o simbolo esta na tabela de definições, se sim atualiza o endereço
+                for (Object[] entradaDefTab : DEFTAB)
+                {
+                    if(entradaDefTab[0].equals(line.label))
+                    {
+                        entradaDefTab[1] = LOCCTR;
+                    }
                 }
             }
 
@@ -165,13 +189,13 @@ public class Montador {
             }
             else if(line.opcode.equals("RESW"))
             {
-                int aux = Integer.parseInt(line.operands[0]); 
+                int aux = Integer.parseInt(line.operands.get(0)); 
                 LOCCTR = LOCCTR + (3*aux);
                 line.set_tamanho_instr(3*aux);
             }
             else if(line.opcode.equals("RESB"))
             {
-                int aux = Integer.parseInt(line.operands[0]); 
+                int aux = Integer.parseInt(line.operands.get(0)); 
                 LOCCTR += aux;
                 line.set_tamanho_instr(aux);
             }
@@ -179,6 +203,28 @@ public class Montador {
             {
                 LOCCTR += 1; 
                 line.set_tamanho_instr(1);
+            }
+            else if (line.opcode.equals("EXTDEF"))
+            {
+                for (String simbolo : line.operands)
+                {
+                    Object[] entradaDefTab = new Object[3];
+                    entradaDefTab[0] = simbolo;
+                    entradaDefTab[1] = 0;
+                    entradaDefTab[2] = "R";
+                    DEFTAB.add(entradaDefTab);
+                }
+            }
+            else if (line.opcode.equals("EXTREF"))
+            {
+                for (String simbolo : line.operands)
+                {
+                    Object[] entradaUseTab = new Object[4];
+                    entradaUseTab[0] = simbolo;
+                    entradaUseTab[1] = 0;
+                    entradaUseTab[2] = "+";
+                    USETAB.add(entradaUseTab);
+                }
             }
             else
             {
@@ -206,7 +252,7 @@ public class Montador {
 
         if ( line.opcode.equals("START") )
         {
-            LOCCTR = Integer.parseInt(line.operands[0]);
+            LOCCTR = Integer.parseInt(line.operands.get(0));
             lineCounter +=1;
         }
         else
@@ -249,21 +295,21 @@ public class Montador {
             else if(line.opcode.equals("BYTE"))
             {
                 LOCCTR +=1;
-                char c = line.operands[0].charAt(0);
+                char c = line.operands.get(0).charAt(0);
 
                 if (c == 'C') // ASCII ex: C'EOF'
                 {
-                    String aux = line.operands[0].substring(2,line.operands[0].length()-1);
+                    String aux = line.operands.get(0).substring(2,line.operands.get(0).length()-1);
                     for(int i=0; i < aux.length(); i++)
                     {
                         obj = String.format("%1$02X",(int)aux.charAt(i) & 0xFF);
                     }
                 } else if (c == 'X') // Hexadecimal ex: X'05'
                 {
-                    obj = line.operands[0].substring(2,line.operands[0].length()-1);
+                    obj = line.operands.get(0).substring(2,line.operands.get(0).length()-1);
                 } else // Numero ex: 5
                 {
-                    obj = line.operands[0]; 
+                    obj = line.operands.get(0); 
                 }
 
                 output.machineCode.add(hexToBinary(obj));
@@ -272,7 +318,7 @@ public class Montador {
             else if(line.opcode.equals("WORD"))
             {
                 LOCCTR +=3;
-                int word = Integer.parseInt(line.operands[0]);
+                int word = Integer.parseInt(line.operands.get(0));
                 obj = String.format("%1$06X",word & 0xFFFFFF);
                 output.machineCode.add(hexToBinary(obj));
             }
@@ -298,6 +344,14 @@ public class Montador {
                     output.machineCode.add(hexToBinary(obj));
                 }
             }
+            else if (line.opcode.equals("EXTDEF"))
+            {
+                
+            }
+            else if (line.opcode.equals("EXTREF"))
+            {
+                
+            }
             else
             {
                 errorMessage = errorMessage + "\nERRO - Opcode Inválido: " + input.get(lineCounter);
@@ -314,8 +368,8 @@ public class Montador {
     public String montarF2(Line line){
 
         String opCode = String.format("%1$02X", OPTAB.getInstrucaoPorNome(line.opcode).getOpcode()& 0xFF);
-        String operando1 = line.operands[0];
-        String operando2 = line.operands[1];
+        String operando1 = line.operands.get(0);
+        String operando2 = line.operands.get(1);
 
         String r1 = "0";
         String r2 = "0";
@@ -369,13 +423,29 @@ public class Montador {
         }
 
 
-        if( !SYMTAB.containsKey(line.operands[0]) ) // Constante
+        if( !SYMTAB.containsKey(line.operands.get(0)) ) // Constante
         {
-            try {
-                disp = Integer.parseInt(line.operands[0]);
-                
-            } catch (NumberFormatException e) {
-                errorMessage = errorMessage + "\nERRO - Nao foi possivel converter para inteiro: " + line.line;
+            // Verifica se tem na tabela de uso
+            boolean achou = false;
+            for (Object[] entradaUseTab : USETAB)
+            {
+                if(entradaUseTab[0].equals(line.operands.get(0)))
+                {
+                    entradaUseTab[1] = PC - line.tamanho_instr;
+                    disp = 0;
+                    operand = 0;
+                    achou = true;
+                }
+            }
+            
+            if (!achou)
+            {
+                try {
+                    disp = Integer.parseInt(line.operands.get(0));
+                    
+                } catch (NumberFormatException e) {
+                    errorMessage = errorMessage + "\nERRO - Nao foi possivel converter para inteiro: " + line.line;
+                }
             }
 
             xbpe = 0;
@@ -386,7 +456,7 @@ public class Montador {
         }
         else if( line.extended == true ) // Formato 4
         {
-            operand = SYMTAB.get(line.operands[0]);
+            operand = SYMTAB.get(line.operands.get(0));
             xbpe = 0x01;
             disp = operand;
             obj = ((opcode & 0xFC) <<24) + (ni<< 24) + (xbpe << 20)+ disp;
@@ -396,9 +466,10 @@ public class Montador {
         }
         else // Formato 3
         {
-            operand = SYMTAB.get(line.operands[0]);
+            operand = SYMTAB.get(line.operands.get(0));
 
-            if(line.operands[1].equals("X")) // Indexado
+
+            if(line.operands.size() > 1 && line.operands.get(1).equals("X")) // Indexado
             {
                 disp = operand - PC + SYMTAB.get("X");
                 xbpe = 0xA;
@@ -475,8 +546,21 @@ public class Montador {
         return binary;
     }
 
-    public Output geOutput(){
+    public Output getOutput(){
         return this.output;
+    }
+    
+    public String getErrorMessage(){
+        return this.errorMessage;
+    }
+
+
+    public List<Object[]> getDEFTAB(){
+        return this.DEFTAB;
+    }
+
+    public List<Object[]> getUSETAB(){
+        return this.USETAB;
     }
     
 }

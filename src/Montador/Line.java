@@ -8,7 +8,7 @@ public class Line {
     public String line = "";
     public String label = "";
     public String opcode = "";
-    public String[] operands = new String[2];
+    public List<String> operands = new ArrayList<>();
     public List<String> macroArguments = new ArrayList<>();
     public List<String> macroNames = new ArrayList<>();
     public String prefix = "";
@@ -38,7 +38,7 @@ public class Line {
             opcode = loo[0];
             label = loo[1];
             macroNames.add(label);
-            if (loo.length > 2){                        // Se tiver argumentos (não obrigatório)
+            if (loo.length > 2){                            // Se tiver argumentos (não obrigatório)
                 String[] aux = loo[2].split(",");
                 for (String arg : aux){
                     macroArguments.add(arg);
@@ -83,47 +83,41 @@ public class Line {
             label = "";
             opcode = loo[0];
             String[] aux = loo[1].split(",");
-            if(aux.length > 1){
-                operands[1] = aux[1];
+            for (int i = 0; i < aux.length; i++){
+                operands.add(aux[i]);
             }
-            else{
-                operands[1] = "";
-            }
-            operands[0] = aux[0];
         }
         else // Com label
         {
             label = loo[0];
             opcode = loo[1];
             String[] aux = loo[2].split(",");
-            if(aux.length >1){
-                operands[1] = aux[1];
+            for (int i = 0; i < aux.length; i++){
+                operands.add(aux[i]);
             }
-            else{
-                operands[1] = "";
-            }
-            operands[0] = aux[0];
         }
 
         // Remover prefixos dos operandos
-            if(operands[0].contains("#"))
+        for (int i = 0; i < operands.size(); i++){
+            if(operands.get(i).contains("#"))
             {
                 prefix = "#";
-                StringBuilder sb = new StringBuilder(operands[0]); 
+                StringBuilder sb = new StringBuilder(operands.get(i)); 
                 sb.deleteCharAt(0);
-                operands[0] = sb.toString();
+                operands.set(i, sb.toString());
             }
-            else if(operands[0].contains("@"))
+            else if(operands.get(i).contains("@"))
             {
                 prefix = "@";
-                StringBuilder sb = new StringBuilder(operands[0]); 
+                StringBuilder sb = new StringBuilder(operands.get(i)); 
                 sb.deleteCharAt(0);
-                operands[0] = sb.toString();
+                operands.set(i, sb.toString());
             }
             else
             {
                 prefix = "";
             }
+        }
 
         // Remover prefixos da instrução
         if(opcode.contains("+")){
