@@ -22,7 +22,8 @@ Caso queira ter uma ideia mais aprofundada das instruções, pseudoinstruções 
 - Executor (https://drive.google.com/file/d/11tbWbTYv844VtkBdwcxaAgLyqsb81Tg_/view?usp=sharing) ✔️
 - Montador (https://drive.google.com/file/d/1ZNLny3NNl0DjN5PY35OqjxW7uYAlreiN/view?usp=sharing) ✔️
 - Processador de Macros (https://drive.google.com/file/d/1heAm-XKyZn0E3zFRzTm_V7FEgXhuq4Kb/view?usp=drivesdk) ✔️
-- Ligador e Carregador () ✔️
+- Ligador e Carregador ✔️
+- Final (https://drive.google.com/file/d/1gVaFxl4kfJlyLiCx2ycwmTqiP1tu4I2z/view?usp=sharing) ✔️
 
 # 👥 **Integrantes** 👥
 
