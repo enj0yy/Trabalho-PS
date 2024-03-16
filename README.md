@@ -27,11 +27,11 @@ Caso queira ter uma ideia mais aprofundada das instruções, pseudoinstruções 
 
 # 👥 **Integrantes** 👥
 
-- Graziele Fagundes Martins
+- Graziele Fagundes Martins - *Coordenadora*
+  
+- Otávio Salomão Rocha - *Vice coordenador*
 
 - João Vitor Farias
-
-- Otávio Salomão Rocha
 
 - Igor Gomes Dutra
 
